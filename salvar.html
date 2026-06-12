@@ -2,11 +2,14 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,700;0,900;1,900&display=swap');
 
         body {
-            margin: 0; padding: 0; background-color: #000000;
+            margin: 0; padding: 0; 
+            background-color: transparent; /* Fondo totalmente invisible para OBS/TikTok Studio */
             font-family: 'Montserrat', sans-serif; color: white; overflow: hidden;
         }
         
@@ -70,6 +73,7 @@
         
         .name { font-size: 18px; font-weight: 700; text-transform: uppercase; color: #ddd; letter-spacing: 1px;}
         .donator-coins { font-size: 16px; font-weight: 900; color: #ffd700; text-shadow: 1px 1px 0px black; display: none;}
+        .donator-coins i { margin-right: 4px; color: #ffcc00; } /* Estilo extra para el icono de moneda */
         
         .avatar { width: 35px; height: 35px; border-radius: 50%; border: 2px solid white; object-fit: cover; display: none; }
 
@@ -170,29 +174,29 @@
         socket.on('actualizacion_salvar', (data) => {
             if(!currentConfig) return;
 
-            // Datos Equipo 1
+            // Datos Equipo 1 (Implementando FontAwesome)
             if(data.topSalvar.avatar) {
                 document.getElementById('avatar1').src = data.topSalvar.avatar;
                 document.getElementById('avatar1').style.display = 'block';
                 document.getElementById('name1').innerText = data.topSalvar.name;
-                document.getElementById('donatorCoins1').innerText = `🪙 ${data.topSalvar.coins}`;
+                document.getElementById('donatorCoins1').innerHTML = `<i class="fa-solid fa-coins"></i> ${data.topSalvar.coins}`;
             } else {
                 document.getElementById('avatar1').style.display = 'none';
                 document.getElementById('name1').innerText = 'Nadie aún';
-                document.getElementById('donatorCoins1').innerText = '';
+                document.getElementById('donatorCoins1').innerHTML = '';
             }
             document.getElementById('score1').innerText = data.totalSalvar;
 
-            // Datos Equipo 2
+            // Datos Equipo 2 (Implementando FontAwesome)
             if(data.topReiniciar.avatar) {
                 document.getElementById('avatar2').src = data.topReiniciar.avatar;
                 document.getElementById('avatar2').style.display = 'block';
                 document.getElementById('name2').innerText = data.topReiniciar.name;
-                document.getElementById('donatorCoins2').innerText = `🪙 ${data.topReiniciar.coins}`;
+                document.getElementById('donatorCoins2').innerHTML = `<i class="fa-solid fa-coins"></i> ${data.topReiniciar.coins}`;
             } else {
                 document.getElementById('avatar2').style.display = 'none';
                 document.getElementById('name2').innerText = 'Nadie aún';
-                document.getElementById('donatorCoins2').innerText = '';
+                document.getElementById('donatorCoins2').innerHTML = '';
             }
             document.getElementById('score2').innerText = data.totalReiniciar;
 
@@ -236,7 +240,6 @@
             // LÓGICA DE RELOJ Y TOGGLE
             let countdownDisplay = document.getElementById('countdown-display');
             
-            // Solo si el check está activado y el equipo 2 va ganando
             if (currentConfig.enableCountdown && data.totalReiniciar > data.totalSalvar) {
                 countdownDisplay.style.display = 'flex'; 
                 if (!countdownInterval) {
