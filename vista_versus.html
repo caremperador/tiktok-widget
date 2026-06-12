@@ -41,7 +41,6 @@
         .color-picker { width: 45px !important; padding: 0 !important; border: none !important; cursor: pointer; border-radius: 4px !important;}
         .color-hex { flex: 1; font-family: monospace; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* 🌟 Diseño del control manual de puntos */
         .manual-points-box { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 8px; border: 1px solid #444; margin-bottom: 5px; }
         .mp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;}
         .mp-title { color:#aaa; font-weight:bold; font-size:12px; text-transform:uppercase;}
@@ -59,7 +58,6 @@
                 <label style="color: #00f2fe;"><i class="fa-solid fa-stopwatch"></i> Segundos Cuenta Atrás</label>
                 <input type="number" id="input-countdown-sec" style="margin-bottom: 15px;">
                 
-                <!-- 🌟 NUEVO: BOTÓN MAESTRO DE REINICIO A CERO -->
                 <button class="btn-clear" onclick="resetearValores()" style="width: 100%; background: #ff003c; color: white; border: none; padding: 15px; border-radius: 6px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 14px; box-shadow: 0 4px 10px rgba(255,0,60,0.4);"><i class="fa-solid fa-skull"></i> Reiniciar Todos los Valores a 0</button>
             </div>
             <div style="flex: 1; display: flex; flex-direction: column;">
@@ -83,7 +81,6 @@
                 </div>
                 <div><label style="color:#00ff66;">Subtexto Eq 1 (Opcional)</label><input type="text" id="eq1-sub" placeholder="Dejar vacío para ocultar"></div>
                 
-                <!-- 🌟 NUEVO: CONTROL MANUAL DE PUNTOS EQ 1 -->
                 <div class="manual-points-box">
                     <div class="mp-header">
                         <span class="mp-title">Puntos Actuales:</span>
@@ -111,7 +108,6 @@
                 </div>
                 <div><label style="color:#ff003c;">Subtexto Eq 2 (Opcional)</label><input type="text" id="eq2-sub" placeholder="Dejar vacío para ocultar"></div>
                 
-                <!-- 🌟 NUEVO: CONTROL MANUAL DE PUNTOS EQ 2 -->
                 <div class="manual-points-box">
                     <div class="mp-header">
                         <span class="mp-title">Puntos Actuales:</span>
@@ -184,7 +180,7 @@
             </div>
         </div>
 
-        <button class="btn-guardar" onclick="guardarConfig()"><i class="fa-solid fa-floppy-disk"></i> Guardar Todo en Vivo</button>
+        <button class="btn-guardar" onclick="guardarConfig(false)"><i class="fa-solid fa-floppy-disk"></i> Guardar Todo en Vivo</button>
         <div class="overlay-bar">
             <button class="btn-overlay" onclick="window.open('/salvar', '_blank')"><i class="fa-solid fa-eye"></i> Abrir Overlay Batalla</button>
             <button class="btn-overlay" style="color:#ffd700; border-color:#ffd700;" onclick="copiarURL()"><i class="fa-solid fa-link"></i> Copiar URL OBS</button>
@@ -217,11 +213,44 @@
         syncColors('eq1-color', 'eq1-hex', 'lbl-eq1');
         syncColors('eq2-color', 'eq2-hex', 'lbl-eq2');
 
+        // 🌟 FUNCIÓN PARA RENDERIZAR MENÚS CON COLORES E INDICADORES
+        function renderDropdowns() {
+            let s1 = document.getElementById('select-eq1'); 
+            let s2 = document.getElementById('select-eq2');
+            let val1 = s1.value;
+            let val2 = s2.value;
+            
+            s1.innerHTML = ''; s2.innerHTML = '';
+            
+            globalGifts.forEach(g => { 
+                let enEq1 = eq1Gifts.some(r => r.id === g.id);
+                let enEq2 = eq2Gifts.some(r => r.id === g.id);
+                
+                let textoAdd = "";
+                let styleBg = "";
+                
+                if (enEq1) { 
+                    textoAdd = " ✅ [En Eq 1]"; 
+                    styleBg = "background-color: #003311; color: #00ff66;"; 
+                } else if (enEq2) { 
+                    textoAdd = " ✅ [En Eq 2]"; 
+                    styleBg = "background-color: #330011; color: #ff003c;"; 
+                }
+                
+                let opt = `<option value="${g.id}" style="${styleBg}">[ID: ${g.id}] ${g.name} (${g.diamonds} Monedas)${textoAdd}</option>`; 
+                s1.innerHTML += opt; 
+                s2.innerHTML += opt; 
+            });
+
+            if(val1) s1.value = val1;
+            if(val2) s2.value = val2;
+        }
+
         socket.on('config_actual', (config) => {
             document.getElementById('input-countdown-sec').value = config.countdownSeconds || 30;
             document.getElementById('check-countdown').checked = config.enableCountdown;
             document.getElementById('check-round').checked = config.roundGifts !== false; 
-            document.getElementById('check-top-donators').checked = config.showTopDonators !== false; // 🌟 NUEVO
+            document.getElementById('check-top-donators').checked = config.showTopDonators !== false; 
             document.getElementById('check-toptext').checked = config.showTopText !== false;
             document.getElementById('check-coins').checked = config.showDonatorCoins;
             document.getElementById('check-emoticons').checked = config.showEmoticons !== undefined ? config.showEmoticons : true;
@@ -246,25 +275,19 @@
                 document.getElementById('ds-st').value = config.battleStyle.sizeTimer;
             }
 
-            globalGifts = config.regalosDisponibles || []; eq1Gifts = config.equipo1.regalos || []; eq2Gifts = config.equipo2.regalos || [];
-            let s1 = document.getElementById('select-eq1'); let s2 = document.getElementById('select-eq2');
-            s1.innerHTML = ''; s2.innerHTML = '';
+            globalGifts = config.regalosDisponibles || []; 
+            eq1Gifts = config.equipo1.regalos || []; 
+            eq2Gifts = config.equipo2.regalos || [];
             
-            globalGifts.forEach(g => { 
-                let opt = `<option value="${g.id}">[ID: ${g.id}] ${g.name} (${g.diamonds} Monedas)</option>`; 
-                s1.innerHTML += opt; 
-                s2.innerHTML += opt; 
-            });
+            renderDropdowns();
             renderList(1); renderList(2);
         });
 
-        // 🌟 NUEVO: ESCUCHA LA ACTUALIZACIÓN DE PUNTOS EN VIVO PARA EL PANEL
         socket.on('actualizacion_salvar', (data) => {
             document.getElementById('lbl-pts-eq1').innerText = data.totalSalvar;
             document.getElementById('lbl-pts-eq2').innerText = data.totalReiniciar;
         });
 
-        // 🌟 NUEVO: FUNCIONES DE BOTONES MAESTROS
         function modificarPuntos(equipo, accion) {
             let inputId = equipo === 1 ? 'manual-pts-eq1' : 'manual-pts-eq2';
             let pts = parseInt(document.getElementById(inputId).value);
@@ -287,20 +310,29 @@
             arr.forEach(g => { container.innerHTML += `<div class="assigned-item"><span>${g.name} (<i class="fa-solid fa-coins" style="color:#ffd700;"></i> ${g.diamonds})</span><button class="btn-remove" onclick="removeGift(${team}, ${g.id})"><i class="fa-solid fa-xmark"></i></button></div>`; });
         }
 
+        // 🌟 AUTO-GUARDADO AL AÑADIR
         function addGift(team) {
             let sel = document.getElementById(team === 1 ? 'select-eq1' : 'select-eq2');
             if(!sel.value) return;
             let gift = globalGifts.find(g => g.id === parseInt(sel.value));
             let arr = team === 1 ? eq1Gifts : eq2Gifts;
-            if (!arr.some(g => g.id === gift.id)) { arr.push(gift); renderList(team); }
+            if (!arr.some(g => g.id === gift.id)) { 
+                arr.push(gift); 
+                renderList(team); 
+                renderDropdowns(); 
+                guardarConfig(true); // Guarda en silencio
+            }
         }
 
+        // 🌟 AUTO-GUARDADO AL ELIMINAR
         function removeGift(team, id) {
             if (team === 1) eq1Gifts = eq1Gifts.filter(g => g.id !== id); else eq2Gifts = eq2Gifts.filter(g => g.id !== id);
             renderList(team);
+            renderDropdowns();
+            guardarConfig(true); // Guarda en silencio
         }
 
-        function guardarConfig() {
+        function guardarConfig(isSilent = false) {
             let configStyle = {
                 fontFamily: document.getElementById('ds-font').value,
                 textStroke: parseFloat(document.getElementById('ds-stroke').value) || 1.5,
@@ -325,11 +357,15 @@
                 showDonatorCoins: document.getElementById('check-coins').checked, 
                 showEmoticons: document.getElementById('check-emoticons').checked,
                 roundGifts: document.getElementById('check-round').checked, 
-                showTopDonators: document.getElementById('check-top-donators').checked, // 🌟 GUARDAR PREFERENCIA MVP
+                showTopDonators: document.getElementById('check-top-donators').checked, 
                 countdownSeconds: parseInt(document.getElementById('input-countdown-sec').value) || 30,
                 battleStyle: configStyle
             });
-            document.getElementById('mensaje').style.display = 'block'; setTimeout(() => document.getElementById('mensaje').style.display = 'none', 2000);
+            
+            if (!isSilent) {
+                document.getElementById('mensaje').style.display = 'block'; 
+                setTimeout(() => document.getElementById('mensaje').style.display = 'none', 2000);
+            }
         }
 
         function copiarURL() {
