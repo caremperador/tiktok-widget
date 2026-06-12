@@ -3,160 +3,185 @@
 <head>
     <meta charset="utf-8">
     <title>Panel de Control - Gatos Team</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            background-color: #0f0f13; color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0; padding: 40px; display: flex; flex-direction: column; align-items: center;
-        }
-        h1 { color: #00f2fe; text-transform: uppercase; letter-spacing: 2px; }
+        body { background-color: #0f0f13; color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        h1 { color: #00f2fe; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
+        .panel-container { background: #1a1a24; border-radius: 12px; border: 1px solid #333; width: 100%; max-width: 900px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); overflow: hidden; }
         
-        /* Contenedor Principal */
-        .panel-container {
-            background: #1a1a24; border-radius: 12px; border: 1px solid #333;
-            width: 100%; max-width: 700px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            overflow: hidden;
-        }
+        .top-nav { display: flex; width: 100%; max-width: 900px; justify-content: flex-end; margin-bottom: 10px; gap: 10px;}
+        .nav-link { background: #ff0050; color: white; padding: 10px 20px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 14px; transition: 0.2s;}
+        .nav-link:hover { background: #ff3370; }
+        .nav-racha { background: #ff9900; }
+        .nav-racha:hover { background: #ffbb33; }
 
-        /* Pestañas */
         .tabs { display: flex; background: #111; border-bottom: 1px solid #333; }
-        .tab-btn {
-            flex: 1; padding: 15px; background: none; border: none; color: #888;
-            font-size: 16px; font-weight: bold; cursor: pointer; text-transform: uppercase;
-            transition: 0.3s;
-        }
-        .tab-btn:hover { color: white; background: rgba(255,255,255,0.05); }
+        .tab-btn { flex: 1; padding: 15px; background: none; border: none; color: #888; font-size: 16px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
         .tab-btn.active { color: #00f2fe; border-bottom: 3px solid #00f2fe; background: rgba(0, 242, 254, 0.1); }
-        
         .tab-content { padding: 30px; display: none; }
         .tab-content.active { display: block; }
-
-        /* Formularios */
+        
         .form-group { margin-bottom: 25px; }
         .form-row { display: flex; gap: 15px; margin-bottom: 15px; }
         .form-col { flex: 1; }
-        
         label { display: block; font-weight: bold; margin-bottom: 8px; font-size: 14px; text-transform: uppercase; color: #ccc;}
-        .label-salvar { color: #00ff66; }
-        .label-reiniciar { color: #ff003c; }
+        input[type="text"], input[type="number"], select { width: 100%; background: #000; color: #fff; border: 2px solid #444; border-radius: 8px; padding: 10px; font-size: 14px; box-sizing: border-box; }
+        input:focus, select:focus { outline: none; border-color: #00f2fe; }
         
-        input[type="text"], textarea {
-            width: 100%; background: #000; color: #fff;
-            border: 2px solid #444; border-radius: 8px;
-            padding: 10px; font-size: 14px; font-family: monospace; box-sizing: border-box;
-        }
-        textarea { height: 60px; resize: vertical; }
-        input:focus, textarea:focus { outline: none; border-color: #00f2fe; }
+        .conn-controls { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-play { background: #00ff66; color: black; font-weight: bold; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; flex: 1;}
+        .btn-stop { background: #ff003c; color: white; font-weight: bold; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; flex: 1;}
         
-        /* Checkboxes */
+        .status-bar { background: #000; padding: 15px; border-radius: 8px; border: 1px solid #444; font-family: monospace; font-size: 16px; margin-bottom: 20px; color: #ccc; text-align: center; }
+        .history-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .chip { background: #333; padding: 5px 12px; border-radius: 20px; font-size: 13px; cursor: pointer; transition: 0.2s; border: 1px solid #555; }
+        .chip:hover { background: #00f2fe; color: black; border-color: #00f2fe; }
+        
         .checkbox-group { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; cursor: pointer;}
         .checkbox-group input { width: 20px; height: 20px; cursor: pointer; }
-        .checkbox-group label { margin: 0; font-size: 16px; color: white; cursor: pointer;}
-
-        .help-text { font-size: 12px; color: #888; margin-top: 5px; }
         
-        .btn-guardar {
-            width: 100%; padding: 15px; background: linear-gradient(90deg, #00f2fe, #4facfe);
-            color: black; font-size: 18px; font-weight: bold; border: none; cursor: pointer;
-            text-transform: uppercase; letter-spacing: 1px;
-        }
-        .btn-guardar:hover { filter: brightness(1.2); }
-        
+        .btn-guardar { width: 100%; padding: 15px; background: linear-gradient(90deg, #00f2fe, #4facfe); color: black; font-size: 18px; font-weight: bold; border: none; cursor: pointer; border-radius: 8px; text-transform: uppercase; margin-top: 20px; }
         #mensaje { text-align: center; margin-top: 15px; font-weight: bold; color: #00ff66; display: none; }
+
+        .team-assigner { background: #222; border: 1px solid #444; border-radius: 8px; padding: 15px; display: flex; flex-direction: column; gap: 10px;}
+        .assign-controls { display: flex; gap: 10px; }
+        .btn-add-gift { background: #444; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.2s;}
+        .btn-add-gift:hover { background: #00f2fe; color: black; }
+        .assigned-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .assigned-item { background: #000; border: 1px solid #555; padding: 5px 10px; border-radius: 4px; font-size: 12px; display: flex; align-items: center; gap: 8px; }
+        .btn-remove { background: none; color: #ff003c; border: none; cursor: pointer; font-size: 14px; padding: 0; }
+        
+        /* Controles de Racha */
+        .racha-control-box { text-align: center; background: #222; padding: 30px; border-radius: 8px; border: 1px solid #444; }
+        .racha-number { font-size: 70px; font-weight: bold; margin: 15px 0; color: #fff; text-shadow: 0 0 15px #ff9900; }
     </style>
 </head>
 <body>
 
-    <h1>⚙️ Centro de Mando V1.1.7</h1>
+    <div class="top-nav">
+        <a href="/regalos" class="nav-link" target="_blank"><i class="fa-solid fa-box-open"></i> Abrir Base de Datos de Regalos</a>
+        <a href="/racha" class="nav-link nav-racha" target="_blank"><i class="fa-solid fa-fire"></i> Abrir Overlay Racha Diaria</a>
+    </div>
+
+    <h1>⚙️ Centro de Mando V1.3.1</h1>
+    <div class="status-bar" id="conexion-estado">🔴 Desconectado</div>
 
     <div class="panel-container">
-        
-        <!-- Botones Pestañas -->
         <div class="tabs">
-            <button class="tab-btn active" onclick="abrirTab(event, 'tab-general')">📡 General</button>
-            <button class="tab-btn" onclick="abrirTab(event, 'tab-batalla')">⚔️ Batalla por Equipos</button>
+            <button class="tab-btn active" onclick="abrirTab(event, 'tab-general')">📡 Conexión</button>
+            <button class="tab-btn" onclick="abrirTab(event, 'tab-batalla')">⚔️ Batalla</button>
+            <button class="tab-btn" onclick="abrirTab(event, 'tab-racha')">🔥 Racha Diaria</button>
         </div>
 
-        <!-- Pestaña 1: General -->
         <div id="tab-general" class="tab-content active">
             <div class="form-group">
-                <label style="color: #ffd700;">👤 Conexión Canal de TikTok</label>
+                <label style="color: #ffd700;">👤 Cuenta de TikTok a monitorear</label>
                 <input type="text" id="input-usuario" placeholder="ej. teamgatitos_oficial">
-                <div class="help-text">Escribe el usuario de TikTok para vincular la conexión en vivo.</div>
+                <div class="conn-controls">
+                    <button class="btn-play" onclick="conectar()">▶️ Conectar</button>
+                    <button class="btn-stop" onclick="desconectar()">⏹️ Parar</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>⏱️ Historial de Testeo</label>
+                <div class="history-chips" id="historial-lista"></div>
             </div>
         </div>
 
-        <!-- Pestaña 2: Batalla por Equipos -->
         <div id="tab-batalla" class="tab-content">
-            
-            <div class="form-group">
-                <label class="checkbox-group">
-                    <input type="checkbox" id="check-countdown"> Activar Cuenta Regresiva al ir perdiendo el Equipo 1
-                </label>
-                <label class="checkbox-group">
-                    <input type="checkbox" id="check-coins"> Mostrar cantidad de 🪙 de los Top Donadores
-                </label>
+            <div class="form-row">
+                <div class="form-col" style="flex: 0.5;">
+                    <label style="color: #00f2fe;">⏱️ Segundos Cuenta Atrás</label>
+                    <input type="number" id="input-countdown-sec" min="5" max="300" placeholder="Ej. 30">
+                </div>
+                <div class="form-col">
+                    <label class="checkbox-group"><input type="checkbox" id="check-countdown"> Activar Cuenta Regresiva</label>
+                    <label class="checkbox-group"><input type="checkbox" id="check-toptext"> Mostrar Texto Flotante Superior</label>
+                    <label class="checkbox-group"><input type="checkbox" id="check-coins"> Mostrar cantidad de 🪙</label>
+                </div>
             </div>
-
-            <hr style="border-color: #333; margin: 25px 0;">
-
-            <!-- Equipo 1 (Izquierda / Verde) -->
-            <div class="form-group">
-                <div class="form-row">
-                    <div class="form-col">
-                        <label class="label-salvar">Nombre Equipo 1</label>
-                        <input type="text" id="eq1-nombre" placeholder="Ej. SALVAR, HÉROES...">
-                    </div>
-                    <div class="form-col">
-                        <label class="label-salvar">Texto Secundario (Ej. GG)</label>
-                        <input type="text" id="eq1-sub" placeholder="Ej. GG, ALIANZA...">
+            <hr style="border-color: #333; margin: 15px 0;">
+            <div class="form-row">
+                <div class="form-col">
+                    <label style="color:#00ff66;">Nombre Eq 1</label>
+                    <input type="text" id="eq1-nombre" style="margin-bottom: 10px;">
+                    <label style="color:#00ff66;">Subtexto Eq 1 (Opcional)</label>
+                    <input type="text" id="eq1-sub" style="margin-bottom: 15px;" placeholder="Dejar vacío para ocultar">
+                    <div class="team-assigner">
+                        <label>Asignar Regalos (Eq 1)</label>
+                        <div class="assign-controls">
+                            <select id="select-eq1"></select>
+                            <button class="btn-add-gift" onclick="addGift(1)">Añadir</button>
+                        </div>
+                        <div class="assigned-list" id="list-eq1"></div>
                     </div>
                 </div>
-                <label class="label-salvar">IDs de Regalos (Equipo 1)</label>
-                <textarea id="eq1-ids"></textarea>
-            </div>
-
-            <hr style="border-color: #333; margin: 25px 0;">
-
-            <!-- Equipo 2 (Derecha / Rojo) -->
-            <div class="form-group">
-                <div class="form-row">
-                    <div class="form-col">
-                        <label class="label-reiniciar">Nombre Equipo 2</label>
-                        <input type="text" id="eq2-nombre" placeholder="Ej. REINICIAR, VILLANOS...">
-                    </div>
-                    <div class="form-col">
-                        <label class="label-reiniciar">Texto Secundario (Ej. ROSA)</label>
-                        <input type="text" id="eq2-sub" placeholder="Ej. ROSA, HORDA...">
+                <div class="form-col">
+                    <label style="color:#ff003c;">Nombre Eq 2</label>
+                    <input type="text" id="eq2-nombre" style="margin-bottom: 10px;">
+                    <label style="color:#ff003c;">Subtexto Eq 2 (Opcional)</label>
+                    <input type="text" id="eq2-sub" style="margin-bottom: 15px;" placeholder="Dejar vacío para ocultar">
+                    <div class="team-assigner">
+                        <label>Asignar Regalos (Eq 2)</label>
+                        <div class="assign-controls">
+                            <select id="select-eq2"></select>
+                            <button class="btn-add-gift" onclick="addGift(2)">Añadir</button>
+                        </div>
+                        <div class="assigned-list" id="list-eq2"></div>
                     </div>
                 </div>
-                <label class="label-reiniciar">IDs de Regalos (Equipo 2)</label>
-                <textarea id="eq2-ids"></textarea>
             </div>
-
+            <button class="btn-guardar" onclick="guardarConfig()"><i class="fa-solid fa-floppy-disk"></i> Guardar Cambios en Vivo</button>
+            <div id="mensaje">✅ ¡Configuración guardada y actualizada en pantalla!</div>
         </div>
 
-        <button class="btn-guardar" onclick="guardarConfig()">💾 Guardar y Sincronizar</button>
+        <!-- 🌟 NUEVA PESTAÑA: RACHA DIARIA -->
+        <div id="tab-racha" class="tab-content">
+            <div class="form-row">
+                <div class="form-col racha-control-box">
+                    <label style="color: #ffaa00; font-size: 18px;">🔥 Racha Actual Diaria</label>
+                    <div class="racha-number" id="panel-racha-count">0</div>
+                    
+                    <div class="conn-controls">
+                        <button class="btn-play" onclick="addWin()"><i class="fa-solid fa-plus"></i> 1 Win (Añadir)</button>
+                        <button class="btn-stop" style="background:#ffaa00;" onclick="removeWin()"><i class="fa-solid fa-minus"></i> 1 Win (Quitar)</button>
+                    </div>
+                    <button class="btn-stop" style="width: 100%; margin-top: 15px;" onclick="resetRacha()"><i class="fa-solid fa-rotate-left"></i> Cerrar Racha Diaria (Volver a 0)</button>
+                </div>
+                
+                <div class="form-col">
+                    <label style="color: #00f2fe;">Opciones del Overlay</label>
+                    <div style="background: #222; padding: 20px; border-radius: 8px; border: 1px solid #444;">
+                        <label class="checkbox-group">
+                            <input type="checkbox" id="check-racha-coins" onchange="toggleRachaCoins()"> Mostrar Monedas del MVP
+                        </label>
+                        <p style="color: #888; font-size: 13px; margin-top: 15px; line-height: 1.5;">
+                            💡 <b>Nota:</b> Al pulsar "+1 Win", se sumará una victoria a la "Racha Diaria" y también se añadirá +1 al Récord Histórico de toda la vida del espectador que vaya Top 1 en ese momento.
+                        </p>
+                        <p style="color: #888; font-size: 13px; line-height: 1.5;">
+                            Si reinicias la racha diaria a cero, los récords históricos de tus espectadores permanecerán intactos y guardados de forma segura.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
-    <div id="mensaje">✅ ¡Sincronizado! Los widgets se actualizarán al instante.</div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
-        
-        // Elementos DOM
-        const inputUsuario = document.getElementById('input-usuario');
-        const eq1Nombre = document.getElementById('eq1-nombre');
-        const eq1Sub = document.getElementById('eq1-sub');
-        const eq1Ids = document.getElementById('eq1-ids');
-        const eq2Nombre = document.getElementById('eq2-nombre');
-        const eq2Sub = document.getElementById('eq2-sub');
-        const eq2Ids = document.getElementById('eq2-ids');
-        const checkCountdown = document.getElementById('check-countdown');
-        const checkCoins = document.getElementById('check-coins');
-        const mensaje = document.getElementById('mensaje');
+        let globalGifts = []; let eq1Gifts = []; let eq2Gifts = [];
 
-        // Pestañas
+        const inputUsuario = document.getElementById('input-usuario');
+        const eq1Nombre = document.getElementById('eq1-nombre'); const eq1Sub = document.getElementById('eq1-sub');
+        const eq2Nombre = document.getElementById('eq2-nombre'); const eq2Sub = document.getElementById('eq2-sub');
+        const checkCountdown = document.getElementById('check-countdown');
+        const checkTopText = document.getElementById('check-toptext');
+        const checkCoins = document.getElementById('check-coins');
+        const inputCountdownSec = document.getElementById('input-countdown-sec');
+        const estadoBar = document.getElementById('conexion-estado');
+
         function abrirTab(evt, tabId) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
@@ -164,42 +189,91 @@
             evt.currentTarget.classList.add('active');
         }
 
-        // Cargar config al iniciar
+        socket.on('estado_conexion', (data) => {
+            estadoBar.innerText = data.msg;
+            if (data.estado === 'conectado') estadoBar.style.color = '#00ff66';
+            else if (data.estado === 'conectando' || data.estado === 'reconectando') estadoBar.style.color = '#ffd700';
+            else estadoBar.style.color = '#ff003c'; 
+        });
+
         socket.on('config_actual', (config) => {
             inputUsuario.value = config.username;
-            eq1Nombre.value = config.equipo1.nombre;
-            eq1Sub.value = config.equipo1.sub;
-            eq1Ids.value = config.equipo1.ids.join(', ');
-            
-            eq2Nombre.value = config.equipo2.nombre;
-            eq2Sub.value = config.equipo2.sub;
-            eq2Ids.value = config.equipo2.ids.join(', ');
+            eq1Nombre.value = config.equipo1.nombre; eq1Sub.value = config.equipo1.sub || "";
+            eq2Nombre.value = config.equipo2.nombre; eq2Sub.value = config.equipo2.sub || "";
+            checkCountdown.checked = config.enableCountdown; checkTopText.checked = config.showTopText !== false; 
+            checkCoins.checked = config.showDonatorCoins; inputCountdownSec.value = config.countdownSeconds || 30;
 
-            checkCountdown.checked = config.enableCountdown;
-            checkCoins.checked = config.showDonatorCoins;
+            globalGifts = config.regalosDisponibles || [];
+            eq1Gifts = config.equipo1.regalos || [];
+            eq2Gifts = config.equipo2.regalos || [];
+
+            // Actualizar panel de Racha
+            document.getElementById('panel-racha-count').innerText = config.racha ? config.racha.currentWins : 0;
+            document.getElementById('check-racha-coins').checked = config.racha ? config.racha.showCoins : true;
+
+            renderHistorial(config.historial);
+            populateSelects();
+            renderTeamList(1); renderTeamList(2);
         });
+
+        function renderHistorial(historial) {
+            let list = document.getElementById('historial-lista'); list.innerHTML = '';
+            if(historial && historial.length > 0) {
+                historial.forEach(user => {
+                    let chip = document.createElement('div'); chip.className = 'chip'; chip.innerText = '@' + user;
+                    chip.onclick = () => { inputUsuario.value = user; conectar(); }; list.appendChild(chip);
+                });
+            } else { list.innerHTML = '<span style="color:#555; font-size:13px;">No hay historial</span>'; }
+        }
+
+        function populateSelects() {
+            let select1 = document.getElementById('select-eq1'); let select2 = document.getElementById('select-eq2');
+            select1.innerHTML = ''; select2.innerHTML = '';
+            globalGifts.forEach(g => {
+                let option = `<option value="${g.id}">${g.name} (${g.diamonds} 🪙)</option>`;
+                select1.innerHTML += option; select2.innerHTML += option;
+            });
+        }
+
+        function renderTeamList(team) {
+            let container = document.getElementById(team === 1 ? 'list-eq1' : 'list-eq2');
+            let arr = team === 1 ? eq1Gifts : eq2Gifts; container.innerHTML = '';
+            arr.forEach(g => {
+                container.innerHTML += `<div class="assigned-item"><span>${g.name} (${g.diamonds} 🪙)</span><button class="btn-remove" onclick="removeGift(${team}, ${g.id})"><i class="fa-solid fa-xmark"></i></button></div>`;
+            });
+        }
+
+        function addGift(team) {
+            let select = document.getElementById(team === 1 ? 'select-eq1' : 'select-eq2');
+            if(!select.value) return;
+            let gift = globalGifts.find(g => g.id === parseInt(select.value));
+            let arr = team === 1 ? eq1Gifts : eq2Gifts;
+            if (!arr.some(g => g.id === gift.id)) { arr.push(gift); renderTeamList(team); }
+        }
+
+        function removeGift(team, id) {
+            if (team === 1) eq1Gifts = eq1Gifts.filter(g => g.id !== id); else eq2Gifts = eq2Gifts.filter(g => g.id !== id);
+            renderTeamList(team);
+        }
+
+        function conectar() { if(inputUsuario.value.trim() !== "") socket.emit('comando_conectar', inputUsuario.value); }
+        function desconectar() { socket.emit('comando_desconectar'); }
 
         function guardarConfig() {
             let configActualizada = {
-                username: inputUsuario.value.trim(),
-                equipo1: {
-                    nombre: eq1Nombre.value.trim() || "EQUIPO 1",
-                    sub: eq1Sub.value.trim(),
-                    ids: eq1Ids.value.split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id))
-                },
-                equipo2: {
-                    nombre: eq2Nombre.value.trim() || "EQUIPO 2",
-                    sub: eq2Sub.value.trim(),
-                    ids: eq2Ids.value.split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id))
-                },
-                enableCountdown: checkCountdown.checked,
-                showDonatorCoins: checkCoins.checked
+                equipo1: { nombre: eq1Nombre.value.trim() || "EQUIPO 1", sub: eq1Sub.value.trim(), regalos: eq1Gifts },
+                equipo2: { nombre: eq2Nombre.value.trim() || "EQUIPO 2", sub: eq2Sub.value.trim(), regalos: eq2Gifts },
+                enableCountdown: checkCountdown.checked, showTopText: checkTopText.checked, showDonatorCoins: checkCoins.checked, countdownSeconds: parseInt(inputCountdownSec.value) || 30
             };
-
             socket.emit('guardar_config', configActualizada);
-            mensaje.style.display = 'block';
-            setTimeout(() => mensaje.style.display = 'none', 3000);
+            let msg = document.getElementById('mensaje'); msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 3000);
         }
+
+        // 🌟 LÓGICA DE BOTONES RACHA
+        function addWin() { socket.emit('racha_add'); }
+        function removeWin() { socket.emit('racha_remove'); }
+        function resetRacha() { if(confirm("¿Seguro que quieres cerrar la racha diaria y volver a 0? (Los récords históricos de los usuarios no se borrarán)")) socket.emit('racha_reset'); }
+        function toggleRachaCoins() { socket.emit('racha_toggle_coins', document.getElementById('check-racha-coins').checked); }
     </script>
 </body>
 </html>

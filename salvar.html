@@ -3,13 +3,11 @@
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,700;0,900;1,900&display=swap');
 
         body {
-            margin: 0; padding: 0; 
-            background-color: transparent; /* Fondo totalmente invisible para OBS/TikTok Studio */
+            margin: 0; padding: 0; background-color: transparent; 
             font-family: 'Montserrat', sans-serif; color: white; overflow: hidden;
         }
         
@@ -41,56 +39,43 @@
         
         .bar-side {
             height: 100%; display: flex; align-items: center; box-sizing: border-box;
-            transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.1s ease-out;
-            overflow: hidden; white-space: nowrap;
+            transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.1s ease-out; overflow: hidden; white-space: nowrap;
         }
         
-        .bar-left {
-            background: linear-gradient(90deg, #009933 0%, #00ff66 100%);
-            width: 50%; justify-content: flex-start; padding: 0 25px; border-right: 3px solid #ffffff; z-index: 2;
-            box-shadow: 5px 0 15px rgba(0, 255, 102, 0.6);
-        }
-        
-        .bar-right {
-            background: linear-gradient(270deg, #990024 0%, #ff003c 100%);
-            width: 50%; justify-content: flex-end; padding: 0 25px; box-shadow: -5px 0 15px rgba(255, 0, 60, 0.6);
-        }
+        .bar-left { background: linear-gradient(90deg, #009933 0%, #00ff66 100%); width: 50%; justify-content: flex-start; padding: 0 25px; border-right: 3px solid #ffffff; z-index: 2; box-shadow: 5px 0 15px rgba(0, 255, 102, 0.6); }
+        .bar-right { background: linear-gradient(270deg, #990024 0%, #ff003c 100%); width: 50%; justify-content: flex-end; padding: 0 25px; box-shadow: -5px 0 15px rgba(255, 0, 60, 0.6); }
 
         .flash-left { background: #66ff99 !important; }
         .flash-right { background: #ff668c !important; }
         
         .score { font-size: 38px; font-weight: 900; color: #ffffff; text-shadow: 2px 2px 0px black, -1px -1px 0px black, 1px -1px 0px black, -1px 1px 0px black; }
 
-        .heroes-row {
-            width: 90%; max-width: 800px; display: flex; justify-content: space-between; align-items: center; margin-top: 5px;
-        }
-        .hero-group {
-            display: flex; align-items: center; gap: 12px; background: rgba(20, 20, 20, 0.8); padding: 5px 15px;
-            border-radius: 50px; border: 1px solid #333;
-        }
+        .heroes-row { width: 90%; max-width: 800px; display: flex; justify-content: space-between; align-items: center; margin-top: 5px; }
+        .hero-group { display: flex; align-items: center; gap: 12px; background: rgba(20, 20, 20, 0.8); padding: 5px 15px; border-radius: 50px; border: 1px solid #333; }
         .hero-left { border-left: 3px solid #00ff66; }
         .hero-right { border-right: 3px solid #ff003c; flex-direction: row-reverse; } 
         
         .name { font-size: 18px; font-weight: 700; text-transform: uppercase; color: #ddd; letter-spacing: 1px;}
         .donator-coins { font-size: 16px; font-weight: 900; color: #ffd700; text-shadow: 1px 1px 0px black; display: none;}
-        .donator-coins i { margin-right: 4px; color: #ffcc00; } /* Estilo extra para el icono de moneda */
-        
+        .donator-coins i { margin-right: 4px; color: #ffcc00; } 
         .avatar { width: 35px; height: 35px; border-radius: 50%; border: 2px solid white; object-fit: cover; display: none; }
 
-        /* RELOJ */
         .countdown-zone {
             position: absolute; bottom: 5%; left: 0; width: 100%; display: none; 
             flex-direction: column; align-items: center; justify-content: center; animation: emerge 0.5s ease-out;
         }
-        
         .countdown-title {
-            font-size: 30px; font-weight: 900; color: #ff003c; letter-spacing: 5px; text-shadow: 2px 2px 0px black; margin-bottom: -20px; z-index: 2;
+            font-size: 40px; font-weight: 900; color: #ff003c; letter-spacing: 5px; 
+            text-shadow: 2px 2px 0px black; margin-bottom: 5px; z-index: 2; animation: flashRed 1s infinite;
         }
-
+        .countdown-subtitle {
+            font-size: 22px; font-weight: 800; color: #ffd700; text-shadow: 2px 2px 0px black; margin-bottom: -15px; z-index: 2;
+        }
         .countdown-number {
             font-size: 130px; font-weight: 900; color: #ffffff; text-shadow: 0 0 30px #ff003c, 4px 4px 0px black; animation: heartbeat 1s infinite;
         }
 
+        @keyframes flashRed { 0%, 100% { color: #ff003c; text-shadow: 0 0 20px #ff003c, 3px 3px 0px black; } 50% { color: #ffffff; text-shadow: 0 0 50px #ff003c, 3px 3px 0px black; } }
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         @keyframes emerge { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
         @keyframes heartbeat { 
@@ -140,7 +125,8 @@
         </div>
 
         <div class="countdown-zone" id="countdown-display">
-            <div class="countdown-title" id="countdown-title-text">⚠️ REINICIANDO ⚠️</div>
+            <div class="countdown-title">REINICIANDO</div>
+            <div class="countdown-subtitle" id="countdown-subtitle-text">XX para salvarnos en</div>
             <div class="countdown-number" id="timer">30</div>
         </div>
     </div>
@@ -152,17 +138,60 @@
         let currentConfig = null;
         let timer = 30;
         let countdownInterval = null;
+        let audioCtx = null;
 
-        // Escuchar configuración viva desde el panel
+        function playAlertSound() {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                
+                osc.type = "sine";
+                osc.frequency.setValueAtTime(800, audioCtx.currentTime); 
+                osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.2); 
+                
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime); 
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+                
+                osc.start(audioCtx.currentTime);
+                osc.stop(audioCtx.currentTime + 0.2);
+            } catch(e) {} 
+        }
+
+        function playCoinSound() {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                
+                osc.type = "sine";
+                osc.frequency.setValueAtTime(987.77, audioCtx.currentTime); 
+                osc.frequency.setValueAtTime(1318.51, audioCtx.currentTime + 0.1); 
+                
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime); 
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+                
+                osc.start(audioCtx.currentTime);
+                osc.stop(audioCtx.currentTime + 0.4);
+            } catch(e) {}
+        }
+
         socket.on('config_actual', (config) => {
             currentConfig = config;
             
-            // Actualizar Textos
-            document.getElementById('title-eq1').innerText = `${config.equipo1.nombre} (${config.equipo1.sub})`;
-            document.getElementById('title-eq2').innerText = `${config.equipo2.nombre} (${config.equipo2.sub})`;
-            document.getElementById('countdown-title-text').innerText = `⚠️ ${config.equipo2.nombre} ⚠️`;
+            // 🌟 LÓGICA DE TEXTOS Y PARÉNTESIS 🌟
+            let sub1 = config.equipo1.sub.trim() ? ` (${config.equipo1.sub.trim()})` : "";
+            let sub2 = config.equipo2.sub.trim() ? ` (${config.equipo2.sub.trim()})` : "";
+            
+            document.getElementById('title-eq1').innerText = `${config.equipo1.nombre}${sub1}`;
+            document.getElementById('title-eq2').innerText = `${config.equipo2.nombre}${sub2}`;
 
-            // Mostrar u Ocultar Monedas de Donadores
             document.getElementById('donatorCoins1').style.display = config.showDonatorCoins ? 'inline' : 'none';
             document.getElementById('donatorCoins2').style.display = config.showDonatorCoins ? 'inline' : 'none';
         });
@@ -174,7 +203,6 @@
         socket.on('actualizacion_salvar', (data) => {
             if(!currentConfig) return;
 
-            // Datos Equipo 1 (Implementando FontAwesome)
             if(data.topSalvar.avatar) {
                 document.getElementById('avatar1').src = data.topSalvar.avatar;
                 document.getElementById('avatar1').style.display = 'block';
@@ -187,7 +215,6 @@
             }
             document.getElementById('score1').innerText = data.totalSalvar;
 
-            // Datos Equipo 2 (Implementando FontAwesome)
             if(data.topReiniciar.avatar) {
                 document.getElementById('avatar2').src = data.topReiniciar.avatar;
                 document.getElementById('avatar2').style.display = 'block';
@@ -200,7 +227,6 @@
             }
             document.getElementById('score2').innerText = data.totalReiniciar;
 
-            // Ancho Barra
             let total = data.totalSalvar + data.totalReiniciar;
             if(total === 0) {
                 document.getElementById('bar1').style.width = '50%';
@@ -216,39 +242,43 @@
 
             // TEXTO FLOTANTE SUPERIOR
             let statusZone = document.getElementById('status-zone');
-            if (total === 0) {
+            let nombreLlamativoEq1 = currentConfig.equipo1.sub.trim() ? currentConfig.equipo1.sub.trim() : currentConfig.equipo1.nombre;
+
+            if (total === 0 || currentConfig.showTopText === false) {
                 statusZone.style.display = 'none';
             } else if (data.totalReiniciar > data.totalSalvar) {
                 let diff = data.totalReiniciar - data.totalSalvar;
-                statusZone.innerHTML = `⚠️ NECESITAS ${diff} ${currentConfig.equipo1.sub} PARA EMPATAR ⚠️`;
-                statusZone.style.color = '#ffcc00';
-                statusZone.style.textShadow = '0 0 15px #ffcc00, 2px 2px 0px black';
+                statusZone.innerHTML = `⚠️ NECESITAS ${diff} ${nombreLlamativoEq1} PARA SALVARTE ⚠️`;
+                statusZone.style.color = '#ffcc00'; statusZone.style.textShadow = '0 0 15px #ffcc00, 2px 2px 0px black';
                 statusZone.style.display = 'block';
             } else if (data.totalSalvar > data.totalReiniciar) {
                 let diff = data.totalSalvar - data.totalReiniciar;
-                statusZone.innerHTML = `🛡️ PROTEGIDO POR ${diff} ${currentConfig.equipo1.sub} 🛡️`;
-                statusZone.style.color = '#00ffcc';
-                statusZone.style.textShadow = '0 0 15px #00ffcc, 2px 2px 0px black';
+                statusZone.innerHTML = `🛡️ PROTEGIDO POR ${diff} ${nombreLlamativoEq1} 🛡️`;
+                statusZone.style.color = '#00ffcc'; statusZone.style.textShadow = '0 0 15px #00ffcc, 2px 2px 0px black';
                 statusZone.style.display = 'block';
             } else {
                 statusZone.innerHTML = `⚔️ BATALLA IGUALADA ⚔️`;
-                statusZone.style.color = '#ffffff';
-                statusZone.style.textShadow = '0 0 15px #ffffff, 2px 2px 0px black';
+                statusZone.style.color = '#ffffff'; statusZone.style.textShadow = '0 0 15px #ffffff, 2px 2px 0px black';
                 statusZone.style.display = 'block';
             }
 
-            // LÓGICA DE RELOJ Y TOGGLE
+            // RELOJ EN TIEMPO REAL
             let countdownDisplay = document.getElementById('countdown-display');
             
             if (currentConfig.enableCountdown && data.totalReiniciar > data.totalSalvar) {
+                let diff = data.totalReiniciar - data.totalSalvar;
+                document.getElementById('countdown-subtitle-text').innerText = `${diff} ${nombreLlamativoEq1} para salvarnos en`;
+                
                 countdownDisplay.style.display = 'flex'; 
                 if (!countdownInterval) {
+                    timer = currentConfig.countdownSeconds || 30; 
+                    document.getElementById('timer').innerText = timer;
+                    
                     countdownInterval = setInterval(() => {
                         timer--;
-                        if (timer <= 0) {
-                            timer = 0; 
-                            socket.emit('reset'); 
-                        }
+                        playAlertSound(); 
+                        
+                        if (timer <= 0) { timer = 0; socket.emit('reset'); }
                         document.getElementById('timer').innerText = timer;
                     }, 1000);
                 }
@@ -256,12 +286,9 @@
                 countdownDisplay.style.display = 'none';
                 clearInterval(countdownInterval);
                 countdownInterval = null;
-                timer = 30;
-                document.getElementById('timer').innerText = timer;
             }
         });
 
-        // Partículas Canvas
         const canvas = document.getElementById('canvas-effects');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
@@ -269,20 +296,17 @@
 
         function createExplosion(x, y, color, amount) {
             let particleCount = Math.min(amount * 5 + 10, 80); 
-            for(let i=0; i < particleCount; i++) {
-                particles.push({ x: x, y: y, vx: (Math.random() - 0.5) * 25, vy: (Math.random() - 0.5) * 25, life: 1.0, color: color, size: Math.random() * 8 + 3 });
-            }
+            for(let i=0; i < particleCount; i++) { particles.push({ x: x, y: y, vx: (Math.random() - 0.5) * 25, vy: (Math.random() - 0.5) * 25, life: 1.0, color: color, size: Math.random() * 8 + 3 }); }
         }
 
         socket.on('poder_salvar', (data) => {
+            playCoinSound(); 
             let x = canvas.width / 2; let color = 'white'; let y = canvas.height / 2; 
             if(data.side === 'salvar') {
-                document.getElementById('bar1').classList.add('flash-left');
-                setTimeout(() => document.getElementById('bar1').classList.remove('flash-left'), 150);
+                document.getElementById('bar1').classList.add('flash-left'); setTimeout(() => document.getElementById('bar1').classList.remove('flash-left'), 150);
                 x = (parseFloat(document.getElementById('bar1').style.width || 50) / 100) * canvas.width - 20; color = '#00ff66'; 
             } else if (data.side === 'reiniciar') {
-                document.getElementById('bar2').classList.add('flash-right');
-                setTimeout(() => document.getElementById('bar2').classList.remove('flash-right'), 150);
+                document.getElementById('bar2').classList.add('flash-right'); setTimeout(() => document.getElementById('bar2').classList.remove('flash-right'), 150);
                 x = (parseFloat(document.getElementById('bar1').style.width || 50) / 100) * canvas.width + 20; color = '#ff003c'; 
             }
             createExplosion(x, y, color, data.amount);
@@ -296,8 +320,7 @@
                 if(p.life <= 0) particles.splice(i, 1);
                 else { ctx.globalAlpha = p.life; ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill(); }
             }
-            ctx.globalAlpha = 1.0;
-            requestAnimationFrame(animate);
+            ctx.globalAlpha = 1.0; requestAnimationFrame(animate);
         }
         animate();
         window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
