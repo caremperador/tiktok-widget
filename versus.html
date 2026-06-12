@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            margin: 0; padding: 0;
+            background-color: #000000;
+            font-family: 'Arial', sans-serif;
+            color: white;
+            overflow: hidden;
+        }
+        
+        .battle-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .bar-bg {
+            width: 100%;
+            height: 60px;
+            display: flex;
+            position: relative;
+            background: #222;
+        }
+        
+        .bar-side {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            box-sizing: border-box;
+            transition: width 0.3s ease-out, background-color 0.1s ease-out;
+            overflow: hidden;
+            white-space: nowrap;
+            text-shadow: 2px 2px 0px black, -1px -1px 0px black, 1px -1px 0px black, -1px 1px 0px black;
+        }
+        
+        .bar-left {
+            background-color: #ff0050;
+            width: 50%;
+            justify-content: space-between;
+            padding-left: 15px;
+            padding-right: 20px; 
+            border-right: 4px solid #ffffff;
+            box-shadow: 4px 0px 15px rgba(255,255,255,0.7);
+            z-index: 2;
+        }
+        
+        .bar-right {
+            background-color: #00f2fe;
+            width: 50%;
+            justify-content: space-between;
+            padding-left: 20px;
+            padding-right: 15px;
+        }
+
+        .flash-left { background-color: #ff6699 !important; }
+        .flash-right { background-color: #99ffff !important; }
+        
+        .info-group { display: flex; align-items: center; gap: 8px; }
+        .name { font-size: 22px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
+        .score { font-size: 26px; font-weight: bold; color: #ffd700; flex-shrink: 0; }
+        
+        /* Estilos para la foto de perfil */
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid white;
+            object-fit: cover;
+            box-shadow: 0px 0px 5px rgba(0,0,0,0.8);
+            display: none; /* Oculto hasta que llegue un donador */
+        }
+        
+        .crown { font-size: 24px; display: inline-block; transition: transform 0.3s ease; }
+        @keyframes crown-pop {
+            0% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.8) rotate(-15deg); filter: drop-shadow(0 0 10px gold); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+        .crown-animate { animation: crown-pop 1s ease-out; }
+
+        #canvas-effects {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas-effects"></canvas>
+    
+    <div class="battle-container">
+        <div class="bar-bg">
+            <div class="bar-side bar-left" id="bar1">
+                <div class="info-group">
+                    <span class="crown" id="crown">👑</span>
+                    <img class="avatar" id="avatar1" src="" alt="avatar">
+                    <span class="name" id="name1">ESPERANDO</span>
+                </div>
+                <span class="score" id="score1">0</span>
+            </div>
+            
+            <div class="bar-side bar-right" id="bar2">
+                <span class="score" id="score2">0</span>
+                <div class="info-group">
+                    <span class="name" id="name2">ESPERANDO</span>
+                    <img class="avatar" id="avatar2" src="" alt="avatar">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const name1 = document.getElementById('name1');
+        const name2 = document.getElementById('name2');
+        const score1 = document.getElementById('score1');
+        const score2 = document.getElementById('score2');
+        const avatar1 = document.getElementById('avatar1');
+        const avatar2 = document.getElementById('avatar2');
+        const bar1 = document.getElementById('bar1');
+        const bar2 = document.getElementById('bar2');
+        const crown = document.getElementById('crown');
+
+        let currentKing = ""; 
+
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'ArrowDown') {
+                socket.emit('reset');
+            }
+        });
+
+        socket.on('actualizacion', (top) => {
+            if(top.length === 0) {
+                name1.innerText = 'ESPERANDO';
+                name2.innerText = 'ESPERANDO';
+                score1.innerText = '0';
+                score2.innerText = '0';
+                avatar1.style.display = 'none';
+                avatar2.style.display = 'none';
+                bar1.style.width = '50%';
+                bar2.style.width = '50%';
+                currentKing = "";
+                return;
+            }
+
+            let t1 = top[0] ? top[0] : {nombre: 'ESPERANDO', monedas: 0, avatar: ''};
+            let t2 = top[1] ? top[1] : {nombre: 'ESPERANDO', monedas: 0, avatar: ''};
+
+            if (t1.nombre !== 'ESPERANDO' && t1.nombre !== currentKing && currentKing !== "") {
+                crown.classList.remove('crown-animate');
+                void crown.offsetWidth; 
+                crown.classList.add('crown-animate');
+                createExplosion(window.innerWidth * 0.25, window.innerHeight / 2, '#ffd700', 50);
+            }
+            currentKing = t1.nombre;
+
+            // Mostrar u ocultar la foto del Top 1
+            if(t1.avatar) {
+                avatar1.src = t1.avatar;
+                avatar1.style.display = 'block';
+            }
+            
+            // Mostrar u ocultar la foto del Top 2
+            if(t2.avatar) {
+                avatar2.src = t2.avatar;
+                avatar2.style.display = 'block';
+            }
+
+            name1.innerText = t1.nombre;
+            name2.innerText = t2.nombre;
+            score1.innerText = t1.monedas;
+            score2.innerText = t2.monedas;
+
+            let total = t1.monedas + t2.monedas;
+            if(total === 0) {
+                bar1.style.width = '50%';
+                bar2.style.width = '50%';
+            } else {
+                let p1 = (t1.monedas / total) * 100;
+                let p2 = (t2.monedas / total) * 100;
+                
+                if(p1 < 35) { p1 = 35; p2 = 65; }
+                if(p2 < 35) { p2 = 35; p1 = 65; }
+                
+                bar1.style.width = p1 + '%';
+                bar2.style.width = p2 + '%';
+            }
+        });
+
+        // LÓGICA DE PARTÍCULAS
+        const canvas = document.getElementById('canvas-effects');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particles = [];
+
+        function createExplosion(x, y, color, amount) {
+            let particleCount = Math.min(amount * 5 + 10, 100); 
+            for(let i=0; i < particleCount; i++) {
+                particles.push({
+                    x: x, y: y,
+                    vx: (Math.random() - 0.5) * 25, 
+                    vy: (Math.random() - 0.5) * 20, 
+                    life: 1.0, 
+                    color: color,
+                    size: Math.random() * 8 + 2 
+                });
+            }
+        }
+
+        socket.on('poder', (data) => {
+            let x = canvas.width / 2;
+            let color = 'white';
+            let y = canvas.height / 2; 
+
+            if(data.side === 'left') {
+                bar1.classList.add('flash-left');
+                setTimeout(() => bar1.classList.remove('flash-left'), 150);
+                x = (parseFloat(bar1.style.width || 50) / 100) * canvas.width - 20; 
+                color = '#ff0050';
+            } 
+            else if (data.side === 'right') {
+                bar2.classList.add('flash-right');
+                setTimeout(() => bar2.classList.remove('flash-right'), 150);
+                x = (parseFloat(bar1.style.width || 50) / 100) * canvas.width + 20; 
+                color = '#00f2fe';
+            }
+            createExplosion(x, y, color, data.amount);
+        });
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for(let i = particles.length - 1; i >= 0; i--) {
+                let p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.3; 
+                p.life -= 0.02; 
+                if(p.life <= 0) {
+                    particles.splice(i, 1);
+                } else {
+                    ctx.globalAlpha = p.life;
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            ctx.globalAlpha = 1.0;
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>

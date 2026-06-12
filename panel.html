@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Panel de Control - Gatos Team</title>
+    <style>
+        body {
+            background-color: #0f0f13; color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0; padding: 40px; display: flex; flex-direction: column; align-items: center;
+        }
+        h1 { color: #00f2fe; text-transform: uppercase; letter-spacing: 2px; }
+        
+        /* Contenedor Principal */
+        .panel-container {
+            background: #1a1a24; border-radius: 12px; border: 1px solid #333;
+            width: 100%; max-width: 700px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+
+        /* Pestañas */
+        .tabs { display: flex; background: #111; border-bottom: 1px solid #333; }
+        .tab-btn {
+            flex: 1; padding: 15px; background: none; border: none; color: #888;
+            font-size: 16px; font-weight: bold; cursor: pointer; text-transform: uppercase;
+            transition: 0.3s;
+        }
+        .tab-btn:hover { color: white; background: rgba(255,255,255,0.05); }
+        .tab-btn.active { color: #00f2fe; border-bottom: 3px solid #00f2fe; background: rgba(0, 242, 254, 0.1); }
+        
+        .tab-content { padding: 30px; display: none; }
+        .tab-content.active { display: block; }
+
+        /* Formularios */
+        .form-group { margin-bottom: 25px; }
+        .form-row { display: flex; gap: 15px; margin-bottom: 15px; }
+        .form-col { flex: 1; }
+        
+        label { display: block; font-weight: bold; margin-bottom: 8px; font-size: 14px; text-transform: uppercase; color: #ccc;}
+        .label-salvar { color: #00ff66; }
+        .label-reiniciar { color: #ff003c; }
+        
+        input[type="text"], textarea {
+            width: 100%; background: #000; color: #fff;
+            border: 2px solid #444; border-radius: 8px;
+            padding: 10px; font-size: 14px; font-family: monospace; box-sizing: border-box;
+        }
+        textarea { height: 60px; resize: vertical; }
+        input:focus, textarea:focus { outline: none; border-color: #00f2fe; }
+        
+        /* Checkboxes */
+        .checkbox-group { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; cursor: pointer;}
+        .checkbox-group input { width: 20px; height: 20px; cursor: pointer; }
+        .checkbox-group label { margin: 0; font-size: 16px; color: white; cursor: pointer;}
+
+        .help-text { font-size: 12px; color: #888; margin-top: 5px; }
+        
+        .btn-guardar {
+            width: 100%; padding: 15px; background: linear-gradient(90deg, #00f2fe, #4facfe);
+            color: black; font-size: 18px; font-weight: bold; border: none; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .btn-guardar:hover { filter: brightness(1.2); }
+        
+        #mensaje { text-align: center; margin-top: 15px; font-weight: bold; color: #00ff66; display: none; }
+    </style>
+</head>
+<body>
+
+    <h1>⚙️ Centro de Mando V1.1.7</h1>
+
+    <div class="panel-container">
+        
+        <!-- Botones Pestañas -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="abrirTab(event, 'tab-general')">📡 General</button>
+            <button class="tab-btn" onclick="abrirTab(event, 'tab-batalla')">⚔️ Batalla por Equipos</button>
+        </div>
+
+        <!-- Pestaña 1: General -->
+        <div id="tab-general" class="tab-content active">
+            <div class="form-group">
+                <label style="color: #ffd700;">👤 Conexión Canal de TikTok</label>
+                <input type="text" id="input-usuario" placeholder="ej. teamgatitos_oficial">
+                <div class="help-text">Escribe el usuario de TikTok para vincular la conexión en vivo.</div>
+            </div>
+        </div>
+
+        <!-- Pestaña 2: Batalla por Equipos -->
+        <div id="tab-batalla" class="tab-content">
+            
+            <div class="form-group">
+                <label class="checkbox-group">
+                    <input type="checkbox" id="check-countdown"> Activar Cuenta Regresiva al ir perdiendo el Equipo 1
+                </label>
+                <label class="checkbox-group">
+                    <input type="checkbox" id="check-coins"> Mostrar cantidad de 🪙 de los Top Donadores
+                </label>
+            </div>
+
+            <hr style="border-color: #333; margin: 25px 0;">
+
+            <!-- Equipo 1 (Izquierda / Verde) -->
+            <div class="form-group">
+                <div class="form-row">
+                    <div class="form-col">
+                        <label class="label-salvar">Nombre Equipo 1</label>
+                        <input type="text" id="eq1-nombre" placeholder="Ej. SALVAR, HÉROES...">
+                    </div>
+                    <div class="form-col">
+                        <label class="label-salvar">Texto Secundario (Ej. GG)</label>
+                        <input type="text" id="eq1-sub" placeholder="Ej. GG, ALIANZA...">
+                    </div>
+                </div>
+                <label class="label-salvar">IDs de Regalos (Equipo 1)</label>
+                <textarea id="eq1-ids"></textarea>
+            </div>
+
+            <hr style="border-color: #333; margin: 25px 0;">
+
+            <!-- Equipo 2 (Derecha / Rojo) -->
+            <div class="form-group">
+                <div class="form-row">
+                    <div class="form-col">
+                        <label class="label-reiniciar">Nombre Equipo 2</label>
+                        <input type="text" id="eq2-nombre" placeholder="Ej. REINICIAR, VILLANOS...">
+                    </div>
+                    <div class="form-col">
+                        <label class="label-reiniciar">Texto Secundario (Ej. ROSA)</label>
+                        <input type="text" id="eq2-sub" placeholder="Ej. ROSA, HORDA...">
+                    </div>
+                </div>
+                <label class="label-reiniciar">IDs de Regalos (Equipo 2)</label>
+                <textarea id="eq2-ids"></textarea>
+            </div>
+
+        </div>
+
+        <button class="btn-guardar" onclick="guardarConfig()">💾 Guardar y Sincronizar</button>
+    </div>
+    <div id="mensaje">✅ ¡Sincronizado! Los widgets se actualizarán al instante.</div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        
+        // Elementos DOM
+        const inputUsuario = document.getElementById('input-usuario');
+        const eq1Nombre = document.getElementById('eq1-nombre');
+        const eq1Sub = document.getElementById('eq1-sub');
+        const eq1Ids = document.getElementById('eq1-ids');
+        const eq2Nombre = document.getElementById('eq2-nombre');
+        const eq2Sub = document.getElementById('eq2-sub');
+        const eq2Ids = document.getElementById('eq2-ids');
+        const checkCountdown = document.getElementById('check-countdown');
+        const checkCoins = document.getElementById('check-coins');
+        const mensaje = document.getElementById('mensaje');
+
+        // Pestañas
+        function abrirTab(evt, tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        // Cargar config al iniciar
+        socket.on('config_actual', (config) => {
+            inputUsuario.value = config.username;
+            eq1Nombre.value = config.equipo1.nombre;
+            eq1Sub.value = config.equipo1.sub;
+            eq1Ids.value = config.equipo1.ids.join(', ');
+            
+            eq2Nombre.value = config.equipo2.nombre;
+            eq2Sub.value = config.equipo2.sub;
+            eq2Ids.value = config.equipo2.ids.join(', ');
+
+            checkCountdown.checked = config.enableCountdown;
+            checkCoins.checked = config.showDonatorCoins;
+        });
+
+        function guardarConfig() {
+            let configActualizada = {
+                username: inputUsuario.value.trim(),
+                equipo1: {
+                    nombre: eq1Nombre.value.trim() || "EQUIPO 1",
+                    sub: eq1Sub.value.trim(),
+                    ids: eq1Ids.value.split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id))
+                },
+                equipo2: {
+                    nombre: eq2Nombre.value.trim() || "EQUIPO 2",
+                    sub: eq2Sub.value.trim(),
+                    ids: eq2Ids.value.split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id))
+                },
+                enableCountdown: checkCountdown.checked,
+                showDonatorCoins: checkCoins.checked
+            };
+
+            socket.emit('guardar_config', configActualizada);
+            mensaje.style.display = 'block';
+            setTimeout(() => mensaje.style.display = 'none', 3000);
+        }
+    </script>
+</body>
+</html>
