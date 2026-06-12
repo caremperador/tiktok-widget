@@ -8,7 +8,7 @@
         .box { background: #1a1a24; border: 1px solid #333; border-radius: 12px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); max-width: 900px; margin-bottom: 30px;}
         h3 { color: #fff; margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 10px; font-size: 18px; }
         
-        .top-row { display: flex; gap: 40px; align-items: center; margin-bottom: 25px;}
+        .top-row { display: flex; gap: 40px; align-items: flex-start; margin-bottom: 25px;}
         .col-layout { display: flex; gap: 30px; }
         .team-col { flex: 1; display: flex; flex-direction: column; gap: 15px; padding: 25px; border-radius: 8px; border: 1px solid #333; background: #222;}
         
@@ -40,6 +40,15 @@
         .color-selector { display: flex; gap: 8px; align-items: center; }
         .color-picker { width: 45px !important; padding: 0 !important; border: none !important; cursor: pointer; border-radius: 4px !important;}
         .color-hex { flex: 1; font-family: monospace; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* 🌟 Diseño del control manual de puntos */
+        .manual-points-box { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 8px; border: 1px solid #444; margin-bottom: 5px; }
+        .mp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;}
+        .mp-title { color:#aaa; font-weight:bold; font-size:12px; text-transform:uppercase;}
+        .mp-score { font-size:24px; font-weight:900; text-shadow: 1px 1px 0 #000;}
+        .mp-controls { display: flex; gap: 8px; }
+        .mp-input { padding:10px !important; flex:1; background: #000 !important; }
+        .btn-mp { border:none; border-radius:6px; font-weight:bold; cursor:pointer; padding: 0 15px; font-size: 16px;}
     </style>
 </head>
 <body>
@@ -48,11 +57,15 @@
         <div class="top-row">
             <div style="flex: 0.4;">
                 <label style="color: #00f2fe;"><i class="fa-solid fa-stopwatch"></i> Segundos Cuenta Atrás</label>
-                <input type="number" id="input-countdown-sec">
+                <input type="number" id="input-countdown-sec" style="margin-bottom: 15px;">
+                
+                <!-- 🌟 NUEVO: BOTÓN MAESTRO DE REINICIO A CERO -->
+                <button class="btn-clear" onclick="resetearValores()" style="width: 100%; background: #ff003c; color: white; border: none; padding: 15px; border-radius: 6px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 14px; box-shadow: 0 4px 10px rgba(255,0,60,0.4);"><i class="fa-solid fa-skull"></i> Reiniciar Todos los Valores a 0</button>
             </div>
             <div style="flex: 1; display: flex; flex-direction: column;">
                 <label class="checkbox-group"><input type="checkbox" id="check-countdown"> Activar Cuenta Regresiva</label>
                 <label class="checkbox-group"><input type="checkbox" id="check-round"> Redondear Regalos a Enteros <i class="fa-solid fa-arrow-up-1-9" style="color:#00ff66;"></i></label>
+                <label class="checkbox-group"><input type="checkbox" id="check-top-donators"> Mostrar a los Top Donadores (MVP)</label>
                 <label class="checkbox-group"><input type="checkbox" id="check-toptext"> Mostrar Texto Flotante Superior</label>
                 <label class="checkbox-group"><input type="checkbox" id="check-coins"> Mostrar Monedas en Vivo <i class="fa-solid fa-coins" style="color:#ffd700;"></i></label>
                 <label class="checkbox-group"><input type="checkbox" id="check-emoticons"> Mostrar Emoticono de Batalla 😜</label>
@@ -69,6 +82,20 @@
                     </div>
                 </div>
                 <div><label style="color:#00ff66;">Subtexto Eq 1 (Opcional)</label><input type="text" id="eq1-sub" placeholder="Dejar vacío para ocultar"></div>
+                
+                <!-- 🌟 NUEVO: CONTROL MANUAL DE PUNTOS EQ 1 -->
+                <div class="manual-points-box">
+                    <div class="mp-header">
+                        <span class="mp-title">Puntos Actuales:</span>
+                        <span class="mp-score" id="lbl-pts-eq1" style="color:#00ff66;">0</span>
+                    </div>
+                    <div class="mp-controls">
+                        <input type="number" id="manual-pts-eq1" class="mp-input" placeholder="Ej. 500">
+                        <button class="btn-mp" style="background:#00ff66; color:black;" onclick="modificarPuntos(1, 'sumar')" title="Sumar"><i class="fa-solid fa-plus"></i></button>
+                        <button class="btn-mp" style="background:#ff003c; color:white;" onclick="modificarPuntos(1, 'restar')" title="Restar"><i class="fa-solid fa-minus"></i></button>
+                    </div>
+                </div>
+
                 <label style="color:#ccc;">Asignar Regalos (Eq 1)</label>
                 <div style="display: flex; gap: 10px;"><select id="select-eq1"></select><button class="btn-add" onclick="addGift(1)">Añadir</button></div>
                 <div class="assigned-list" id="list-eq1"></div>
@@ -83,6 +110,20 @@
                     </div>
                 </div>
                 <div><label style="color:#ff003c;">Subtexto Eq 2 (Opcional)</label><input type="text" id="eq2-sub" placeholder="Dejar vacío para ocultar"></div>
+                
+                <!-- 🌟 NUEVO: CONTROL MANUAL DE PUNTOS EQ 2 -->
+                <div class="manual-points-box">
+                    <div class="mp-header">
+                        <span class="mp-title">Puntos Actuales:</span>
+                        <span class="mp-score" id="lbl-pts-eq2" style="color:#ff003c;">0</span>
+                    </div>
+                    <div class="mp-controls">
+                        <input type="number" id="manual-pts-eq2" class="mp-input" placeholder="Ej. 500">
+                        <button class="btn-mp" style="background:#00ff66; color:black;" onclick="modificarPuntos(2, 'sumar')" title="Sumar"><i class="fa-solid fa-plus"></i></button>
+                        <button class="btn-mp" style="background:#ff003c; color:white;" onclick="modificarPuntos(2, 'restar')" title="Restar"><i class="fa-solid fa-minus"></i></button>
+                    </div>
+                </div>
+
                 <label style="color:#ccc;">Asignar Regalos (Eq 2)</label>
                 <div style="display: flex; gap: 10px;"><select id="select-eq2"></select><button class="btn-add" onclick="addGift(2)">Añadir</button></div>
                 <div class="assigned-list" id="list-eq2"></div>
@@ -180,6 +221,7 @@
             document.getElementById('input-countdown-sec').value = config.countdownSeconds || 30;
             document.getElementById('check-countdown').checked = config.enableCountdown;
             document.getElementById('check-round').checked = config.roundGifts !== false; 
+            document.getElementById('check-top-donators').checked = config.showTopDonators !== false; // 🌟 NUEVO
             document.getElementById('check-toptext').checked = config.showTopText !== false;
             document.getElementById('check-coins').checked = config.showDonatorCoins;
             document.getElementById('check-emoticons').checked = config.showEmoticons !== undefined ? config.showEmoticons : true;
@@ -208,7 +250,6 @@
             let s1 = document.getElementById('select-eq1'); let s2 = document.getElementById('select-eq2');
             s1.innerHTML = ''; s2.innerHTML = '';
             
-            // 🌟 AÑADIDO EL ID DEL REGALO EN EL TEXTO DEL SELECT
             globalGifts.forEach(g => { 
                 let opt = `<option value="${g.id}">[ID: ${g.id}] ${g.name} (${g.diamonds} Monedas)</option>`; 
                 s1.innerHTML += opt; 
@@ -216,6 +257,29 @@
             });
             renderList(1); renderList(2);
         });
+
+        // 🌟 NUEVO: ESCUCHA LA ACTUALIZACIÓN DE PUNTOS EN VIVO PARA EL PANEL
+        socket.on('actualizacion_salvar', (data) => {
+            document.getElementById('lbl-pts-eq1').innerText = data.totalSalvar;
+            document.getElementById('lbl-pts-eq2').innerText = data.totalReiniciar;
+        });
+
+        // 🌟 NUEVO: FUNCIONES DE BOTONES MAESTROS
+        function modificarPuntos(equipo, accion) {
+            let inputId = equipo === 1 ? 'manual-pts-eq1' : 'manual-pts-eq2';
+            let pts = parseInt(document.getElementById(inputId).value);
+            if (isNaN(pts) || pts <= 0) return;
+            
+            let cantidad = accion === 'sumar' ? pts : -pts;
+            socket.emit('modificar_puntos_equipo', { equipo: equipo, cantidad: cantidad });
+            document.getElementById(inputId).value = '';
+        }
+
+        function resetearValores() {
+            if(confirm("🚨 ¿Estás seguro de reiniciar todos los puntos y MVPs de la batalla a cero?")) {
+                socket.emit('reset');
+            }
+        }
 
         function renderList(team) {
             let container = document.getElementById(team === 1 ? 'list-eq1' : 'list-eq2');
@@ -261,6 +325,7 @@
                 showDonatorCoins: document.getElementById('check-coins').checked, 
                 showEmoticons: document.getElementById('check-emoticons').checked,
                 roundGifts: document.getElementById('check-round').checked, 
+                showTopDonators: document.getElementById('check-top-donators').checked, // 🌟 GUARDAR PREFERENCIA MVP
                 countdownSeconds: parseInt(document.getElementById('input-countdown-sec').value) || 30,
                 battleStyle: configStyle
             });

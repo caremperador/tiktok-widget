@@ -32,6 +32,7 @@ let configGlobal = {
     equipo2: { nombre: "REINICIAR", sub: "ROSA", color: "#ff003c", regalos: regalosEq2Defecto },
     enableCountdown: true, countdownSeconds: 30, showTopText: true, showDonatorCoins: true,
     showEmoticons: true, roundGifts: true, 
+    showTopDonators: true, // 🌟 NUEVO: Ocultar o mostrar a los MVPs
     regalosDisponibles: [],
     racha: { topRound: {}, recordDiario: {}, recordHistorico: {}, showPhoto: true, showCoins: false },
     battleStyle: { fontFamily: "'Lemon', serif", textStroke: 1.5, colorL1: "#ffd700", sizeL1: 38, colorL2: "#ff003c", sizeL2: 45, colorTimer: "#ffffff", sizeTimer: 140, shadowOpacity: 1.0, shadowDistance: 4 }
@@ -45,6 +46,7 @@ if (fs.existsSync(pathData)) {
         if(configGlobal.equipo2.color === undefined) configGlobal.equipo2.color = "#ff003c";
         if(configGlobal.showEmoticons === undefined) configGlobal.showEmoticons = true;
         if(configGlobal.roundGifts === undefined) configGlobal.roundGifts = true;
+        if(configGlobal.showTopDonators === undefined) configGlobal.showTopDonators = true;
         if(!configGlobal.racha || !configGlobal.racha.topRound) configGlobal.racha = { topRound: {}, recordDiario: {}, recordHistorico: {}, showPhoto: true, showCoins: false };
         if(!configGlobal.battleStyle) configGlobal.battleStyle = { fontFamily: "'Lemon', serif", textStroke: 1.5, colorL1: "#ffd700", sizeL1: 38, colorL2: "#ff003c", sizeL2: 45, colorTimer: "#ffffff", sizeTimer: 140, shadowOpacity: 1.0, shadowDistance: 4 };
     } catch (e) {}
@@ -183,6 +185,22 @@ io.on('connection', (socket) => {
         configGlobal = nuevaConfig; guardarEnArchivo(); io.emit('config_actual', configGlobal); emitSalvarUpdate(io); 
     });
 
+    // 🌟 NUEVO EVENTO: Añadir o restar puntos manualmente a un equipo
+    socket.on('modificar_puntos_equipo', (data) => {
+        if (data.equipo === 1) {
+            teamSalvar.total += data.cantidad;
+            if (teamSalvar.total < 0) teamSalvar.total = 0;
+        } else if (data.equipo === 2) {
+            teamReiniciar.total += data.cantidad;
+            if (teamReiniciar.total < 0) teamReiniciar.total = 0;
+        }
+        emitSalvarUpdate(io);
+        // Si sumamos puntos en positivo, enviamos explosión
+        if (data.cantidad > 0) {
+            io.emit('poder_salvar', { side: data.equipo === 1 ? 'salvar' : 'reiniciar', amount: data.cantidad });
+        }
+    });
+
     socket.on('importar_catalogo', (nuevoData) => {
         if (Array.isArray(nuevoData)) {
             nuevoData.forEach(item => {
@@ -196,10 +214,8 @@ io.on('connection', (socket) => {
         }
     });
     
-    // 🌟 NUEVO EVENTO: IMPORTAR HISTORIAL (data.json) COMPLETO
     socket.on('importar_historial', (nuevoData) => {
         if (typeof nuevoData === 'object' && nuevoData !== null && !Array.isArray(nuevoData)) {
-            // Mantener el nombre de usuario activo si está conectado
             let userActivo = configGlobal.username;
             configGlobal = { ...configGlobal, ...nuevoData };
             if(userActivo) configGlobal.username = userActivo;
@@ -222,6 +238,7 @@ io.on('connection', (socket) => {
         guardarEnArchivo(); io.emit('config_actual', configGlobal);
     });
 
+    // 🌟 ESTE ES EL BOTÓN DE REINICIAR (Deja todo en cero)
     socket.on('reset', () => {
         topDonators = {}; topSorted = []; teamSalvar = { total: 0, donators: {} }; teamReiniciar = { total: 0, donators: {} };
         io.emit('actualizacion', topSorted); emitSalvarUpdate(io);
