@@ -20,8 +20,103 @@
         "diamonds": 1
     },
     {
+        "id": 13651,
+        "name": "Popular Vote",
+        "diamonds": 1
+    },
+    {
+        "id": 5827,
+        "name": "Ice Cream Cone",
+        "diamonds": 1
+    },
+    {
+        "id": 5269,
+        "name": "TikTok",
+        "diamonds": 1
+    },
+    {
+        "id": 7832,
+        "name": "Blow a kiss",
+        "diamonds": 1
+    },
+    {
+        "id": 6592,
+        "name": "TGIF",
+        "diamonds": 1
+    },
+    {
+        "id": 165819,
+        "name": "Orange Juice",
+        "diamonds": 1
+    },
+    {
+        "id": 9383,
+        "name": "Chili",
+        "diamonds": 1
+    },
+    {
+        "id": 13282,
+        "name": "SLAY",
+        "diamonds": 1
+    },
+    {
+        "id": 5487,
+        "name": "Finger Heart",
+        "diamonds": 5
+    },
+    {
+        "id": 10853,
+        "name": "Hand held fan",
+        "diamonds": 5
+    },
+    {
+        "id": 105781,
+        "name": "Spinning Soccer",
+        "diamonds": 5
+    },
+    {
+        "id": 8913,
+        "name": "Rosa",
+        "diamonds": 10
+    },
+    {
+        "id": 9947,
+        "name": "BFF Necklace",
+        "diamonds": 10
+    },
+    {
+        "id": 6560,
+        "name": "Tiny Diny",
+        "diamonds": 10
+    },
+    {
+        "id": 19448,
+        "name": "Slow motion",
+        "diamonds": 10
+    },
+    {
+        "id": 5853,
+        "name": "Gold Boxing Gloves",
+        "diamonds": 10
+    },
+    {
+        "id": 51281,
+        "name": "DJ Vinyl",
+        "diamonds": 10
+    },
+    {
+        "id": 19443,
+        "name": "Bravo!",
+        "diamonds": 15
+    },
+    {
         "id": 5658,
         "name": "Perfume",
+        "diamonds": 20
+    },
+    {
+        "id": 14115,
+        "name": "S Flowers",
         "diamonds": 20
     },
     {
@@ -30,9 +125,104 @@
         "diamonds": 30
     },
     {
+        "id": 17490,
+        "name": "Capybara",
+        "diamonds": 30
+    },
+    {
+        "id": 17826,
+        "name": "Bagel",
+        "diamonds": 35
+    },
+    {
+        "id": 6427,
+        "name": "Hat and Mustache",
+        "diamonds": 99
+    },
+    {
+        "id": 14656,
+        "name": "Greeting Heart",
+        "diamonds": 99
+    },
+    {
+        "id": 13962,
+        "name": "Throw Tomatoes ",
+        "diamonds": 99
+    },
+    {
+        "id": 6968,
+        "name": "Hand Heart",
+        "diamonds": 100
+    },
+    {
+        "id": 12988,
+        "name": "Super GG",
+        "diamonds": 100
+    },
+    {
+        "id": 7569,
+        "name": "Game Controller",
+        "diamonds": 100
+    },
+    {
+        "id": 5660,
+        "name": "Hand Heart",
+        "diamonds": 100
+    },
+    {
+        "id": 170498,
+        "name": "Bloom Brass",
+        "diamonds": 199
+    },
+    {
+        "id": 5586,
+        "name": "Hearts",
+        "diamonds": 199
+    },
+    {
+        "id": 18741,
+        "name": "Cat",
+        "diamonds": 222
+    },
+    {
+        "id": 6007,
+        "name": "Boxing Gloves",
+        "diamonds": 299
+    },
+    {
+        "id": 8267,
+        "name": "Good Evening",
+        "diamonds": 399
+    },
+    {
+        "id": 8265,
+        "name": "Happy Friday",
+        "diamonds": 399
+    },
+    {
         "id": 11671,
         "name": "Manifesting 2025",
         "diamonds": 500
+    },
+    {
+        "id": 14114,
+        "name": "XL Flowers",
+        "diamonds": 500
+    },
+    {
+        "id": 7168,
+        "name": "Money Gun",
+        "diamonds": 500
+    },
+    {
+        "id": 11046,
+        "name": "Galaxy",
+        "diamonds": 1000
+    },
+    {
+        "id": 10668,
+        "name": "Future Encounter",
+        "diamonds": 1500
     },
     {
         "id": 52619,

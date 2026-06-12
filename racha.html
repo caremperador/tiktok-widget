@@ -4,94 +4,124 @@
     <meta charset="utf-8">
     <meta name="referrer" content="no-referrer">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,700;0,900;1,900&display=swap');
-        body { margin: 0; padding: 30px; background-color: transparent; font-family: 'Montserrat', sans-serif; color: white; overflow: hidden; display: flex; justify-content: center; }
-        
-        .widget { display: flex; flex-direction: column; align-items: center; background: rgba(15, 15, 20, 0.85); border: 2px solid #ffaa00; border-radius: 16px; padding: 20px 30px; box-shadow: 0 0 25px rgba(255, 170, 0, 0.4); text-align: center; min-width: 280px; }
-        
-        .streak-title { font-size: 28px; font-weight: 900; color: #ffaa00; text-transform: uppercase; text-shadow: 2px 2px 0px black; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;}
-        .streak-title span { font-size: 45px; color: #fff; text-shadow: 0 0 15px #ffaa00, 2px 2px 0px black; display: inline-block;}
-        
-        .mvp-section { display: flex; flex-direction: column; align-items: center; background: rgba(0,0,0,0.6); border-radius: 12px; padding: 20px; width: 100%; box-sizing: border-box; border: 1px solid #444; }
-        .mvp-label { font-size: 13px; color: #00f2fe; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; text-shadow: 1px 1px 0px black;}
-        
-        .avatar { width: 80px; height: 80px; border-radius: 50%; border: 3px solid #00f2fe; object-fit: cover; margin-bottom: 12px; box-shadow: 0 0 15px rgba(0, 242, 254, 0.5); }
-        .name { font-size: 22px; font-weight: 900; color: #fff; margin-bottom: 5px; text-transform: uppercase; }
-        .coins { font-size: 18px; color: #ffd700; font-weight: bold; margin-bottom: 15px; }
-        
-        .lifetime { font-size: 15px; color: #00ff66; font-weight: bold; padding: 8px 15px; background: rgba(0, 255, 102, 0.1); border-radius: 20px; border: 1px solid rgba(0, 255, 102, 0.3); white-space: nowrap;}
-        
-        @keyframes pop { 
-            0% { transform: scale(1); } 
-            50% { transform: scale(1.5); color: #fff; text-shadow: 0 0 30px #fff; } 
-            100% { transform: scale(1); } 
+        body { 
+            margin: 0; padding: 20px; 
+            background-color: transparent; 
+            font-family: 'Luckiest Guy', cursive; 
+            display: flex; flex-direction: column; align-items: center; gap: 40px;
         }
+
+        .heavy-text {
+            font-weight: normal; 
+            text-transform: uppercase; text-align: center;
+            -webkit-text-stroke: 2px #000;
+            text-shadow: 4px 4px 0px #000, -2px -2px 0px #000, 2px -2px 0px #000, -2px 2px 0px #000;
+        }
+
+        .block { display: flex; flex-direction: column; align-items: center; animation: pop 0.4s ease-out; }
+
+        .title-diario { font-size: 42px; color: #ffffff; letter-spacing: 3px; margin-bottom: 5px; }
+        .title-historico { font-size: 42px; color: #ffd700; letter-spacing: 3px; margin-bottom: 5px; }
+
+        .avatar-container { position: relative; margin: 15px 0 25px 0; }
+        .avatar { 
+            width: 150px; height: 150px; border-radius: 50%; object-fit: cover;
+            border: 5px solid #00f2fe; box-shadow: 0 0 25px #00f2fe, inset 0 0 20px #00f2fe;
+        }
+        
+        /* 🌟 FONDO TRANSPARENTE PARA LAS MONEDAS */
+        .coins-badge {
+            position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%);
+            color: #fff; font-size: 32px; 
+            -webkit-text-stroke: 1.5px #000; white-space: nowrap;
+            text-shadow: 3px 3px 0px #000, -1px -1px 0px #000, 1px -1px 0px #000, -1px 1px 0px #000;
+            display: flex; align-items: center; gap: 8px; font-family: 'Luckiest Guy', cursive;
+            background: transparent; /* Fondo eliminado */
+            border: none; /* Borde eliminado */
+            box-shadow: none; /* Sombra eliminada */
+        }
+
+        .fa-single-coin {
+            background: #ffd700; color: #b38000; border-radius: 50%; 
+            width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;
+            border: 2px solid #b38000; font-size: 18px; 
+            -webkit-text-stroke: 0; text-shadow: none; 
+            box-shadow: inset 0 0 4px rgba(255,255,255,0.8); 
+        }
+
+        .name { font-size: 36px; color: #00f2fe; margin-top: 5px; letter-spacing: 2px; max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+        .wins-diario { font-size: 65px; color: #ffffff; margin-top: -15px;}
+        .wins-historico { font-size: 65px; color: #ffd700; margin-top: -15px;}
+
+        @keyframes pop { 0% { transform: scale(0.8); opacity:0;} 100% { transform: scale(1); opacity:1;} }
     </style>
 </head>
 <body>
-    <div class="widget">
-        <div class="streak-title">🔥 WINS: <span id="win-number">0</span> 🔥</div>
-        <div class="mvp-section" id="mvp-section" style="display:none;">
-            <div class="mvp-label">👑 TOP 1 DONADOR 👑</div>
-            <img src="" id="avatar" class="avatar" onerror="this.src='https://via.placeholder.com/80/222/fff?text=?'">
-            <div class="name" id="name">ESPERANDO</div>
-            <div class="coins" id="coins"><i class="fa-solid fa-coins"></i> 0</div>
-            <div class="lifetime" id="lifetime">🏆 Récord Histórico: 0 Wins</div>
+
+    <div class="block" id="bloque-diario" style="display:none;">
+        <div class="heavy-text title-diario">🔥 RECORD DIARIO 🔥</div>
+        <div class="avatar-container" id="container-foto-diario">
+            <img src="" class="avatar" id="avatar-diario" onerror="this.src='https://via.placeholder.com/150/222/fff?text=?'">
+            <div class="heavy-text coins-badge" id="coins-diario"></div>
         </div>
+        <div class="heavy-text name" id="name-diario">ESPERANDO</div>
+        <div class="heavy-text wins-diario" id="wins-diario">WINS X0</div>
+    </div>
+
+    <div class="block" id="bloque-historico" style="display:none;">
+        <div class="heavy-text title-historico">🏆 RECORD HISTORICO 🏆</div>
+        <div class="avatar-container" id="container-foto-historico">
+            <img src="" class="avatar" id="avatar-historico" onerror="this.src='https://via.placeholder.com/150/222/fff?text=?'">
+            <div class="heavy-text coins-badge" id="coins-historico"></div> 
+        </div>
+        <div class="heavy-text name" id="name-historico">ESPERANDO</div>
+        <div class="heavy-text wins-historico" id="wins-historico">WINS X0</div>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
-        let currentConfig = null;
-        let currentTop1 = null;
 
-        socket.on('config_actual', (config) => {
-            currentConfig = config;
-            updateUI();
-        });
+        socket.on('racha_data_update', (data) => {
+            if (!data) return;
 
-        socket.on('actualizacion', (top) => {
-            currentTop1 = top[0] || null;
-            updateUI();
-        });
+            let arrDiario = Object.values(data.recordDiario || {}).sort((a,b)=>b.wins-a.wins);
+            let topDiario = arrDiario[0];
 
-        socket.on('racha_animacion', () => {
-            let el = document.getElementById('win-number');
-            el.style.animation = 'none';
-            void el.offsetWidth; 
-            el.style.animation = 'pop 0.5s ease-out';
-        });
-
-        function updateUI() {
-            if (!currentConfig) return;
-            
-            document.getElementById('win-number').innerText = currentConfig.racha?.currentWins || 0;
-            
-            let mvpSection = document.getElementById('mvp-section');
-            if (currentTop1 && currentTop1.nombre !== 'ESPERANDO') {
-                mvpSection.style.display = 'flex';
-                document.getElementById('avatar').src = currentTop1.avatar;
-                document.getElementById('name').innerText = currentTop1.nombre;
+            if (topDiario) {
+                document.getElementById('bloque-diario').style.display = 'flex';
+                document.getElementById('avatar-diario').src = topDiario.avatar;
+                document.getElementById('name-diario').innerText = topDiario.displayName;
+                document.getElementById('wins-diario').innerText = `WINS X${topDiario.wins}`;
                 
-                let coinsEl = document.getElementById('coins');
-                if (currentConfig.racha?.showCoins) {
-                    coinsEl.style.display = 'block';
-                    coinsEl.innerHTML = `<i class="fa-solid fa-coins"></i> ${currentTop1.monedas}`;
-                } else {
-                    coinsEl.style.display = 'none';
-                }
-                
-                let lifetimeWins = 0;
-                if (currentConfig.lifetimeWins && currentConfig.lifetimeWins[currentTop1.nombre]) {
-                    lifetimeWins = currentConfig.lifetimeWins[currentTop1.nombre];
-                }
-                document.getElementById('lifetime').innerHTML = `🏆 Récord Histórico: ${lifetimeWins} Wins`;
+                document.getElementById('coins-diario').innerHTML = `<i class="fa-solid fa-dollar-sign fa-single-coin"></i> ${topDiario.monedas || 0}`;
+
+                document.getElementById('avatar-diario').style.display = data.showPhoto ? 'block' : 'none';
+                document.getElementById('coins-diario').style.display = data.showCoins ? 'flex' : 'none';
             } else {
-                mvpSection.style.display = 'none';
+                document.getElementById('bloque-diario').style.display = 'none';
             }
-        }
+
+            let arrHistorico = Object.values(data.recordHistorico || {}).sort((a,b)=>b.wins-a.wins);
+            let topHistorico = arrHistorico[0];
+
+            if (topHistorico) {
+                document.getElementById('bloque-historico').style.display = 'flex';
+                document.getElementById('avatar-historico').src = topHistorico.avatar;
+                document.getElementById('name-historico').innerText = topHistorico.displayName;
+                document.getElementById('wins-historico').innerText = `WINS X${topHistorico.wins}`;
+                
+                document.getElementById('coins-historico').innerHTML = `<i class="fa-solid fa-dollar-sign fa-single-coin"></i> ${topHistorico.monedas || 0}`;
+                
+                document.getElementById('avatar-historico').style.display = data.showPhoto ? 'block' : 'none';
+                document.getElementById('coins-historico').style.display = data.showCoins ? 'flex' : 'none';
+            } else {
+                document.getElementById('bloque-historico').style.display = 'none';
+            }
+        });
     </script>
 </body>
 </html>
