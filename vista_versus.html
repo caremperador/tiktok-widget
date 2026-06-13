@@ -30,8 +30,8 @@
         .btn-guardar { width: 100%; padding: 18px; background: #00f2fe; color: black; font-size: 16px; font-weight: bold; border: none; cursor: pointer; border-radius: 8px; text-transform: uppercase;}
         .btn-guardar:hover { filter: brightness(1.1);}
         
-        .overlay-bar { display: flex; gap: 15px; margin-top: 15px; }
-        .btn-overlay { flex: 1; padding: 12px; background: #222; color: #00ff66; font-size: 14px; font-weight: bold; border: 1px solid #00ff66; cursor: pointer; border-radius: 8px;}
+        .overlay-bar { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-overlay { flex: 1; padding: 12px 5px; background: #222; color: #00ff66; font-size: 13px; font-weight: bold; border: 1px solid #00ff66; cursor: pointer; border-radius: 8px;}
         .btn-overlay:hover { background: #00ff66; color: black;}
 
         .design-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-top: 15px;}
@@ -58,7 +58,8 @@
                 <label style="color: #00f2fe;"><i class="fa-solid fa-stopwatch"></i> Segundos Cuenta Atrás</label>
                 <input type="number" id="input-countdown-sec" style="margin-bottom: 15px;">
                 
-                <button class="btn-clear" onclick="resetearValores()" style="width: 100%; background: #ff003c; color: white; border: none; padding: 15px; border-radius: 6px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 14px; box-shadow: 0 4px 10px rgba(255,0,60,0.4);"><i class="fa-solid fa-skull"></i> Reiniciar Todos los Valores a 0</button>
+                <!-- 🌟 CAMBIO 1: Texto más corto y directo -->
+                <button class="btn-clear" onclick="resetearValores()" style="width: 100%; background: #ff003c; color: white; border: none; padding: 15px; border-radius: 6px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 14px; box-shadow: 0 4px 10px rgba(255,0,60,0.4);"><i class="fa-solid fa-skull"></i> Resetear a 0</button>
             </div>
             <div style="flex: 1; display: flex; flex-direction: column;">
                 <label class="checkbox-group"><input type="checkbox" id="check-countdown"> Activar Cuenta Regresiva</label>
@@ -87,7 +88,7 @@
                         <span class="mp-score" id="lbl-pts-eq1" style="color:#00ff66;">0</span>
                     </div>
                     <div class="mp-controls">
-                        <input type="number" id="manual-pts-eq1" class="mp-input" placeholder="Ej. 500">
+                        <input type="number" id="manual-pts-eq1" class="mp-input" placeholder="Ej. 100">
                         <button class="btn-mp" style="background:#00ff66; color:black;" onclick="modificarPuntos(1, 'sumar')" title="Sumar"><i class="fa-solid fa-plus"></i></button>
                         <button class="btn-mp" style="background:#ff003c; color:white;" onclick="modificarPuntos(1, 'restar')" title="Restar"><i class="fa-solid fa-minus"></i></button>
                     </div>
@@ -114,7 +115,7 @@
                         <span class="mp-score" id="lbl-pts-eq2" style="color:#ff003c;">0</span>
                     </div>
                     <div class="mp-controls">
-                        <input type="number" id="manual-pts-eq2" class="mp-input" placeholder="Ej. 500">
+                        <input type="number" id="manual-pts-eq2" class="mp-input" placeholder="Ej. 100">
                         <button class="btn-mp" style="background:#00ff66; color:black;" onclick="modificarPuntos(2, 'sumar')" title="Sumar"><i class="fa-solid fa-plus"></i></button>
                         <button class="btn-mp" style="background:#ff003c; color:white;" onclick="modificarPuntos(2, 'restar')" title="Restar"><i class="fa-solid fa-minus"></i></button>
                     </div>
@@ -180,11 +181,22 @@
             </div>
         </div>
 
-        <button class="btn-guardar" onclick="guardarConfig(false)"><i class="fa-solid fa-floppy-disk"></i> Guardar Todo en Vivo</button>
-        <div class="overlay-bar">
-            <button class="btn-overlay" onclick="window.open('/salvar', '_blank')"><i class="fa-solid fa-eye"></i> Abrir Overlay Batalla</button>
-            <button class="btn-overlay" style="color:#ffd700; border-color:#ffd700;" onclick="copiarURL()"><i class="fa-solid fa-link"></i> Copiar URL OBS</button>
+        <!-- 🌟 CAMBIO 2: BOTONES DE IMPORTAR Y EXPORTAR JSON -->
+        <div style="display: flex; gap: 15px; margin-top: 20px;">
+            <button class="btn-guardar" onclick="guardarConfig(false)" style="flex: 2;"><i class="fa-solid fa-floppy-disk"></i> Guardar Todo en Vivo</button>
+            <button class="btn-guardar" onclick="exportarJSON()" style="flex: 1; background: #ffaa00; color: black;"><i class="fa-solid fa-download"></i> Exportar Config</button>
+            <button class="btn-guardar" onclick="document.getElementById('import-file').click()" style="flex: 1; background: #cc00ff; color: white;"><i class="fa-solid fa-upload"></i> Importar Config</button>
+            <input type="file" id="import-file" style="display:none;" accept=".json" onchange="importarJSON(event)">
         </div>
+
+        <!-- 🌟 CAMBIO 4: BOTONES DEL POP DE REGALOS INCLUIDOS -->
+        <div class="overlay-bar">
+            <button class="btn-overlay" onclick="window.open('/salvar', '_blank')"><i class="fa-solid fa-eye"></i> Abrir Batalla</button>
+            <button class="btn-overlay" style="color:#ffd700; border-color:#ffd700;" onclick="copiarURL('/salvar')"><i class="fa-solid fa-link"></i> URL Batalla</button>
+            <button class="btn-overlay" style="color:#b3e5fc; border-color:#b3e5fc;" onclick="window.open('/regalos_versus.html', '_blank')"><i class="fa-solid fa-eye"></i> Abrir Regalos Pop</button>
+            <button class="btn-overlay" style="color:#ff99cc; border-color:#ff99cc;" onclick="copiarURL('/regalos_versus.html')"><i class="fa-solid fa-link"></i> URL Regalos Pop</button>
+        </div>
+        
         <p id="mensaje" style="color:#00ff66; text-align:center; display:none; font-weight:bold;">✅ ¡Guardado y Aplicado!</p>
     </div>
 
@@ -213,7 +225,6 @@
         syncColors('eq1-color', 'eq1-hex', 'lbl-eq1');
         syncColors('eq2-color', 'eq2-hex', 'lbl-eq2');
 
-        // 🌟 FUNCIÓN PARA RENDERIZAR MENÚS CON COLORES E INDICADORES
         function renderDropdowns() {
             let s1 = document.getElementById('select-eq1'); 
             let s2 = document.getElementById('select-eq2');
@@ -295,7 +306,9 @@
             
             let cantidad = accion === 'sumar' ? pts : -pts;
             socket.emit('modificar_puntos_equipo', { equipo: equipo, cantidad: cantidad });
-            document.getElementById(inputId).value = '';
+            
+            // 🌟 CAMBIO 3: Ya no limpiamos el input para que se quede el "100" allí y puedas hacer clics seguidos
+            // document.getElementById(inputId).value = ''; 
         }
 
         function resetearValores() {
@@ -310,7 +323,6 @@
             arr.forEach(g => { container.innerHTML += `<div class="assigned-item"><span>${g.name} (<i class="fa-solid fa-coins" style="color:#ffd700;"></i> ${g.diamonds})</span><button class="btn-remove" onclick="removeGift(${team}, ${g.id})"><i class="fa-solid fa-xmark"></i></button></div>`; });
         }
 
-        // 🌟 AUTO-GUARDADO AL AÑADIR
         function addGift(team) {
             let sel = document.getElementById(team === 1 ? 'select-eq1' : 'select-eq2');
             if(!sel.value) return;
@@ -320,16 +332,15 @@
                 arr.push(gift); 
                 renderList(team); 
                 renderDropdowns(); 
-                guardarConfig(true); // Guarda en silencio
+                guardarConfig(true); 
             }
         }
 
-        // 🌟 AUTO-GUARDADO AL ELIMINAR
         function removeGift(team, id) {
             if (team === 1) eq1Gifts = eq1Gifts.filter(g => g.id !== id); else eq2Gifts = eq2Gifts.filter(g => g.id !== id);
             renderList(team);
             renderDropdowns();
-            guardarConfig(true); // Guarda en silencio
+            guardarConfig(true); 
         }
 
         function guardarConfig(isSilent = false) {
@@ -368,9 +379,121 @@
             }
         }
 
-        function copiarURL() {
-            navigator.clipboard.writeText(window.location.origin + '/salvar');
-            alert("✅ Enlace copiado: " + window.location.origin + '/salvar\n\nPégalo como Navegador en OBS.');
+        // 🌟 LÓGICA DE EXPORTAR JSON (Solo datos del panel Versus)
+        function exportarJSON() {
+            let configToExport = {
+                equipo1: {
+                    nombre: document.getElementById('eq1-nombre').value.trim(),
+                    sub: document.getElementById('eq1-sub').value.trim(),
+                    color: document.getElementById('eq1-hex').value,
+                    regalos: eq1Gifts
+                },
+                equipo2: {
+                    nombre: document.getElementById('eq2-nombre').value.trim(),
+                    sub: document.getElementById('eq2-sub').value.trim(),
+                    color: document.getElementById('eq2-hex').value,
+                    regalos: eq2Gifts
+                },
+                enableCountdown: document.getElementById('check-countdown').checked,
+                showTopText: document.getElementById('check-toptext').checked,
+                showDonatorCoins: document.getElementById('check-coins').checked,
+                showEmoticons: document.getElementById('check-emoticons').checked,
+                roundGifts: document.getElementById('check-round').checked,
+                showTopDonators: document.getElementById('check-top-donators').checked,
+                countdownSeconds: parseInt(document.getElementById('input-countdown-sec').value) || 30,
+                battleStyle: {
+                    fontFamily: document.getElementById('ds-font').value,
+                    textStroke: parseFloat(document.getElementById('ds-stroke').value) || 1.5,
+                    shadowOpacity: parseFloat(document.getElementById('ds-shadow-op').value) || 1.0,
+                    shadowDistance: parseInt(document.getElementById('ds-shadow-dist').value) || 4,
+                    colorL1: document.getElementById('ds-c1').value,
+                    sizeL1: parseInt(document.getElementById('ds-s1').value) || 38,
+                    colorL2: document.getElementById('ds-c2').value,
+                    sizeL2: parseInt(document.getElementById('ds-s2').value) || 45,
+                    colorTimer: document.getElementById('ds-ct').value,
+                    sizeTimer: parseInt(document.getElementById('ds-st').value) || 140
+                }
+            };
+
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(configToExport, null, 4));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "configuracion_batalla.json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+
+        // 🌟 LÓGICA DE IMPORTAR JSON
+        function importarJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    if(data.countdownSeconds !== undefined) document.getElementById('input-countdown-sec').value = data.countdownSeconds;
+                    if(data.enableCountdown !== undefined) document.getElementById('check-countdown').checked = data.enableCountdown;
+                    if(data.roundGifts !== undefined) document.getElementById('check-round').checked = data.roundGifts;
+                    if(data.showTopDonators !== undefined) document.getElementById('check-top-donators').checked = data.showTopDonators;
+                    if(data.showTopText !== undefined) document.getElementById('check-toptext').checked = data.showTopText;
+                    if(data.showDonatorCoins !== undefined) document.getElementById('check-coins').checked = data.showDonatorCoins;
+                    if(data.showEmoticons !== undefined) document.getElementById('check-emoticons').checked = data.showEmoticons;
+
+                    if(data.equipo1) {
+                        document.getElementById('eq1-nombre').value = data.equipo1.nombre || "";
+                        document.getElementById('eq1-sub').value = data.equipo1.sub || "";
+                        if(data.equipo1.color) {
+                            document.getElementById('eq1-color').value = data.equipo1.color;
+                            document.getElementById('eq1-hex').value = data.equipo1.color.toUpperCase();
+                            document.getElementById('lbl-eq1').style.color = data.equipo1.color;
+                        }
+                        eq1Gifts = data.equipo1.regalos || [];
+                    }
+
+                    if(data.equipo2) {
+                        document.getElementById('eq2-nombre').value = data.equipo2.nombre || "";
+                        document.getElementById('eq2-sub').value = data.equipo2.sub || "";
+                        if(data.equipo2.color) {
+                            document.getElementById('eq2-color').value = data.equipo2.color;
+                            document.getElementById('eq2-hex').value = data.equipo2.color.toUpperCase();
+                            document.getElementById('lbl-eq2').style.color = data.equipo2.color;
+                        }
+                        eq2Gifts = data.equipo2.regalos || [];
+                    }
+
+                    if(data.battleStyle) {
+                        document.getElementById('ds-font').value = data.battleStyle.fontFamily || "'Lemon', serif";
+                        document.getElementById('ds-stroke').value = data.battleStyle.textStroke || 1.5;
+                        document.getElementById('ds-shadow-op').value = data.battleStyle.shadowOpacity !== undefined ? data.battleStyle.shadowOpacity : 1.0;
+                        document.getElementById('ds-shadow-dist').value = data.battleStyle.shadowDistance !== undefined ? data.battleStyle.shadowDistance : 4;
+                        document.getElementById('ds-c1').value = data.battleStyle.colorL1 || "#ffd700";
+                        document.getElementById('ds-s1').value = data.battleStyle.sizeL1 || 38;
+                        document.getElementById('ds-c2').value = data.battleStyle.colorL2 || "#ff003c";
+                        document.getElementById('ds-s2').value = data.battleStyle.sizeL2 || 45;
+                        document.getElementById('ds-ct').value = data.battleStyle.colorTimer || "#ffffff";
+                        document.getElementById('ds-st').value = data.battleStyle.sizeTimer || 140;
+                    }
+
+                    renderDropdowns();
+                    renderList(1);
+                    renderList(2);
+                    guardarConfig(false); // Guarda y envía los datos importados al servidor automáticamente
+                    
+                    alert("✅ Configuración importada con éxito.");
+                } catch(err) {
+                    alert("❌ Error al leer el archivo JSON.");
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = ""; // Limpia el input por si quieres volver a cargar el mismo archivo luego
+        }
+
+        function copiarURL(path) {
+            navigator.clipboard.writeText(window.location.origin + path);
+            alert("✅ Enlace copiado: " + window.location.origin + path + "\n\nPégalo como Navegador en OBS.");
         }
     </script>
 </body>

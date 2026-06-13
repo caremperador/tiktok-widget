@@ -16,8 +16,10 @@ app.get('/vista_racha', (req, res) => res.sendFile(__dirname + '/vista_racha.htm
 app.get('/vista_regalos', (req, res) => res.sendFile(__dirname + '/vista_regalos.html'));
 app.get('/salvar', (req, res) => res.sendFile(__dirname + '/salvar.html'));
 app.get('/racha', (req, res) => res.sendFile(__dirname + '/racha.html')); 
-// 🌟 NUEVO: RUTA PARA EL OVERLAY DE POP DE REGALOS 🌟
-app.get('/regalos_versus', (req, res) => res.sendFile(__dirname + '/regalos_versus.html'));
+app.get('/regalos_versus.html', (req, res) => res.sendFile(__dirname + '/regalos_versus.html'));
+// 🌟 NUEVAS RUTAS: RACHA VERSUS
+app.get('/vista_racha_versus.html', (req, res) => res.sendFile(__dirname + '/vista_racha_versus.html'));
+app.get('/racha_versus.html', (req, res) => res.sendFile(__dirname + '/racha_versus.html'));
 
 let topDonators = {};
 let topSorted = [];
@@ -25,18 +27,19 @@ let teamSalvar = { total: 0, donators: {} };
 let teamReiniciar = { total: 0, donators: {} };
 let catalogoGlobal = [];
 
-const regalosEq1Defecto = [{ id: 6064, name: "GG", diamonds: 1 }, { id: 9947, name: "BFF Necklace", diamonds: 10 }, { id: 14488, name: "Regalo 14488", diamonds: 1 }, { id: 12988, name: "Regalo 12988", diamonds: 1 }, { id: 5586, name: "Regalo 5586", diamonds: 1 }, { id: 6267, name: "Regalo 6267", diamonds: 1 }, { id: 7168, name: "Regalo 7168", diamonds: 1 }];
-const regalosEq2Defecto = [{ id: 5655, name: "Rose", diamonds: 1 }, { id: 8913, name: "Rosa", diamonds: 10 }, { id: 5879, name: "Doughnut", diamonds: 30 }, { id: 7569, name: "Game Controller", diamonds: 100 }, { id: 5509, name: "Sunglasses", diamonds: 199 }, { id: 6007, name: "Boxing Gloves", diamonds: 299 }, { id: 5731, name: "Coral", diamonds: 499 }];
+const regalosEq1Defecto = [{ id: 6064, name: "GG", diamonds: 1 }, { id: 9947, name: "BFF Necklace", diamonds: 10 }];
+const regalosEq2Defecto = [{ id: 5655, name: "Rose", diamonds: 1 }, { id: 8913, name: "Rosa", diamonds: 10 }];
 
 let configGlobal = {
     username: "", historial: [],
     equipo1: { nombre: "SALVAR", sub: "GG", color: "#00ff66", regalos: regalosEq1Defecto },
     equipo2: { nombre: "REINICIAR", sub: "ROSA", color: "#ff003c", regalos: regalosEq2Defecto },
     enableCountdown: true, countdownSeconds: 30, showTopText: true, showDonatorCoins: true,
-    showEmoticons: true, roundGifts: true, 
-    showTopDonators: true,
+    showEmoticons: true, roundGifts: true, showTopDonators: true,
     regalosDisponibles: [],
     racha: { topRound: {}, recordDiario: {}, recordHistorico: {}, showPhoto: true, showCoins: false },
+    // 🌟 NUEVA BD: RACHA VERSUS
+    rachaVersus: { salvadas: {}, reinicios: {}, showName: true, showCount: true, showCoins: true },
     battleStyle: { fontFamily: "'Lemon', serif", textStroke: 1.5, colorL1: "#ffd700", sizeL1: 38, colorL2: "#ff003c", sizeL2: 45, colorTimer: "#ffffff", sizeTimer: 140, shadowOpacity: 1.0, shadowDistance: 4 }
 };
 
@@ -44,13 +47,7 @@ if (fs.existsSync(pathData)) {
     try { 
         let guardado = JSON.parse(fs.readFileSync(pathData, 'utf8')); 
         configGlobal = { ...configGlobal, ...guardado };
-        if(configGlobal.equipo1.color === undefined) configGlobal.equipo1.color = "#00ff66";
-        if(configGlobal.equipo2.color === undefined) configGlobal.equipo2.color = "#ff003c";
-        if(configGlobal.showEmoticons === undefined) configGlobal.showEmoticons = true;
-        if(configGlobal.roundGifts === undefined) configGlobal.roundGifts = true;
-        if(configGlobal.showTopDonators === undefined) configGlobal.showTopDonators = true;
-        if(!configGlobal.racha || !configGlobal.racha.topRound) configGlobal.racha = { topRound: {}, recordDiario: {}, recordHistorico: {}, showPhoto: true, showCoins: false };
-        if(!configGlobal.battleStyle) configGlobal.battleStyle = { fontFamily: "'Lemon', serif", textStroke: 1.5, colorL1: "#ffd700", sizeL1: 38, colorL2: "#ff003c", sizeL2: 45, colorTimer: "#ffffff", sizeTimer: 140, shadowOpacity: 1.0, shadowDistance: 4 };
+        if(!configGlobal.rachaVersus) configGlobal.rachaVersus = { salvadas: {}, reinicios: {}, showName: true, showCount: true, showCoins: true };
     } catch (e) {}
 }
 
@@ -175,7 +172,8 @@ if(configGlobal.username !== "") conectarTikTok(configGlobal.username);
 io.on('connection', (socket) => {
     socket.emit('config_actual', configGlobal);
     socket.emit('actualizacion', topSorted);
-    socket.emit('racha_data_update', configGlobal.racha); 
+    socket.emit('racha_data_update', configGlobal.racha);
+    socket.emit('racha_versus_update', configGlobal.rachaVersus); // Emitimos al conectar
     emitSalvarUpdate(socket);
 
     socket.on('comando_conectar', (usuario) => { configGlobal.username = usuario.trim(); guardarEnArchivo(); conectarTikTok(configGlobal.username); });
@@ -183,33 +181,22 @@ io.on('connection', (socket) => {
 
     socket.on('guardar_config', (nuevaConfig) => {
         nuevaConfig.historial = configGlobal.historial; nuevaConfig.username = configGlobal.username;
-        nuevaConfig.regalosDisponibles = configGlobal.regalosDisponibles; nuevaConfig.racha = configGlobal.racha; 
+        nuevaConfig.regalosDisponibles = configGlobal.regalosDisponibles; 
+        nuevaConfig.racha = configGlobal.racha; nuevaConfig.rachaVersus = configGlobal.rachaVersus;
         configGlobal = nuevaConfig; guardarEnArchivo(); io.emit('config_actual', configGlobal); emitSalvarUpdate(io); 
     });
 
     socket.on('modificar_puntos_equipo', (data) => {
-        if (data.equipo === 1) {
-            teamSalvar.total += data.cantidad;
-            if (teamSalvar.total < 0) teamSalvar.total = 0;
-        } else if (data.equipo === 2) {
-            teamReiniciar.total += data.cantidad;
-            if (teamReiniciar.total < 0) teamReiniciar.total = 0;
-        }
+        if (data.equipo === 1) { teamSalvar.total += data.cantidad; if (teamSalvar.total < 0) teamSalvar.total = 0; } 
+        else if (data.equipo === 2) { teamReiniciar.total += data.cantidad; if (teamReiniciar.total < 0) teamReiniciar.total = 0; }
         emitSalvarUpdate(io);
-        if (data.cantidad > 0) {
-            io.emit('poder_salvar', { side: data.equipo === 1 ? 'salvar' : 'reiniciar', amount: data.cantidad });
-        }
+        if (data.cantidad > 0) io.emit('poder_salvar', { side: data.equipo === 1 ? 'salvar' : 'reiniciar', amount: data.cantidad });
     });
 
     socket.on('importar_catalogo', (nuevoData) => {
         if (Array.isArray(nuevoData)) {
-            nuevoData.forEach(item => {
-                let idx = catalogoGlobal.findIndex(g => g.id === item.id);
-                if (idx === -1) catalogoGlobal.push(item);
-                else catalogoGlobal[idx] = { ...catalogoGlobal[idx], ...item };
-            });
-            catalogoGlobal.sort((a, b) => a.diamonds - b.diamonds);
-            configGlobal.regalosDisponibles = catalogoGlobal;
+            nuevoData.forEach(item => { let idx = catalogoGlobal.findIndex(g => g.id === item.id); if (idx === -1) catalogoGlobal.push(item); else catalogoGlobal[idx] = { ...catalogoGlobal[idx], ...item }; });
+            catalogoGlobal.sort((a, b) => a.diamonds - b.diamonds); configGlobal.regalosDisponibles = catalogoGlobal;
             guardarEnArchivo(); io.emit('config_actual', configGlobal);
         }
     });
@@ -219,9 +206,7 @@ io.on('connection', (socket) => {
             let userActivo = configGlobal.username;
             configGlobal = { ...configGlobal, ...nuevoData };
             if(userActivo) configGlobal.username = userActivo;
-            guardarEnArchivo();
-            io.emit('config_actual', configGlobal);
-            io.emit('racha_data_update', configGlobal.racha);
+            guardarEnArchivo(); io.emit('config_actual', configGlobal); io.emit('racha_data_update', configGlobal.racha); io.emit('racha_versus_update', configGlobal.rachaVersus);
         }
     });
 
@@ -243,8 +228,42 @@ io.on('connection', (socket) => {
         io.emit('actualizacion', topSorted); emitSalvarUpdate(io);
     });
 
+    // 🌟 EVENTO: REGISTRAR VICTORIAS DE VERSUS
+    socket.on('registrar_victoria_versus', (data) => {
+        let tipo = data.tipo; // 'salvada' o 'reinicio'
+        let user = data.user;
+        if(!user || !user.name || user.name === 'ESPERANDO') return;
+        
+        let targetObj = tipo === 'salvada' ? configGlobal.rachaVersus.salvadas : configGlobal.rachaVersus.reinicios;
+        if(!targetObj[user.name]) targetObj[user.name] = { avatar: user.avatar, displayName: user.name, count: 0 };
+        
+        targetObj[user.name].count += 1;
+        targetObj[user.name].avatar = user.avatar;
+        
+        guardarEnArchivo();
+        io.emit('racha_versus_update', configGlobal.rachaVersus);
+    });
+
+    // 🌟 EVENTOS: PANEL DE CONTROL RACHA VERSUS
+    socket.on('racha_versus_ajuste', (data) => {
+        let targetObj = data.tipo === 'salvadas' ? configGlobal.rachaVersus.salvadas : configGlobal.rachaVersus.reinicios;
+        if(targetObj[data.name]) { targetObj[data.name].count += data.amount; if(targetObj[data.name].count < 0) targetObj[data.name].count = 0; guardarEnArchivo(); io.emit('racha_versus_update', configGlobal.rachaVersus); }
+    });
+    socket.on('racha_versus_eliminar', (data) => {
+        let targetObj = data.tipo === 'salvadas' ? configGlobal.rachaVersus.salvadas : configGlobal.rachaVersus.reinicios;
+        if(targetObj[data.name]) { delete targetObj[data.name]; guardarEnArchivo(); io.emit('racha_versus_update', configGlobal.rachaVersus); }
+    });
+    socket.on('racha_versus_limpiar', (tipo) => {
+        if(tipo === 'salvadas') configGlobal.rachaVersus.salvadas = {}; else configGlobal.rachaVersus.reinicios = {};
+        guardarEnArchivo(); io.emit('racha_versus_update', configGlobal.rachaVersus);
+    });
+    socket.on('racha_versus_guardar_opciones', (opts) => {
+        configGlobal.rachaVersus.showName = opts.showName; configGlobal.rachaVersus.showCount = opts.showCount; configGlobal.rachaVersus.showCoins = opts.showCoins;
+        guardarEnArchivo(); io.emit('racha_versus_update', configGlobal.rachaVersus);
+    });
+
+    // Eventos normales de la racha
     socket.on('racha_iniciar_ronda', () => { configGlobal.racha.topRound = {}; guardarEnArchivo(); io.emit('racha_data_update', configGlobal.racha); });
-    
     socket.on('racha_cerrar_ronda', () => {
         let arr = Object.values(configGlobal.racha.topRound).sort((a,b) => b.monedas - a.monedas);
         if (arr.length > 0) {
@@ -253,22 +272,17 @@ io.on('connection', (socket) => {
             configGlobal.racha.recordDiario[name].wins += 1; configGlobal.racha.recordDiario[name].avatar = top1.avatar; configGlobal.racha.recordDiario[name].monedas += top1.monedas;
             if(!configGlobal.racha.recordHistorico[name]) configGlobal.racha.recordHistorico[name] = { avatar: top1.avatar, displayName: name, wins: 0, monedas: 0 };
             configGlobal.racha.recordHistorico[name].wins += 1; configGlobal.racha.recordHistorico[name].avatar = top1.avatar; configGlobal.racha.recordHistorico[name].monedas += top1.monedas;
-            
-            configGlobal.racha.topRound = {}; guardarEnArchivo(); 
-            io.emit('racha_data_update', configGlobal.racha); io.emit('config_actual', configGlobal); io.emit('racha_animacion');
+            configGlobal.racha.topRound = {}; guardarEnArchivo(); io.emit('racha_data_update', configGlobal.racha); io.emit('config_actual', configGlobal); io.emit('racha_animacion');
         }
     });
-
     socket.on('racha_ajuste', (data) => {
         let lista = data.tipo === 'diario' ? configGlobal.racha.recordDiario : configGlobal.racha.recordHistorico;
         if(lista[data.name]) { lista[data.name].wins += data.amount; if(lista[data.name].wins < 0) lista[data.name].wins = 0; guardarEnArchivo(); io.emit('racha_data_update', configGlobal.racha); }
     });
-
     socket.on('racha_eliminar_usuario', (data) => {
         let lista = data.tipo === 'diario' ? configGlobal.racha.recordDiario : configGlobal.racha.recordHistorico;
         if(lista[data.name]) { delete lista[data.name]; guardarEnArchivo(); io.emit('racha_data_update', configGlobal.racha); }
     });
-
     socket.on('racha_cerrar_historico', () => { configGlobal.racha.recordHistorico = {}; guardarEnArchivo(); io.emit('racha_data_update', configGlobal.racha); });
     socket.on('racha_cerrar_diaria', () => { configGlobal.racha.recordDiario = {}; configGlobal.racha.topRound = {}; guardarEnArchivo(); io.emit('racha_data_update', configGlobal.racha); });
     socket.on('racha_guardar_opciones', (opts) => { configGlobal.racha.showPhoto = opts.showPhoto; configGlobal.racha.showCoins = opts.showCoins; guardarEnArchivo(); io.emit('config_actual', configGlobal); io.emit('racha_data_update', configGlobal.racha); });

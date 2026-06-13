@@ -181,6 +181,7 @@
         let isGameOver = false; 
         let wasLosing = false;
         let latestData = null; 
+        let winRegistered = false; // 🌟 CANDADO DE SEGURIDAD PARA CONTAR PUNTOS 1 SOLA VEZ
 
         function playAlertSound() {
             try {
@@ -293,6 +294,12 @@
                 countdownInterval = null;
             }
             
+            // 🌟 REGISTRAR VICTORIA (REINICIO) AL SERVIDOR SÓLO UNA VEZ
+            if (!winRegistered) {
+                socket.emit('registrar_victoria_versus', { tipo: 'reinicio', user: topReiniciar });
+                winRegistered = true;
+            }
+            
             document.getElementById('countdown-line1-text').style.display = 'none';
             document.getElementById('countdown-line2-text').style.display = 'none';
             document.getElementById('timer').style.display = 'none';
@@ -344,6 +351,12 @@
             if (countdownInterval) {
                 clearInterval(countdownInterval);
                 countdownInterval = null;
+            }
+
+            // 🌟 REGISTRAR VICTORIA (SALVADA) AL SERVIDOR SÓLO UNA VEZ
+            if (!winRegistered) {
+                socket.emit('registrar_victoria_versus', { tipo: 'salvada', user: topSalvar });
+                winRegistered = true;
             }
             
             document.getElementById('countdown-line1-text').style.display = 'none';
@@ -403,6 +416,7 @@
 
             if (total === 0) {
                 wasLosing = false; 
+                winRegistered = false; // 🌟 ABRIMOS EL CANDADO PARA LA SIGUIENTE RONDA
                 document.getElementById('winner-zone').style.display = 'none';
                 document.getElementById('countdown-display').style.display = 'none';
                 if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
@@ -523,7 +537,6 @@
                     }, 1000);
                 }
             } else if (data.totalSalvar > data.totalReiniciar) {
-                // 🌟 LÓGICA PERFECTA: Se necesita superar, por ende la diferencia + 1
                 let diff = (data.totalSalvar - data.totalReiniciar) + 1;
                 if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
                 
