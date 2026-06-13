@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Pop de Regalos Versus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: transparent; /* Fondo transparente para OBS */
+            font-family: 'Luckiest Guy', cursive;
+        }
+
+        .pop-text {
+            position: absolute;
+            font-size: 60px;
+            font-weight: normal;
+            text-transform: uppercase;
+            white-space: nowrap;
+            pointer-events: none;
+            /* Contorno ultra grueso para que resalte en cualquier fondo */
+            -webkit-text-stroke: 2.5px black;
+            paint-order: stroke fill;
+            /* El translate -50% asegura que el punto de anclaje sea el centro del texto */
+            transform: translate(-50%, -50%);
+            /* La animación durará 1.2 segundos en total */
+            animation: popAndFloat 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            z-index: 100;
+        }
+
+        /* Animación: Aparece de golpe (Pop), flota hacia arriba y se desvanece */
+        @keyframes popAndFloat {
+            0% { transform: translate(-50%, -50%) scale(0) rotate(-15deg); opacity: 0; }
+            20% { transform: translate(-50%, -50%) scale(1.3) rotate(5deg); opacity: 1; }
+            40% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 1; }
+            80% { transform: translate(-50%, calc(-50% - 80px)) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, calc(-50% - 150px)) scale(0.8); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        let audioCtx = null;
+
+        // Variables para guardar los nombres y colores desde el servidor
+        let nombreEq1 = "GG";
+        let nombreEq2 = "ROSITAS";
+        let colorEq1 = "#00ff66";
+        let colorEq2 = "#ff003c";
+
+        // Escuchamos la configuración en tiempo real
+        socket.on('config_actual', (config) => {
+            if(config) {
+                // Usamos el subtexto si existe, si no, el nombre principal
+                nombreEq1 = config.equipo1.sub.trim() ? config.equipo1.sub.trim() : config.equipo1.nombre;
+                nombreEq2 = config.equipo2.sub.trim() ? config.equipo2.sub.trim() : config.equipo2.nombre;
+                
+                // Extraemos los colores elegidos en el panel
+                colorEq1 = config.equipo1.color || "#00ff66";
+                colorEq2 = config.equipo2.color || "#ff003c";
+            }
+        });
+
+        // 🔊 Sintetizador de sonido ASMR "POP"
+        function playPopSound() {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.type = "sine";
+                
+                // Variación de tono aleatoria (para que no suenen todos los pops idénticos si mandan muchos)
+                const freqBase = 700 + Math.random() * 200; 
+                osc.frequency.setValueAtTime(freqBase, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.07);
+                
+                gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                
+                osc.start(audioCtx.currentTime);
+                osc.stop(audioCtx.currentTime + 0.1);
+            } catch(e) {
+                console.log("No se pudo reproducir el sonido pop", e);
+            }
+        }
+
+        // 🎯 Escuchamos cada vez que se suman puntos a la batalla
+        socket.on('poder_salvar', (data) => {
+            playPopSound();
+            crearTextoFlotante(data.side, data.amount);
+        });
+
+        // ✍️ Función que genera el texto en pantalla
+        function crearTextoFlotante(equipo, cantidad) {
+            const popText = document.createElement('div');
+            popText.className = 'pop-text';
+            
+            // Definimos color y texto según el equipo dinámicamente
+            if (equipo === 'salvar') {
+                popText.innerText = `+${cantidad} ${nombreEq1}`;
+                popText.style.color = colorEq1;
+                popText.style.textShadow = `4px 4px 0px #000, 0 0 20px ${colorEq1}`;
+            } else {
+                popText.innerText = `+${cantidad} ${nombreEq2}`;
+                popText.style.color = colorEq2;
+                popText.style.textShadow = `4px 4px 0px #000, 0 0 20px ${colorEq2}`;
+            }
+
+            // 🎯 CENTRADO ESTRICTO: Ajustamos las variables para que salgan mucho más al centro
+            // X: Entre 45% y 55% de la pantalla (apenas un 5% de desviación del centro)
+            // Y: Entre 50% y 65% de la pantalla (ideal para juegos en tercera persona como Roblox)
+            const randomX = 45 + Math.random() * 10; 
+            const randomY = 50 + Math.random() * 15; 
+
+            popText.style.left = `${randomX}vw`;
+            popText.style.top = `${randomY}vh`;
+
+            document.body.appendChild(popText);
+
+            // 🗑️ Limpieza de memoria
+            setTimeout(() => {
+                popText.remove();
+            }, 1500);
+        }
+    </script>
+</body>
+</html>

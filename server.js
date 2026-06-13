@@ -16,6 +16,8 @@ app.get('/vista_racha', (req, res) => res.sendFile(__dirname + '/vista_racha.htm
 app.get('/vista_regalos', (req, res) => res.sendFile(__dirname + '/vista_regalos.html'));
 app.get('/salvar', (req, res) => res.sendFile(__dirname + '/salvar.html'));
 app.get('/racha', (req, res) => res.sendFile(__dirname + '/racha.html')); 
+// 🌟 NUEVO: RUTA PARA EL OVERLAY DE POP DE REGALOS 🌟
+app.get('/regalos_versus', (req, res) => res.sendFile(__dirname + '/regalos_versus.html'));
 
 let topDonators = {};
 let topSorted = [];
@@ -32,7 +34,7 @@ let configGlobal = {
     equipo2: { nombre: "REINICIAR", sub: "ROSA", color: "#ff003c", regalos: regalosEq2Defecto },
     enableCountdown: true, countdownSeconds: 30, showTopText: true, showDonatorCoins: true,
     showEmoticons: true, roundGifts: true, 
-    showTopDonators: true, // 🌟 NUEVO: Ocultar o mostrar a los MVPs
+    showTopDonators: true,
     regalosDisponibles: [],
     racha: { topRound: {}, recordDiario: {}, recordHistorico: {}, showPhoto: true, showCoins: false },
     battleStyle: { fontFamily: "'Lemon', serif", textStroke: 1.5, colorL1: "#ffd700", sizeL1: 38, colorL2: "#ff003c", sizeL2: 45, colorTimer: "#ffffff", sizeTimer: 140, shadowOpacity: 1.0, shadowDistance: 4 }
@@ -185,7 +187,6 @@ io.on('connection', (socket) => {
         configGlobal = nuevaConfig; guardarEnArchivo(); io.emit('config_actual', configGlobal); emitSalvarUpdate(io); 
     });
 
-    // 🌟 NUEVO EVENTO: Añadir o restar puntos manualmente a un equipo
     socket.on('modificar_puntos_equipo', (data) => {
         if (data.equipo === 1) {
             teamSalvar.total += data.cantidad;
@@ -195,7 +196,6 @@ io.on('connection', (socket) => {
             if (teamReiniciar.total < 0) teamReiniciar.total = 0;
         }
         emitSalvarUpdate(io);
-        // Si sumamos puntos en positivo, enviamos explosión
         if (data.cantidad > 0) {
             io.emit('poder_salvar', { side: data.equipo === 1 ? 'salvar' : 'reiniciar', amount: data.cantidad });
         }
@@ -238,7 +238,6 @@ io.on('connection', (socket) => {
         guardarEnArchivo(); io.emit('config_actual', configGlobal);
     });
 
-    // 🌟 ESTE ES EL BOTÓN DE REINICIAR (Deja todo en cero)
     socket.on('reset', () => {
         topDonators = {}; topSorted = []; teamSalvar = { total: 0, donators: {} }; teamReiniciar = { total: 0, donators: {} };
         io.emit('actualizacion', topSorted); emitSalvarUpdate(io);
