@@ -14,7 +14,7 @@
             width: 100vw; height: 100vh; position: relative; 
         }
 
-        .text-con-stroke, .status-zone, .countdown-line1, .countdown-line2, .countdown-number, .text-eq1, .text-eq2, .score, #winner-name {
+        .text-con-stroke, .status-zone, .countdown-line1, .countdown-line2, .countdown-number, .text-eq1, .text-eq2, .score, #winner-title, #winner-name {
             paint-order: stroke fill; 
         }
 
@@ -85,20 +85,30 @@
         .countdown-line2 { font-weight: 900; letter-spacing: 3px; margin-bottom: -20px; z-index: 2; animation: flashRed 1s infinite;}
         .countdown-number { font-weight: 900; animation: heartbeat 1s infinite; line-height: 1;}
 
-        /* 🌟 NUEVOS ESTILOS PARA EL GANADOR (REINICIADOR) */
         #winner-zone {
             display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 100%; 
         }
         #winner-avatar {
-            width: 130px; height: 130px; border-radius: 50%; border: 6px solid #ff003c; object-fit: cover; margin-bottom: 15px; box-shadow: 0 0 30px #ff003c;
+            width: 90px; height: 90px;
+            border-radius: 50%; border: 5px solid #ff003c; object-fit: cover; margin-bottom: 5px; box-shadow: 0 0 20px #ff003c;
         }
-        #winner-name {
+        
+        #winner-title {
             font-size: 55px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; text-align: center;
-            -webkit-text-stroke: 2.5px black;
+            -webkit-text-stroke: 2.5px black; line-height: 1.1; margin-bottom: 2px;
+        }
+        
+        #winner-name {
+            font-size: 26px; font-weight: 900; letter-spacing: 1.5px; text-transform: uppercase; text-align: center;
+            color: #ffffff; 
+            -webkit-text-stroke: 1.5px black;
+            max-width: 350px; 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
         }
 
         @keyframes flashRed { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.5); } }
@@ -153,7 +163,8 @@
             
             <div id="winner-zone">
                 <img id="winner-avatar" src="https://via.placeholder.com/150/222/fff?text=?">
-                <div id="winner-name">¡TE REINICIÓ!</div>
+                <div id="winner-title">¡TE REINICIÓ!</div>
+                <div id="winner-name">EL EQUIPO 2</div>
             </div>
         </div>
     </div>
@@ -166,7 +177,10 @@
         let timer = 30;
         let countdownInterval = null;
         let audioCtx = null;
-        let isGameOver = false; // 🌟 Bandera para congelar la pantalla al perder
+        
+        let isGameOver = false; // Detiene la actualización visual
+        let wasLosing = false;
+        let latestData = null; // Almacena el progreso "invisible" de la nueva ronda
 
         function playAlertSound() {
             try {
@@ -271,69 +285,159 @@
             if (e.ctrlKey && e.key === 'ArrowDown') socket.emit('reset');
         });
 
-        // 🌟 LÓGICA DE FIN DE JUEGO (REINICIADO POR)
+        // 🌟 LÓGICA DE TE REINICIÓ (Fin real de la partida)
         function triggerGameOver(topReiniciar) {
             isGameOver = true;
             
-            let line1 = document.getElementById('countdown-line1-text');
-            let line2 = document.getElementById('countdown-line2-text');
-            let timerEl = document.getElementById('timer');
-            let winnerZone = document.getElementById('winner-zone');
-            let winnerImg = document.getElementById('winner-avatar');
-            let winnerName = document.getElementById('winner-name');
-
-            line1.style.display = 'none';
-            line2.style.display = 'none';
-            timerEl.style.display = 'none';
+            // Destruir reloj fantasma
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+            }
+            
+            // Ocultar textos de reloj
+            document.getElementById('countdown-line1-text').style.display = 'none';
+            document.getElementById('countdown-line2-text').style.display = 'none';
+            document.getElementById('timer').style.display = 'none';
             
             let c2 = currentConfig.equipo2.color || "#ff003c";
             
-            // Filtro para limpiar el nombre de símbolos raros o emoticonos
             let rawName = topReiniciar && topReiniciar.name && topReiniciar.name !== 'ESPERANDO' ? topReiniciar.name : 'EL EQUIPO 2';
             let cleanName = rawName.replace(/[^a-zA-Z0-9\sÁÉÍÓÚáéíóúÑñ]/g, '').trim();
             if(!cleanName) cleanName = 'EL EQUIPO 2';
 
+            let winnerImg = document.getElementById('winner-avatar');
+            let winnerTitle = document.getElementById('winner-title');
+            let winnerName = document.getElementById('winner-name');
+
             winnerImg.src = topReiniciar && topReiniciar.avatar ? topReiniciar.avatar : 'https://via.placeholder.com/150/222/fff?text=?';
             winnerImg.style.borderColor = c2;
-            winnerImg.style.boxShadow = `0 0 30px ${c2}`;
+            winnerImg.style.boxShadow = `0 0 20px ${c2}`;
             
-            winnerName.innerText = `¡TE REINICIÓ ${cleanName}!`;
-            winnerName.style.color = c2;
+            winnerTitle.innerText = `¡TE REINICIÓ!`;
+            winnerTitle.style.color = c2;
+            winnerName.innerText = cleanName;
+            winnerName.style.color = "#ffffff";
             
             const op = currentConfig.battleStyle?.shadowOpacity !== undefined ? currentConfig.battleStyle.shadowOpacity : 1.0;
             const dist = currentConfig.battleStyle?.shadowDistance !== undefined ? currentConfig.battleStyle.shadowDistance : 4;
-            winnerName.style.textShadow = `${dist}px ${dist}px 0px rgba(0,0,0,${op}), 0 0 25px ${c2}`;
+            
+            let shadowStr = `${dist}px ${dist}px 0px rgba(0,0,0,${op}), 0 0 20px ${c2}`;
+            winnerTitle.style.textShadow = shadowStr;
+            winnerName.style.textShadow = `${dist}px ${dist}px 0px rgba(0,0,0,${op})`; 
 
-            winnerZone.style.display = 'flex';
+            document.getElementById('winner-zone').style.display = 'flex';
 
-            // Autoreset en 5 segundos si no se hace manualmente
+            // 🌟 CAMBIO CRÍTICO: Emitimos el reset de Inmediato para que los nuevos regalos pasen a la siguiente ronda
+            socket.emit('reset');
+
+            // 🌟 Tiempo reducido a 2 Segundos
             setTimeout(() => {
-                if (isGameOver) { 
-                    socket.emit('reset');
+                isGameOver = false;
+                document.getElementById('winner-zone').style.display = 'none';
+                
+                // Retomamos la actualización visual con la información más reciente de la nueva ronda
+                if (latestData) {
+                    wasLosing = latestData.totalReiniciar > latestData.totalSalvar; 
+                    procesarActualizacionVisual(latestData);
                 }
-            }, 5000);
+            }, 2000);
         }
 
+        // 🌟 LÓGICA DE TE SALVÓ (El juego continúa)
+        function triggerSaved(topSalvar) {
+            isGameOver = true; 
+            
+            // Destruimos el reloj
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+            }
+            
+            document.getElementById('countdown-line1-text').style.display = 'none';
+            document.getElementById('countdown-line2-text').style.display = 'none';
+            document.getElementById('timer').style.display = 'none';
+            
+            let c1 = currentConfig.equipo1.color || "#00ff66";
+            
+            let rawName = topSalvar && topSalvar.name && topSalvar.name !== 'ESPERANDO' ? topSalvar.name : 'EL EQUIPO 1';
+            let cleanName = rawName.replace(/[^a-zA-Z0-9\sÁÉÍÓÚáéíóúÑñ]/g, '').trim();
+            if(!cleanName) cleanName = 'EL EQUIPO 1';
+
+            let winnerImg = document.getElementById('winner-avatar');
+            let winnerTitle = document.getElementById('winner-title');
+            let winnerName = document.getElementById('winner-name');
+
+            winnerImg.src = topSalvar && topSalvar.avatar ? topSalvar.avatar : 'https://via.placeholder.com/150/222/fff?text=?';
+            winnerImg.style.borderColor = c1;
+            winnerImg.style.boxShadow = `0 0 20px ${c1}`;
+            
+            winnerTitle.innerText = `¡TE SALVÓ!`;
+            winnerTitle.style.color = c1;
+            winnerName.innerText = cleanName;
+            winnerName.style.color = "#ffffff";
+            
+            const op = currentConfig.battleStyle?.shadowOpacity !== undefined ? currentConfig.battleStyle.shadowOpacity : 1.0;
+            const dist = currentConfig.battleStyle?.shadowDistance !== undefined ? currentConfig.battleStyle.shadowDistance : 4;
+            
+            let shadowStr = `${dist}px ${dist}px 0px rgba(0,0,0,${op}), 0 0 20px ${c1}`;
+            winnerTitle.style.textShadow = shadowStr;
+            winnerName.style.textShadow = `${dist}px ${dist}px 0px rgba(0,0,0,${op})`;
+
+            document.getElementById('winner-zone').style.display = 'flex';
+
+            // 🌟 Animación dura 2 Segundos. NO hacemos reset porque el juego sigue.
+            setTimeout(() => {
+                isGameOver = false;
+                document.getElementById('winner-zone').style.display = 'none';
+                
+                // Retomamos la actualización visual con la información más reciente
+                if (latestData) {
+                    wasLosing = latestData.totalReiniciar > latestData.totalSalvar; 
+                    procesarActualizacionVisual(latestData);
+                }
+            }, 2000);
+        }
+
+        // Delegamos los datos entrantes a la memoria de fondo
         socket.on('actualizacion_salvar', (data) => {
+            latestData = data;
+            procesarActualizacionVisual(data);
+        });
+
+        // 🌟 FUNCIÓN MAESTRA VISUAL
+        function procesarActualizacionVisual(data) {
             if(!currentConfig) return;
 
             let total = data.totalSalvar + data.totalReiniciar;
 
-            // Descongelar pantalla si se ha reiniciado manualmente o por el timeout
-            if (total === 0) {
-                isGameOver = false; 
-                document.getElementById('winner-zone').style.display = 'none';
-            }
-
-            // Si el juego terminó, congelamos las barras e ignoramos los updates visuales
+            // 🌟 SI HAY UNA ANIMACIÓN CORRIENDO, IGNORAR CAMBIOS VISUALES (Se guardan en latestData para luego)
             if (isGameOver) return; 
 
-            // Actualización de barras y top donadores
+            // Reinicio de sistema visual si alguien aprieta el botón de reset en el panel
+            if (total === 0) {
+                wasLosing = false; 
+                document.getElementById('winner-zone').style.display = 'none';
+                document.getElementById('countdown-display').style.display = 'none';
+                if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
+            }
+
+            let isLosing = data.totalReiniciar > data.totalSalvar;
+            
+            // Detectar si pasamos de perder a ganar (Nos salvaron)
+            if (wasLosing && !isLosing && data.totalSalvar > 0) {
+                wasLosing = false; 
+                triggerSaved(data.topSalvar);
+                return; 
+            }
+            wasLosing = isLosing; 
+
+            // --- Actualizar barras y texto ---
             if(data.topSalvar.avatar) {
                 document.getElementById('avatar1').src = data.topSalvar.avatar;
                 document.getElementById('avatar1').style.display = 'block';
                 document.getElementById('name1').innerText = data.topSalvar.name;
-                document.getElementById('donatorCoins1').innerHTML = `<i class="fa-solid fa-coins"></i> ${data.topSalvar.coins}`;
+                document.getElementById('donatorCoins1').innerHTML = `<i class=\"fa-solid fa-coins\"></i> ${data.topSalvar.coins}`;
             } else {
                 document.getElementById('avatar1').style.display = 'none';
                 document.getElementById('name1').innerText = 'Nadie aún';
@@ -345,7 +449,7 @@
                 document.getElementById('avatar2').src = data.topReiniciar.avatar;
                 document.getElementById('avatar2').style.display = 'block';
                 document.getElementById('name2').innerText = data.topReiniciar.name;
-                document.getElementById('donatorCoins2').innerHTML = `<i class="fa-solid fa-coins"></i> ${data.topReiniciar.coins}`;
+                document.getElementById('donatorCoins2').innerHTML = `<i class=\"fa-solid fa-coins\"></i> ${data.topReiniciar.coins}`;
             } else {
                 document.getElementById('avatar2').style.display = 'none';
                 document.getElementById('name2').innerText = 'Nadie aún';
@@ -404,7 +508,7 @@
                 statusZone.style.display = 'block';
             }
 
-            // 🌟 LÓGICA DE CUENTA ATRÁS Y TEXTO "X PARA REINICIAR"
+            // --- LÓGICA DE TEXTOS DE CUENTA ATRÁS Y VENTAJA ---
             let countdownDisplay = document.getElementById('countdown-display');
             let line1 = document.getElementById('countdown-line1-text');
             let line2 = document.getElementById('countdown-line2-text');
@@ -413,7 +517,7 @@
             if (currentConfig.enableCountdown && data.totalReiniciar > data.totalSalvar) {
                 let diff = data.totalReiniciar - data.totalSalvar;
                 line1.innerText = `${diff} PARA SALVARNOS`;
-                line1.style.color = currentConfig.battleStyle.colorL1; // Restaura su color original
+                line1.style.color = currentConfig.battleStyle.colorL1; 
                 
                 line1.style.display = 'block';
                 line2.style.display = 'block';
@@ -430,33 +534,28 @@
                         
                         if (timer <= 0) { 
                             timer = 0; 
-                            clearInterval(countdownInterval);
-                            countdownInterval = null;
-                            triggerGameOver(data.topReiniciar); // Detona el evento de "Te reinició"
+                            triggerGameOver(data.topReiniciar); 
                         }
                         if (!isGameOver) timerEl.innerText = timer;
                     }, 1000);
                 }
             } else if (data.totalSalvar > data.totalReiniciar) {
-                // 🌟 LÓGICA DE EQUIPO 1 GANANDO
                 let diff = data.totalSalvar - data.totalReiniciar;
-                clearInterval(countdownInterval);
-                countdownInterval = null;
+                if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
                 
                 line1.innerText = `${diff} PARA REINICIAR`;
-                line1.style.color = currentConfig.equipo2.color || '#ff003c'; // Lo pintamos de rojo/color Eq2
+                line1.style.color = currentConfig.equipo2.color || '#ff003c'; 
                 
                 line1.style.display = 'block';
-                line2.style.display = 'none'; // Ocultamos los segundos
+                line2.style.display = 'none'; 
                 timerEl.style.display = 'none';
                 
                 countdownDisplay.style.display = 'flex';
             } else {
                 countdownDisplay.style.display = 'none';
-                clearInterval(countdownInterval);
-                countdownInterval = null;
+                if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
             }
-        });
+        }
 
         const canvas = document.getElementById('canvas-effects');
         const ctx = canvas.getContext('2d');
