@@ -178,9 +178,9 @@
         let countdownInterval = null;
         let audioCtx = null;
         
-        let isGameOver = false; // Detiene la actualización visual
+        let isGameOver = false; 
         let wasLosing = false;
-        let latestData = null; // Almacena el progreso "invisible" de la nueva ronda
+        let latestData = null; 
 
         function playAlertSound() {
             try {
@@ -285,17 +285,14 @@
             if (e.ctrlKey && e.key === 'ArrowDown') socket.emit('reset');
         });
 
-        // 🌟 LÓGICA DE TE REINICIÓ (Fin real de la partida)
         function triggerGameOver(topReiniciar) {
             isGameOver = true;
             
-            // Destruir reloj fantasma
             if (countdownInterval) {
                 clearInterval(countdownInterval);
                 countdownInterval = null;
             }
             
-            // Ocultar textos de reloj
             document.getElementById('countdown-line1-text').style.display = 'none';
             document.getElementById('countdown-line2-text').style.display = 'none';
             document.getElementById('timer').style.display = 'none';
@@ -328,15 +325,12 @@
 
             document.getElementById('winner-zone').style.display = 'flex';
 
-            // 🌟 CAMBIO CRÍTICO: Emitimos el reset de Inmediato para que los nuevos regalos pasen a la siguiente ronda
             socket.emit('reset');
 
-            // 🌟 Tiempo reducido a 2 Segundos
             setTimeout(() => {
                 isGameOver = false;
                 document.getElementById('winner-zone').style.display = 'none';
                 
-                // Retomamos la actualización visual con la información más reciente de la nueva ronda
                 if (latestData) {
                     wasLosing = latestData.totalReiniciar > latestData.totalSalvar; 
                     procesarActualizacionVisual(latestData);
@@ -344,11 +338,9 @@
             }, 2000);
         }
 
-        // 🌟 LÓGICA DE TE SALVÓ (El juego continúa)
         function triggerSaved(topSalvar) {
             isGameOver = true; 
             
-            // Destruimos el reloj
             if (countdownInterval) {
                 clearInterval(countdownInterval);
                 countdownInterval = null;
@@ -386,12 +378,10 @@
 
             document.getElementById('winner-zone').style.display = 'flex';
 
-            // 🌟 Animación dura 2 Segundos. NO hacemos reset porque el juego sigue.
             setTimeout(() => {
                 isGameOver = false;
                 document.getElementById('winner-zone').style.display = 'none';
                 
-                // Retomamos la actualización visual con la información más reciente
                 if (latestData) {
                     wasLosing = latestData.totalReiniciar > latestData.totalSalvar; 
                     procesarActualizacionVisual(latestData);
@@ -399,22 +389,18 @@
             }, 2000);
         }
 
-        // Delegamos los datos entrantes a la memoria de fondo
         socket.on('actualizacion_salvar', (data) => {
             latestData = data;
             procesarActualizacionVisual(data);
         });
 
-        // 🌟 FUNCIÓN MAESTRA VISUAL
         function procesarActualizacionVisual(data) {
             if(!currentConfig) return;
 
             let total = data.totalSalvar + data.totalReiniciar;
 
-            // 🌟 SI HAY UNA ANIMACIÓN CORRIENDO, IGNORAR CAMBIOS VISUALES (Se guardan en latestData para luego)
             if (isGameOver) return; 
 
-            // Reinicio de sistema visual si alguien aprieta el botón de reset en el panel
             if (total === 0) {
                 wasLosing = false; 
                 document.getElementById('winner-zone').style.display = 'none';
@@ -424,7 +410,6 @@
 
             let isLosing = data.totalReiniciar > data.totalSalvar;
             
-            // Detectar si pasamos de perder a ganar (Nos salvaron)
             if (wasLosing && !isLosing && data.totalSalvar > 0) {
                 wasLosing = false; 
                 triggerSaved(data.topSalvar);
@@ -432,7 +417,6 @@
             }
             wasLosing = isLosing; 
 
-            // --- Actualizar barras y texto ---
             if(data.topSalvar.avatar) {
                 document.getElementById('avatar1').src = data.topSalvar.avatar;
                 document.getElementById('avatar1').style.display = 'block';
@@ -508,7 +492,6 @@
                 statusZone.style.display = 'block';
             }
 
-            // --- LÓGICA DE TEXTOS DE CUENTA ATRÁS Y VENTAJA ---
             let countdownDisplay = document.getElementById('countdown-display');
             let line1 = document.getElementById('countdown-line1-text');
             let line2 = document.getElementById('countdown-line2-text');
@@ -540,7 +523,8 @@
                     }, 1000);
                 }
             } else if (data.totalSalvar > data.totalReiniciar) {
-                let diff = data.totalSalvar - data.totalReiniciar;
+                // 🌟 LÓGICA PERFECTA: Se necesita superar, por ende la diferencia + 1
+                let diff = (data.totalSalvar - data.totalReiniciar) + 1;
                 if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
                 
                 line1.innerText = `${diff} PARA REINICIAR`;
