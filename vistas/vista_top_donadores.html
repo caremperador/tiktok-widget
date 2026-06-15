@@ -51,12 +51,14 @@
         <div class="racha-layout">
             <div class="racha-col" style="border-color: #ffd700;">
                 
-                <!-- 🌟 CONFIGURACIÓN DE LÍMITE (TOP 2, 3, etc.) -->
                 <div style="margin-bottom: 15px; background: #111; padding: 10px; border-radius: 8px; border: 1px solid #333;">
-                    <label style="color:#00f2fe; margin-bottom: 5px;">Cantidad a mostrar en Overlay (Por defecto: 2)</label>
-                    <div style="display:flex; gap:10px;">
-                        <input type="number" id="inp-vip-limit" min="1" max="10" value="2" style="margin:0; width:80px; text-align:center;">
-                        <button class="btn-ctrl" style="width:auto; padding:0 15px; background:#00f2fe; color:black; font-size: 12px;" onclick="guardarOpcionesVIP()"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+                    <label style="color:#00f2fe; margin-bottom: 5px; font-size: 11px;">Ajustes del Overlay</label>
+                    <div style="display:flex; gap:10px; align-items: center;">
+                        <input type="number" id="inp-vip-limit" min="1" max="10" value="2" style="margin:0; width:60px; text-align:center;" title="Cantidad a mostrar">
+                        <label style="margin:0; color:#fff; display:flex; align-items:center; gap:5px; font-size:12px; cursor:pointer;">
+                            <input type="checkbox" id="inp-vip-mirror" style="width:16px; height:16px; accent-color: #00f2fe;"> Modo Espejo
+                        </label>
+                        <button class="btn-ctrl" style="width:auto; padding:0 15px; background:#00f2fe; color:black; font-size: 12px; margin-left:auto;" onclick="guardarOpcionesVIP()"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
                     </div>
                 </div>
 
@@ -84,8 +86,9 @@
         let focusValue = "";
 
         socket.on('config_actual', (config) => {
-            if(config.topVIP && config.topVIP.displayLimit) {
-                document.getElementById('inp-vip-limit').value = config.topVIP.displayLimit;
+            if(config.topVIP) {
+                if(config.topVIP.displayLimit) document.getElementById('inp-vip-limit').value = config.topVIP.displayLimit;
+                if(config.topVIP.mirrorMode !== undefined) document.getElementById('inp-vip-mirror').checked = config.topVIP.mirrorMode;
             }
         });
 
@@ -151,9 +154,11 @@
             });
         });
 
+        // 🌟 SE ACTUALIZÓ PARA ENVIAR EL MODO ESPEJO
         function guardarOpcionesVIP() {
             let limit = parseInt(document.getElementById('inp-vip-limit').value) || 2;
-            socket.emit('top_vip_guardar_opciones', { displayLimit: limit });
+            let mirror = document.getElementById('inp-vip-mirror').checked;
+            socket.emit('top_vip_guardar_opciones', { displayLimit: limit, mirrorMode: mirror });
         }
 
         function sumarCoinsRonda(key) {

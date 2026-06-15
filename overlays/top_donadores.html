@@ -21,6 +21,18 @@
             transition: all 0.3s ease;
         }
 
+        /* 🌟 MODO ESPEJO CSS */
+        .user-row.mirror {
+            flex-direction: row-reverse;
+        }
+        .user-row.mirror .info-col {
+            align-items: flex-end; 
+        }
+        /* 🌟 Invertir el orden de la medalla y el nombre en modo espejo */
+        .user-row.mirror .name-row {
+            flex-direction: row-reverse;
+        }
+
         .rank-badge {
             width: 28px; height: 28px;
             display: flex; justify-content: center; align-items: center;
@@ -40,7 +52,7 @@
         }
 
         .avatar { 
-            box-sizing: border-box; /* 🌟 ESTO EVITA QUE SE HAGA GIGANTE */
+            box-sizing: border-box; 
             width: 100%; height: 100%; 
             border-radius: 50%; object-fit: cover; 
             border: 2px solid transparent; 
@@ -79,6 +91,7 @@
             padding: 2px 6px; border-radius: 4px;
             box-shadow: 0 0 8px #ff003c;
         }
+        
         .win-badge i { color: #ffd700; }
 
         .likes-row {
@@ -87,7 +100,12 @@
             font-size: 16px; font-weight: 900;
             text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
         }
-        .coin-icon { color: #ffd700; font-size: 14px; text-shadow: 0 0 5px rgba(255,215,0,0.5); }
+
+        .coin-icon {
+            color: #ffd700;
+            font-size: 14px;
+            text-shadow: 0 0 5px rgba(255,215,0,0.5);
+        }
 
         .has-streak .avatar {
             border: 3px solid #ffd700; 
@@ -100,7 +118,6 @@
             100% { box-shadow: 0 0 20px #ffd700, 0 0 35px #ff003c; border-color: #ffb300; }
         }
 
-        /* 🌟 ESTILOS PARA LA FILA VACÍA ARREGLADOS */
         .dummy-row {
             opacity: 0.4; 
             filter: grayscale(100%);
@@ -117,7 +134,7 @@
         .dummy-row .avatar {
             border-color: #444 !important;
             box-shadow: none !important;
-            background: #222; /* Fondo gris oscuro */
+            background: #222;
         }
         .dummy-row .rank-badge {
             background: #222 !important;
@@ -137,11 +154,9 @@
         const socket = io();
         const container = document.getElementById('ranking-box');
 
-        // 🌟 SVG MODIFICADO: Le cambiamos el viewBox a "-4 -4 32 32" para que se vea más chiquito y centrado sin usar CSS
         const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 32 32' fill='%23666'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>";
 
         function formatNumber(num) {
-            if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
             return num.toLocaleString();
         }
 
@@ -151,6 +166,8 @@
             
             let arrRonda = Object.entries(data.currentRound).map(([u, d]) => ({userKey: u, ...d})).sort((a,b) => b.coins - a.coins);
             let limit = data.displayLimit || 2; 
+            
+            let mirrorClass = data.mirrorMode ? 'mirror' : '';
 
             for (let i = 0; i < limit; i++) {
                 let u = arrRonda[i];
@@ -164,7 +181,7 @@
                     let crownHtml = (i === 0) ? '<i class="fa-solid fa-crown crown"></i>' : '';
 
                     container.innerHTML += `
-                    <div class="user-row ${rankClass} ${streakClass}">
+                    <div class="user-row ${rankClass} ${streakClass} ${mirrorClass}">
                         <div class="rank-badge">${i + 1}</div>
                         <div class="avatar-container">
                             ${crownHtml}
@@ -177,7 +194,7 @@
                     </div>`;
                 } else {
                     container.innerHTML += `
-                    <div class="user-row ${rankClass} dummy-row">
+                    <div class="user-row ${rankClass} dummy-row ${mirrorClass}">
                         <div class="rank-badge">${i + 1}</div>
                         <div class="avatar-container">
                             <img src="${defaultAvatar}" class="avatar">

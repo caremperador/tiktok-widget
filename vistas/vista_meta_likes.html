@@ -35,9 +35,13 @@
         <h3><i class="fa-solid fa-thumbs-up"></i> Meta de Likes Automática</h3>
         
         <div class="stats-box">
-            <div class="stat-card">
+            <!-- 🌟 LA TARJETA DE LIKES ACTUALES CON EL BOTÓN EXTRAER -->
+            <div class="stat-card" style="position: relative;">
                 <h4>Likes Actuales del Live</h4>
                 <div id="disp-current">0</div>
+                <button id="btn-force" onclick="forzarLikes()" style="position: absolute; top: 15px; right: 15px; background: #00f2fe; color: black; border: none; border-radius: 6px; padding: 6px 10px; cursor: pointer; font-size: 11px; font-weight: bold; text-transform: uppercase;" title="Extraer Likes Forzadamente">
+                    <i class="fa-solid fa-rotate-right"></i> Extraer
+                </button>
             </div>
             <div class="stat-card">
                 <h4>Siguiente Objetivo Fijo</h4>
@@ -100,7 +104,6 @@
 
         socket.on('config_actual', (config) => {
             if (config.metaLikes) {
-                // 🌟 PROTECCIÓN ANTI-BORRADO: Solo actualiza el campo si NO estás escribiendo en él
                 const activeId = document.activeElement ? document.activeElement.id : null;
                 
                 if(activeId !== 'ml-active') document.getElementById('ml-active').checked = config.metaLikes.active;
@@ -124,6 +127,16 @@
         socket.on('meta_likes_update', (data) => {
             document.getElementById('disp-goal').innerText = data.goal.toLocaleString();
         });
+
+        // 🌟 LA FUNCIÓN QUE FUERZA LA EXTRACCIÓN AL SERVIDOR
+        function forzarLikes() {
+            let btn = document.getElementById('btn-force');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ...';
+            socket.emit('force_fetch_likes');
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fa-solid fa-rotate-right"></i> Extraer';
+            }, 1500);
+        }
 
         function guardarConfig() {
             document.getElementById('ml-active').checked = true;

@@ -8,7 +8,7 @@
         body { 
             margin: 0; padding: 20px; overflow: hidden; 
             font-family: 'Montserrat', sans-serif;
-            background: transparent; /* Fondo transparente para OBS */
+            background: transparent; 
         }
 
         .ranking-container {
@@ -18,9 +18,21 @@
 
         .user-row {
             display: flex; align-items: center; gap: 12px;
+            transition: all 0.3s ease;
         }
 
-        /* 🌟 NÚMEROS DEL TOP (Por defecto: 4, 5, etc. transparentes y blancos) */
+        /* 🌟 MODO ESPEJO CSS */
+        .user-row.mirror {
+            flex-direction: row-reverse;
+        }
+        .user-row.mirror .info-col {
+            align-items: flex-end; 
+        }
+        /* 🌟 Invertir el orden de la medalla y el nombre en modo espejo */
+        .user-row.mirror .name-row {
+            flex-direction: row-reverse;
+        }
+
         .rank-badge {
             width: 28px; height: 28px;
             display: flex; justify-content: center; align-items: center;
@@ -30,18 +42,17 @@
             box-shadow: none;
         }
 
-        /* 🌟 NÚMEROS DEL TOP 1, 2 y 3 */
         .rank-1 .rank-badge { color: #000; border-radius: 6px; background: linear-gradient(135deg, #ffdf00, #d4af37); box-shadow: 0 0 10px rgba(255, 215, 0, 0.6); }
         .rank-2 .rank-badge { color: #000; border-radius: 6px; background: linear-gradient(135deg, #e6e6e6, #a6a6a6); box-shadow: 0 0 10px rgba(230, 230, 230, 0.4); }
         .rank-3 .rank-badge { color: #000; border-radius: 6px; background: linear-gradient(135deg, #ffb366, #b87333); box-shadow: 0 0 10px rgba(255, 179, 102, 0.4); }
 
-        /* 🌟 AVATAR Y CORONA */
         .avatar-container {
             position: relative;
             width: 50px; height: 50px;
         }
 
         .avatar { 
+            box-sizing: border-box; 
             width: 100%; height: 100%; 
             border-radius: 50%; object-fit: cover; 
             border: 2px solid transparent; 
@@ -63,11 +74,7 @@
             z-index: 10;
         }
 
-        /* 🌟 TEXTOS BÁSICOS */
-        .info-col { 
-            display: flex; flex-direction: column; justify-content: center; gap: 2px;
-        }
-        
+        .info-col { display: flex; flex-direction: column; justify-content: center; gap: 2px; }
         .name-row { display: flex; align-items: center; gap: 6px; }
         
         .name { 
@@ -77,7 +84,6 @@
             letter-spacing: 0.5px;
         }
         
-        /* Etiqueta de victorias con la Copa */
         .win-badge {
             display: flex; align-items: center; gap: 4px;
             background: #ff003c; color: white;
@@ -85,10 +91,7 @@
             padding: 2px 6px; border-radius: 4px;
             box-shadow: 0 0 8px #ff003c;
         }
-        
-        .win-badge i {
-            color: #ffd700; /* Copita dorada */
-        }
+        .win-badge i { color: #ffd700; }
 
         .likes-row {
             display: flex; align-items: center; gap: 6px;
@@ -96,18 +99,8 @@
             font-size: 16px; font-weight: 900;
             text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
         }
+        .heart-icon { color: #ff003c; font-size: 14px; text-shadow: 0 0 5px rgba(255,0,60,0.5); }
 
-        .heart-icon {
-            color: #ff003c;
-            font-size: 14px;
-            text-shadow: 0 0 5px rgba(255,0,60,0.5);
-        }
-
-        /* ====================================================
-           🌟 ESTILOS ESPECIALES PARA LOS QUE TIENEN RACHA 
-           ==================================================== */
-        
-        /* Marco parpadeante dorado/fuego para el avatar */
         .has-streak .avatar {
             border: 3px solid #ffd700; 
             box-shadow: 0 0 10px #ffd700, 0 0 20px #ff8c00;
@@ -117,6 +110,30 @@
         @keyframes pulse-border {
             0% { box-shadow: 0 0 10px #ffd700, 0 0 20px #ff8c00; border-color: #ffd700; }
             100% { box-shadow: 0 0 20px #ffd700, 0 0 35px #ff003c; border-color: #ffb300; }
+        }
+
+        .dummy-row {
+            opacity: 0.4; 
+            filter: grayscale(100%);
+        }
+        .dummy-row .name {
+            color: #aaa;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            font-size: 14px;
+        }
+        .dummy-row .likes-row, .dummy-row .heart-icon {
+            color: #888;
+            text-shadow: none;
+        }
+        .dummy-row .avatar {
+            border-color: #444 !important;
+            box-shadow: none !important;
+            background: #222;
+        }
+        .dummy-row .rank-badge {
+            background: #222 !important;
+            color: #666 !important;
+            box-shadow: none !important;
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -131,6 +148,8 @@
         const socket = io();
         const container = document.getElementById('ranking-box');
 
+        const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 32 32' fill='%23666'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>";
+
         function formatNumber(num) {
             if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
             return num.toLocaleString();
@@ -138,44 +157,50 @@
 
         socket.on('top_likes_data_update', (data) => {
             if(!data) return;
-            
             container.innerHTML = '';
             
             let arrRonda = Object.entries(data.currentRound).map(([u, d]) => ({userKey: u, ...d})).sort((a,b) => b.likes - a.likes);
-            let top5 = arrRonda.slice(0, 5);
+            let limit = 5; 
+            
+            let mirrorClass = data.mirrorMode ? 'mirror' : '';
 
-            top5.forEach((u, index) => {
-                let hist = data.recordHistorico[u.userKey];
-                
-                let hasStreak = (hist && hist.wins > 0);
-                // Aquí agregamos la copita junto a la x
-                let winsHtml = hasStreak ? `<span class="win-badge"><i class="fa-solid fa-trophy"></i> x${hist.wins}</span>` : '';
-                
-                let rankClass = index < 3 ? `rank-${index + 1}` : 'rank-x';
-                let streakClass = hasStreak ? 'has-streak' : ''; 
-                
-                let crownHtml = (index === 0) ? '<i class="fa-solid fa-crown crown"></i>' : '';
+            for (let i = 0; i < limit; i++) {
+                let u = arrRonda[i];
+                let rankClass = i < 3 ? `rank-${i + 1}` : 'rank-x';
 
-                container.innerHTML += `
-                <div class="user-row ${rankClass} ${streakClass}">
-                    <div class="rank-badge">${index + 1}</div>
-                    
-                    <div class="avatar-container">
-                        ${crownHtml}
-                        <img src="${u.avatar}" class="avatar">
-                    </div>
-                    
-                    <div class="info-col">
-                        <div class="name-row">
-                            <span class="name">${u.displayName}</span>
-                            ${winsHtml}
+                if (u) {
+                    let hist = data.recordHistorico[u.userKey];
+                    let hasStreak = (hist && hist.wins > 0);
+                    let winsHtml = hasStreak ? `<span class="win-badge"><i class="fa-solid fa-trophy"></i> x${hist.wins}</span>` : '';
+                    let streakClass = hasStreak ? 'has-streak' : ''; 
+                    let crownHtml = (i === 0) ? '<i class="fa-solid fa-crown crown"></i>' : '';
+
+                    container.innerHTML += `
+                    <div class="user-row ${rankClass} ${streakClass} ${mirrorClass}">
+                        <div class="rank-badge">${i + 1}</div>
+                        <div class="avatar-container">
+                            ${crownHtml}
+                            <img src="${u.avatar}" class="avatar">
                         </div>
-                        <div class="likes-row">
-                            <i class="fa-solid fa-heart heart-icon"></i> ${formatNumber(u.likes)}
+                        <div class="info-col">
+                            <div class="name-row"><span class="name">${u.displayName}</span>${winsHtml}</div>
+                            <div class="likes-row"><i class="fa-solid fa-heart heart-icon"></i> ${formatNumber(u.likes)}</div>
                         </div>
-                    </div>
-                </div>`;
-            });
+                    </div>`;
+                } else {
+                    container.innerHTML += `
+                    <div class="user-row ${rankClass} dummy-row ${mirrorClass}">
+                        <div class="rank-badge">${i + 1}</div>
+                        <div class="avatar-container">
+                            <img src="${defaultAvatar}" class="avatar">
+                        </div>
+                        <div class="info-col">
+                            <div class="name-row"><span class="name">ESPERANDO TOP ${i + 1}</span></div>
+                            <div class="likes-row"><i class="fa-solid fa-heart heart-icon"></i> 0</div>
+                        </div>
+                    </div>`;
+                }
+            }
         });
     </script>
 </body>

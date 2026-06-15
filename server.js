@@ -51,9 +51,8 @@ let configGlobal = {
     rachaVersus: { salvadas: {}, reinicios: {}, showName: true, showCount: true, showCoins: true },
     bolita: { multiplicador: 2, chatWord: "globos, jugar", chatGlobos: 1, chatCooldown: 60, likesMeta: 50, likesGlobos: 1, followGlobos: 5, followCooldown: 300, allowFree: true, quiereMeGlobos: 60 },
     metaLikes: { active: false, firstGoal: 0, step: 20000, prefixText: "A los", actionText: "REINICIO", currentGoal: 20000, style: { fontSize: 45, color: "#ffffff", shadowColor: "#ff003c", fontFamily: "'Luckiest Guy', cursive" } },
-    topLikes: { currentRound: {}, recordHistorico: {} },
-    // 🌟 Añadimos el displayLimit en 2 por defecto
-    topVIP: { currentRound: {}, recordHistorico: {}, displayLimit: 2 } 
+    topLikes: { currentRound: {}, recordHistorico: {}, mirrorMode: false }, // 🌟 Agregado mirrorMode
+    topVIP: { currentRound: {}, recordHistorico: {}, displayLimit: 2, mirrorMode: false } // 🌟 Agregado mirrorMode
 };
 
 if (fs.existsSync(pathData)) {
@@ -63,9 +62,11 @@ if (fs.existsSync(pathData)) {
         if(!configGlobal.rachaVersus) configGlobal.rachaVersus = { salvadas: {}, reinicios: {}, showName: true, showCount: true, showCoins: true };
         if(!configGlobal.bolita) configGlobal.bolita = { multiplicador: 2, chatWord: "globos, jugar", chatGlobos: 1, chatCooldown: 60, likesMeta: 50, likesGlobos: 1, followGlobos: 5, followCooldown: 300, allowFree: true, quiereMeGlobos: 60 };
         if(!configGlobal.metaLikes) configGlobal.metaLikes = { active: false, firstGoal: 0, step: 20000, prefixText: "A los", actionText: "REINICIO", currentGoal: 20000, style: { fontSize: 45, color: "#ffffff", shadowColor: "#ff003c", fontFamily: "'Luckiest Guy', cursive" } };
-        if(!configGlobal.topLikes) configGlobal.topLikes = { currentRound: {}, recordHistorico: {} };
-        if(!configGlobal.topVIP) configGlobal.topVIP = { currentRound: {}, recordHistorico: {}, displayLimit: 2 };
-        if(!configGlobal.topVIP.displayLimit) configGlobal.topVIP.displayLimit = 2; // Seguro
+        if(!configGlobal.topLikes) configGlobal.topLikes = { currentRound: {}, recordHistorico: {}, mirrorMode: false };
+        if(configGlobal.topLikes.mirrorMode === undefined) configGlobal.topLikes.mirrorMode = false;
+        if(!configGlobal.topVIP) configGlobal.topVIP = { currentRound: {}, recordHistorico: {}, displayLimit: 2, mirrorMode: false };
+        if(!configGlobal.topVIP.displayLimit) configGlobal.topVIP.displayLimit = 2; 
+        if(configGlobal.topVIP.mirrorMode === undefined) configGlobal.topVIP.mirrorMode = false;
     } catch (e) {}
 }
 
@@ -352,30 +353,157 @@ io.on('connection', (socket) => {
         io.emit('meta_likes_update', { current: currentTotalLikes, goal: configGlobal.metaLikes.currentGoal, text: configGlobal.metaLikes.actionText, prefix: configGlobal.metaLikes.prefixText, style: configGlobal.metaLikes.style });
     });
 
+    socket.on('force_fetch_likes', async () => {
+        if (tiktokLiveConnection) {
+            try {
+                let roomInfo = await tiktokLiveConnection.getRoomInfo();
+                let fetchedLikes = 0;
+                
+                if (roomInfo && roomInfo.like_count) fetchedLikes = parseInt(roomInfo.like_count);
+                else if (roomInfo && roomInfo.data && roomInfo.data.like_count) fetchedLikes = parseInt(roomInfo.data.like_count);
+                else if (roomInfo && roomInfo.stats && roomInfo.stats.likeCount) fetchedLikes = parseInt(roomInfo.stats.likeCount);
+
+                if (!isNaN(fetchedLikes)) {
+                    currentTotalLikes = fetchedLikes;
+                    io.emit('sync_likes_actuales', currentTotalLikes);
+                }
+            } catch (error) {
+                console.log("No se pudo extraer la información de la sala manualmente.", error);
+            }
+        }
+    });
+
     socket.on('top_cerrar_ambas_rondas', () => { cerrarRondasGlobales(); });
 
-    // 🌟 EVENTOS TOP LIKES
     socket.on('top_likes_limpiar_ronda', () => { configGlobal.topLikes.currentRound = {}; guardarEnArchivo(); io.emit('top_likes_data_update', configGlobal.topLikes); });
     socket.on('top_likes_limpiar_historial', () => { configGlobal.topLikes.recordHistorico = {}; guardarEnArchivo(); io.emit('top_likes_data_update', configGlobal.topLikes); });
     socket.on('top_likes_eliminar_ronda', (userKey) => { delete configGlobal.topLikes.currentRound[userKey]; guardarEnArchivo(); io.emit('top_likes_data_update', configGlobal.topLikes); });
-    socket.on('top_likes_eliminar_historial', (userKey) => { delete configGlobal.topLikes.recordHistorico[userKey]; guardarEnArchivo(); io.emit('top_likes_data_update', configGlobal.topLikes); });
-    socket.on('top_likes_ajuste_historial', (data) => { let hist = configGlobal.topLikes.recordHistorico[data.userKey]; if(hist) { hist.wins += data.amount; if(hist.wins < 0) hist.wins = 0; guardarEnArchivo(); io.emit('top_likes_data_update', configGlobal.topLikes); } });
+    
+    socket.on('top_likes_eliminar_historial', (userKey) => { 
+        let hist = configGlobal.topLikes.recordHistorico[userKey];
+        if(hist) {
+            let name = hist.displayName;
+            delete configGlobal.racha.recordHistorico[name];
+            delete configGlobal.racha.recordDiario[name];
+        }
+        delete configGlobal.topLikes.recordHistorico[userKey]; 
+        guardarEnArchivo(); 
+        io.emit('top_likes_data_update', configGlobal.topLikes); 
+        io.emit('racha_data_update', configGlobal.racha);
+    });
 
-    // 🌟 EVENTOS TOP VIP (DONADORES)
+    socket.on('top_likes_ajuste_historial', (data) => { 
+        let hist = configGlobal.topLikes.recordHistorico[data.userKey]; 
+        if(hist) { 
+            hist.wins += data.amount; if(hist.wins < 0) hist.wins = 0; 
+            
+            let rachaKey = hist.displayName;
+            if(!configGlobal.racha.recordHistorico[rachaKey]) configGlobal.racha.recordHistorico[rachaKey] = { avatar: hist.avatar, displayName: hist.displayName, wins: 0, monedas: 0 };
+            configGlobal.racha.recordHistorico[rachaKey].wins += data.amount;
+            if(configGlobal.racha.recordHistorico[rachaKey].wins < 0) configGlobal.racha.recordHistorico[rachaKey].wins = 0;
+            
+            if(!configGlobal.racha.recordDiario[rachaKey]) configGlobal.racha.recordDiario[rachaKey] = { avatar: hist.avatar, displayName: hist.displayName, wins: 0, monedas: 0 };
+            configGlobal.racha.recordDiario[rachaKey].wins += data.amount;
+            if(configGlobal.racha.recordDiario[rachaKey].wins < 0) configGlobal.racha.recordDiario[rachaKey].wins = 0;
+
+            guardarEnArchivo(); 
+            io.emit('top_likes_data_update', configGlobal.topLikes); 
+            io.emit('racha_data_update', configGlobal.racha);
+        } 
+    });
+
+    // 🌟 COMANDO NUEVO: Guardar Opciones (Espejo)
+    socket.on('top_likes_guardar_opciones', (opts) => { 
+        configGlobal.topLikes.mirrorMode = opts.mirrorMode; 
+        guardarEnArchivo(); 
+        io.emit('config_actual', configGlobal); 
+        io.emit('top_likes_data_update', configGlobal.topLikes); 
+    });
+
     socket.on('top_vip_limpiar_ronda', () => { configGlobal.topVIP.currentRound = {}; guardarEnArchivo(); io.emit('top_vip_data_update', configGlobal.topVIP); });
     socket.on('top_vip_limpiar_historial', () => { configGlobal.topVIP.recordHistorico = {}; guardarEnArchivo(); io.emit('top_vip_data_update', configGlobal.topVIP); });
     socket.on('top_vip_eliminar_ronda', (userKey) => { delete configGlobal.topVIP.currentRound[userKey]; guardarEnArchivo(); io.emit('top_vip_data_update', configGlobal.topVIP); });
-    socket.on('top_vip_eliminar_historial', (userKey) => { delete configGlobal.topVIP.recordHistorico[userKey]; guardarEnArchivo(); io.emit('top_vip_data_update', configGlobal.topVIP); });
-    socket.on('top_vip_ajuste_historial', (data) => { let hist = configGlobal.topVIP.recordHistorico[data.userKey]; if(hist) { hist.wins += data.amount; if(hist.wins < 0) hist.wins = 0; guardarEnArchivo(); io.emit('top_vip_data_update', configGlobal.topVIP); } });
+    
+    socket.on('top_vip_eliminar_historial', (userKey) => { 
+        let hist = configGlobal.topVIP.recordHistorico[userKey];
+        if(hist) {
+            let name = hist.displayName;
+            delete configGlobal.racha.recordHistorico[name];
+            delete configGlobal.racha.recordDiario[name];
+        }
+        delete configGlobal.topVIP.recordHistorico[userKey]; 
+        guardarEnArchivo(); 
+        io.emit('top_vip_data_update', configGlobal.topVIP); 
+        io.emit('racha_data_update', configGlobal.racha);
+    });
+
+    socket.on('top_vip_ajuste_historial', (data) => { 
+        let hist = configGlobal.topVIP.recordHistorico[data.userKey]; 
+        if(hist) { 
+            hist.wins += data.amount; if(hist.wins < 0) hist.wins = 0; 
+            
+            let rachaKey = hist.displayName;
+            if(!configGlobal.racha.recordHistorico[rachaKey]) configGlobal.racha.recordHistorico[rachaKey] = { avatar: hist.avatar, displayName: hist.displayName, wins: 0, monedas: 0 };
+            configGlobal.racha.recordHistorico[rachaKey].wins += data.amount;
+            if(configGlobal.racha.recordHistorico[rachaKey].wins < 0) configGlobal.racha.recordHistorico[rachaKey].wins = 0;
+            
+            if(!configGlobal.racha.recordDiario[rachaKey]) configGlobal.racha.recordDiario[rachaKey] = { avatar: hist.avatar, displayName: hist.displayName, wins: 0, monedas: 0 };
+            configGlobal.racha.recordDiario[rachaKey].wins += data.amount;
+            if(configGlobal.racha.recordDiario[rachaKey].wins < 0) configGlobal.racha.recordDiario[rachaKey].wins = 0;
+
+            guardarEnArchivo(); 
+            io.emit('top_vip_data_update', configGlobal.topVIP); 
+            io.emit('racha_data_update', configGlobal.racha);
+        } 
+    });
+    
     socket.on('top_vip_ajuste_ronda', (data) => { let ronda = configGlobal.topVIP.currentRound[data.userKey]; if(ronda) { ronda.coins += data.amount; if(ronda.coins < 0) ronda.coins = 0; guardarEnArchivo(); io.emit('top_vip_data_update', configGlobal.topVIP); } });
     
-    // 🌟 NUEVO COMANDO: GUARDAR OPCIONES TOP VIP (LIMITE DE VISUALIZACIÓN)
-    socket.on('top_vip_guardar_opciones', (opts) => {
-        configGlobal.topVIP.displayLimit = opts.displayLimit;
-        guardarEnArchivo();
-        io.emit('config_actual', configGlobal);
-        io.emit('top_vip_data_update', configGlobal.topVIP);
+    // 🌟 ACTUALIZADO: Guardar Límite y Espejo
+    socket.on('top_vip_guardar_opciones', (opts) => { 
+        configGlobal.topVIP.displayLimit = opts.displayLimit; 
+        configGlobal.topVIP.mirrorMode = opts.mirrorMode; 
+        guardarEnArchivo(); 
+        io.emit('config_actual', configGlobal); 
+        io.emit('top_vip_data_update', configGlobal.topVIP); 
     });
+
+    socket.on('racha_iniciar_ronda', () => { configGlobal.racha.topRound = {}; guardarEnArchivo(); io.emit('racha_data_update', configGlobal.racha); });
+    socket.on('racha_cerrar_ronda', () => { cerrarRondasGlobales(); });
+    
+    socket.on('racha_ajuste', (data) => {
+        let lista = data.tipo === 'diario' ? configGlobal.racha.recordDiario : configGlobal.racha.recordHistorico;
+        if(lista[data.name]) { 
+            lista[data.name].wins += data.amount; 
+            if(lista[data.name].wins < 0) lista[data.name].wins = 0; 
+
+            let userKeyVip = Object.keys(configGlobal.topVIP.recordHistorico).find(k => configGlobal.topVIP.recordHistorico[k].displayName === data.name);
+            if(userKeyVip) {
+                configGlobal.topVIP.recordHistorico[userKeyVip].wins += data.amount;
+                if(configGlobal.topVIP.recordHistorico[userKeyVip].wins < 0) configGlobal.topVIP.recordHistorico[userKeyVip].wins = 0;
+                io.emit('top_vip_data_update', configGlobal.topVIP);
+            }
+            
+            let userKeyLikes = Object.keys(configGlobal.topLikes.recordHistorico).find(k => configGlobal.topLikes.recordHistorico[k].displayName === data.name);
+            if(userKeyLikes) {
+                configGlobal.topLikes.recordHistorico[userKeyLikes].wins += data.amount;
+                if(configGlobal.topLikes.recordHistorico[userKeyLikes].wins < 0) configGlobal.topLikes.recordHistorico[userKeyLikes].wins = 0;
+                io.emit('top_likes_data_update', configGlobal.topLikes);
+            }
+
+            guardarEnArchivo(); 
+            io.emit('racha_data_update', configGlobal.racha); 
+        }
+    });
+
+    socket.on('racha_eliminar_usuario', (data) => {
+        let lista = data.tipo === 'diario' ? configGlobal.racha.recordDiario : configGlobal.racha.recordHistorico;
+        if(lista[data.name]) { delete lista[data.name]; guardarEnArchivo(); io.emit('racha_data_update', configGlobal.racha); }
+    });
+    
+    socket.on('racha_cerrar_historico', () => { configGlobal.racha.recordHistorico = {}; guardarEnArchivo(); io.emit('racha_data_update', configGlobal.racha); });
+    socket.on('racha_cerrar_diaria', () => { configGlobal.racha.recordDiario = {}; configGlobal.racha.topRound = {}; guardarEnArchivo(); io.emit('racha_data_update', configGlobal.racha); });
+    socket.on('racha_guardar_opciones', (opts) => { configGlobal.racha.showPhoto = opts.showPhoto; configGlobal.racha.showCoins = opts.showCoins; guardarEnArchivo(); io.emit('config_actual', configGlobal); io.emit('racha_data_update', configGlobal.racha); });
 
     socket.on('guardar_config_bolita', (bolitaConfig) => { configGlobal.bolita = bolitaConfig; guardarEnArchivo(); io.emit('config_actual', configGlobal); });
     socket.on('modificar_puntos_equipo', (data) => {
@@ -438,19 +566,6 @@ io.on('connection', (socket) => {
         configGlobal.rachaVersus.showName = opts.showName; configGlobal.rachaVersus.showCount = opts.showCount; configGlobal.rachaVersus.showCoins = opts.showCoins;
         guardarEnArchivo(); io.emit('racha_versus_update', configGlobal.rachaVersus);
     });
-    socket.on('racha_iniciar_ronda', () => { configGlobal.racha.topRound = {}; guardarEnArchivo(); io.emit('racha_data_update', configGlobal.racha); });
-    socket.on('racha_cerrar_ronda', () => { cerrarRondasGlobales(); });
-    socket.on('racha_ajuste', (data) => {
-        let lista = data.tipo === 'diario' ? configGlobal.racha.recordDiario : configGlobal.racha.recordHistorico;
-        if(lista[data.name]) { lista[data.name].wins += data.amount; if(lista[data.name].wins < 0) lista[data.name].wins = 0; guardarEnArchivo(); io.emit('racha_data_update', configGlobal.racha); }
-    });
-    socket.on('racha_eliminar_usuario', (data) => {
-        let lista = data.tipo === 'diario' ? configGlobal.racha.recordDiario : configGlobal.racha.recordHistorico;
-        if(lista[data.name]) { delete lista[data.name]; guardarEnArchivo(); io.emit('racha_data_update', configGlobal.racha); }
-    });
-    socket.on('racha_cerrar_historico', () => { configGlobal.racha.recordHistorico = {}; guardarEnArchivo(); io.emit('racha_data_update', configGlobal.racha); });
-    socket.on('racha_cerrar_diaria', () => { configGlobal.racha.recordDiario = {}; configGlobal.racha.topRound = {}; guardarEnArchivo(); io.emit('racha_data_update', configGlobal.racha); });
-    socket.on('racha_guardar_opciones', (opts) => { configGlobal.racha.showPhoto = opts.showPhoto; configGlobal.racha.showCoins = opts.showCoins; guardarEnArchivo(); io.emit('config_actual', configGlobal); io.emit('racha_data_update', configGlobal.racha); });
 });
 
 setupGameEvents(io, configGlobal);

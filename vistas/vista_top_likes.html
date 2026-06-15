@@ -50,10 +50,19 @@
 
         <div class="racha-layout">
             <div class="racha-col" style="border-color: #00f2fe;">
+                
+                <div style="margin-bottom: 15px; background: #111; padding: 10px; border-radius: 8px; border: 1px solid #333;">
+                    <div style="display:flex; gap:10px; align-items: center;">
+                        <label style="margin:0; color:#fff; display:flex; align-items:center; gap:5px; font-size:12px; cursor:pointer;">
+                            <input type="checkbox" id="inp-likes-mirror" style="width:16px; height:16px; accent-color: #00f2fe;"> Modo Espejo (Diseño invertido)
+                        </label>
+                        <button class="btn-ctrl" style="width:auto; padding:0 15px; background:#00f2fe; color:black; font-size: 12px; margin-left:auto;" onclick="guardarOpcionesLikes()"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+                    </div>
+                </div>
+
                 <h3 style="color:#00f2fe;">Ronda Actual (Tap Tap)</h3>
                 <div class="user-list" id="lista-ronda"></div>
                 
-                <!-- 🌟 ESTE BOTÓN AHORA CIERRA EL DE LIKES Y EL DE VIP A LA VEZ -->
                 <button class="btn-action btn-primary" onclick="cerrarRondaGlobal()"><i class="fa-solid fa-trophy"></i> Cerrar Ronda Global (+1 Win)</button>
                 <button class="btn-action btn-danger" onclick="limpiarRonda()"><i class="fa-solid fa-eraser"></i> Limpiar Ronda Actual</button>
             </div>
@@ -71,6 +80,12 @@
     <script>
         const socket = io();
         
+        socket.on('config_actual', (config) => {
+            if(config.topLikes && config.topLikes.mirrorMode !== undefined) {
+                document.getElementById('inp-likes-mirror').checked = config.topLikes.mirrorMode;
+            }
+        });
+
         socket.on('top_likes_data_update', (data) => {
             if(!data) return;
             
@@ -112,6 +127,12 @@
                 </div>`;
             });
         });
+
+        // 🌟 FUNCIÓN PARA GUARDAR MODO ESPEJO EN LIKES
+        function guardarOpcionesLikes() {
+            let mirror = document.getElementById('inp-likes-mirror').checked;
+            socket.emit('top_likes_guardar_opciones', { mirrorMode: mirror });
+        }
 
         function cerrarRondaGlobal() { 
             if(confirm("🏆 ¿Cerrar Ronda Global?\nSe le dará la victoria al Top 1 de Likes y al Top 1 de Donadores.")) {
