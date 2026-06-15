@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: #0f0f13; color: white; font-family: 'Segoe UI', sans-serif; padding: 40px; margin: 0; }
+        .box { background: #1a1a24; border: 1px solid #333; border-radius: 12px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); max-width: 900px; margin-bottom: 30px;}
+        .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;}
+        
+        .btn-import { background: #ff0050; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold;}
+        .btn-import:hover { background: #ff3370; }
+        
+        .btn-export { background: #00f2fe; color: black; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold;}
+        .btn-export:hover { background: #4facfe; }
+
+        .table-container { max-height: 400px; overflow-y: auto; border: 1px solid #333; border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; background: #111; }
+        th { background: #222; padding: 12px; position: sticky; top: 0; border-bottom: 2px solid #444; color: #ccc; }
+        td { padding: 12px; border-bottom: 1px solid #222; font-size: 14px;}
+        
+        .manual-form { background: #222; padding: 15px; border-radius: 8px; border: 1px solid #444; display: flex; gap: 15px; align-items: flex-end; margin-bottom: 20px;}
+        .manual-col { flex: 1; }
+        .manual-col label { display: block; font-weight: bold; margin-bottom: 8px; font-size: 13px; text-transform: uppercase; color: #00f2fe;}
+        .manual-col input { width: 100%; background: #000; color: #fff; border: 1px solid #555; border-radius: 6px; padding: 10px; font-size: 14px; box-sizing: border-box; }
+        .manual-col input:focus { outline: none; border-color: #00f2fe; }
+        .btn-manual { background: #00f2fe; color: black; font-weight: bold; border: none; padding: 11px 20px; border-radius: 6px; cursor: pointer; transition: 0.2s; white-space: nowrap;}
+        .btn-manual:hover { background: #4facfe; }
+    </style>
+</head>
+<body>
+    
+    <!-- 🎁 SECCIÓN: CATÁLOGO DE REGALOS (catalogo_regalos.json) -->
+    <div class="box">
+        <div class="top-row">
+            <h2 style="margin:0;"><i class="fa-solid fa-gift"></i> Catálogo Maestro de Regalos</h2>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-export" onclick="exportarCatalogo()"><i class="fa-solid fa-file-export"></i> Exportar Catálogo JSON</button>
+                <input type="file" id="file-import-catalogo" accept=".json" style="display:none;" onchange="manejarArchivoCatalogo(event)">
+                <button class="btn-import" onclick="document.getElementById('file-import-catalogo').click()"><i class="fa-solid fa-file-import"></i> Importar Catálogo JSON</button>
+            </div>
+        </div>
+
+        <div class="manual-form">
+            <div class="manual-col">
+                <label><i class="fa-solid fa-hashtag"></i> ID del Regalo</label>
+                <input type="number" id="manual-id" placeholder="Ej. 5655">
+            </div>
+            <div class="manual-col">
+                <label><i class="fa-solid fa-pen"></i> Nombre</label>
+                <input type="text" id="manual-name" placeholder="Ej. Rosa">
+            </div>
+            <div class="manual-col">
+                <label><i class="fa-solid fa-coins"></i> Precio (Monedas)</label>
+                <input type="number" id="manual-price" placeholder="Ej. 1">
+            </div>
+            <button class="btn-manual" onclick="agregarManual()"><i class="fa-solid fa-gift"></i> Añadir Manual</button>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead><tr><th>ID Oficial</th><th>Nombre</th><th>Valor (Monedas)</th><th>Acción</th></tr></thead>
+                <tbody id="tabla-regalos"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        let catalogoActual = []; 
+
+        socket.on('config_actual', (config) => {
+            catalogoActual = config.regalosDisponibles || [];
+            let tbody = document.getElementById('tabla-regalos'); tbody.innerHTML = '';
+            
+            catalogoActual.forEach(g => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="color:#aaa; font-family:monospace;">${g.id}</td>
+                        <td><b>${g.name}</b></td>
+                        <td style="color:#ffd700;"><i class="fa-solid fa-coins"></i> ${g.diamonds}</td>
+                        <td><button onclick="eliminarCatalogo(${g.id})" style="background:none; color:#ff003c; border:none; cursor:pointer;"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>`;
+            });
+        });
+
+        function agregarManual() {
+            let id = parseInt(document.getElementById('manual-id').value);
+            let name = document.getElementById('manual-name').value.trim();
+            let price = parseInt(document.getElementById('manual-price').value);
+
+            if (!id || !name || isNaN(price)) { alert("Por favor, rellena todos los campos."); return; }
+            socket.emit('agregar_regalo_manual', { id: id, name: name, diamonds: price });
+            document.getElementById('manual-id').value = ''; document.getElementById('manual-name').value = ''; document.getElementById('manual-price').value = '';
+        }
+
+        function eliminarCatalogo(id) { if(confirm("¿Eliminar regalo de la base de datos?")) socket.emit('eliminar_regalo_catalogo', id); }
+
+        function exportarCatalogo() {
+            if (catalogoActual.length === 0) { alert("⚠️ El catálogo está vacío."); return; }
+            const dataStr = JSON.stringify(catalogoActual, null, 4);
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a"); a.href = url; a.download = "catalogo_regalos.json";
+            document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+        }
+
+        function manejarArchivoCatalogo(e) {
+            let file = e.target.files[0]; if (!file) return;
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    let jsonData = JSON.parse(e.target.result);
+                    socket.emit('importar_catalogo', jsonData);
+                    alert("✅ Catálogo importado y fusionado correctamente.");
+                } catch(err) { alert("❌ Error al leer el archivo JSON."); }
+            };
+            reader.readAsText(file);
+            document.getElementById('file-import-catalogo').value = ''; 
+        }
+    </script>
+</body>
+</html>

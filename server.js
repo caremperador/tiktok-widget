@@ -10,17 +10,30 @@ const setupGameEvents = require('./gameEvents');
 const pathData = path.join(__dirname, 'data.json');
 const pathCatalogo = path.join(__dirname, 'catalogo_regalos.json'); 
 
-app.get('/', (req, res) => res.sendFile(__dirname + '/panel.html')); 
-app.get('/vista_conexion', (req, res) => res.sendFile(__dirname + '/vista_conexion.html'));
-app.get('/vista_versus', (req, res) => res.sendFile(__dirname + '/vista_versus.html'));
-app.get('/vista_racha', (req, res) => res.sendFile(__dirname + '/vista_racha.html'));
-app.get('/vista_regalos', (req, res) => res.sendFile(__dirname + '/vista_regalos.html'));
-app.get('/salvar', (req, res) => res.sendFile(__dirname + '/salvar.html'));
-app.get('/racha', (req, res) => res.sendFile(__dirname + '/racha.html')); 
-app.get('/regalos_versus.html', (req, res) => res.sendFile(__dirname + '/regalos_versus.html'));
-app.get('/vista_racha_versus.html', (req, res) => res.sendFile(__dirname + '/vista_racha_versus.html'));
-app.get('/racha_versus.html', (req, res) => res.sendFile(__dirname + '/racha_versus.html'));
-app.get('/vista_bolita_globos', (req, res) => res.sendFile(__dirname + '/vista_bolita_globos.html'));
+// =========================================
+// 🌟 RUTAS ORGANIZADAS (MVC / Carpetas)
+// =========================================
+
+// Menú Principal
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html'))); 
+
+// 📁 VISTAS (Paneles de control)
+app.get('/vista_conexion', (req, res) => res.sendFile(path.join(__dirname, 'vistas', 'vista_conexion.html')));
+app.get('/vista_versus', (req, res) => res.sendFile(path.join(__dirname, 'vistas', 'vista_versus.html')));
+app.get('/vista_racha', (req, res) => res.sendFile(path.join(__dirname, 'vistas', 'vista_racha.html')));
+app.get('/vista_regalos', (req, res) => res.sendFile(path.join(__dirname, 'vistas', 'vista_regalos.html')));
+app.get('/vista_racha_versus', (req, res) => res.sendFile(path.join(__dirname, 'vistas', 'vista_racha_versus.html')));
+app.get('/vista_bolita_globos', (req, res) => res.sendFile(path.join(__dirname, 'vistas', 'vista_bolita_globos.html')));
+
+// 📁 OVERLAYS (Fuentes transparentes para OBS)
+app.get('/versus', (req, res) => res.sendFile(path.join(__dirname, 'overlays', 'versus.html'))); // Antes salvar.html
+app.get('/pop_regalos', (req, res) => res.sendFile(path.join(__dirname, 'overlays', 'pop_regalos.html'))); // Antes regalos_versus.html
+app.get('/racha', (req, res) => res.sendFile(path.join(__dirname, 'overlays', 'racha.html'))); 
+app.get('/racha_versus', (req, res) => res.sendFile(path.join(__dirname, 'overlays', 'racha_versus.html')));
+
+// =========================================
+// LÓGICA DEL SERVIDOR (Intacta)
+// =========================================
 
 let topDonators = {};
 let topSorted = [];
@@ -291,7 +304,7 @@ io.on('connection', (socket) => {
     socket.on('racha_guardar_opciones', (opts) => { configGlobal.racha.showPhoto = opts.showPhoto; configGlobal.racha.showCoins = opts.showCoins; guardarEnArchivo(); io.emit('config_actual', configGlobal); io.emit('racha_data_update', configGlobal.racha); });
 });
 
-// 🌟 INICIAMOS EL MOTOR SAAS Y LE PASAMOS LA CONFIGURACIÓN GLOBAL
+// 🌟 INICIAMOS EL MOTOR SAAS
 setupGameEvents(io, configGlobal);
 
 const PORT = process.env.PORT || 3000;
