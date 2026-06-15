@@ -52,7 +52,8 @@ let configGlobal = {
     bolita: { multiplicador: 2, chatWord: "globos, jugar", chatGlobos: 1, chatCooldown: 60, likesMeta: 50, likesGlobos: 1, followGlobos: 5, followCooldown: 300, allowFree: true, quiereMeGlobos: 60 },
     metaLikes: { active: false, firstGoal: 0, step: 20000, prefixText: "A los", actionText: "REINICIO", currentGoal: 20000, style: { fontSize: 45, color: "#ffffff", shadowColor: "#ff003c", fontFamily: "'Luckiest Guy', cursive" } },
     topLikes: { currentRound: {}, recordHistorico: {} },
-    topVIP: { currentRound: {}, recordHistorico: {} } 
+    // 🌟 Añadimos el displayLimit en 2 por defecto
+    topVIP: { currentRound: {}, recordHistorico: {}, displayLimit: 2 } 
 };
 
 if (fs.existsSync(pathData)) {
@@ -63,7 +64,8 @@ if (fs.existsSync(pathData)) {
         if(!configGlobal.bolita) configGlobal.bolita = { multiplicador: 2, chatWord: "globos, jugar", chatGlobos: 1, chatCooldown: 60, likesMeta: 50, likesGlobos: 1, followGlobos: 5, followCooldown: 300, allowFree: true, quiereMeGlobos: 60 };
         if(!configGlobal.metaLikes) configGlobal.metaLikes = { active: false, firstGoal: 0, step: 20000, prefixText: "A los", actionText: "REINICIO", currentGoal: 20000, style: { fontSize: 45, color: "#ffffff", shadowColor: "#ff003c", fontFamily: "'Luckiest Guy', cursive" } };
         if(!configGlobal.topLikes) configGlobal.topLikes = { currentRound: {}, recordHistorico: {} };
-        if(!configGlobal.topVIP) configGlobal.topVIP = { currentRound: {}, recordHistorico: {} };
+        if(!configGlobal.topVIP) configGlobal.topVIP = { currentRound: {}, recordHistorico: {}, displayLimit: 2 };
+        if(!configGlobal.topVIP.displayLimit) configGlobal.topVIP.displayLimit = 2; // Seguro
     } catch (e) {}
 }
 
@@ -81,7 +83,6 @@ function guardarEnArchivo() {
 function cerrarRondasGlobales() {
     let seCerroAlgo = false;
 
-    // 1. Cerrar Top Likes
     let arrLikes = Object.entries(configGlobal.topLikes.currentRound).map(([u, d]) => ({userKey: u, ...d})).sort((a,b) => b.likes - a.likes);
     if (arrLikes.length > 0) {
         let top1 = arrLikes[0]; 
@@ -93,7 +94,6 @@ function cerrarRondasGlobales() {
         seCerroAlgo = true;
     }
 
-    // 2. Cerrar Top VIPs
     let arrVIPs = Object.entries(configGlobal.topVIP.currentRound).map(([u, d]) => ({userKey: u, ...d})).sort((a,b) => b.coins - a.coins);
     if (arrVIPs.length > 0) {
         let top1 = arrVIPs[0]; 
@@ -105,7 +105,6 @@ function cerrarRondasGlobales() {
         seCerroAlgo = true;
     }
 
-    // 3. Cerrar Antiguo Racha (Regalos)
     let arrRachas = Object.values(configGlobal.racha.topRound).sort((a,b) => b.monedas - a.monedas);
     if (arrRachas.length > 0) {
         let top1 = arrRachas[0]; let name = top1.displayName;
@@ -355,27 +354,27 @@ io.on('connection', (socket) => {
 
     socket.on('top_cerrar_ambas_rondas', () => { cerrarRondasGlobales(); });
 
+    // 🌟 EVENTOS TOP LIKES
     socket.on('top_likes_limpiar_ronda', () => { configGlobal.topLikes.currentRound = {}; guardarEnArchivo(); io.emit('top_likes_data_update', configGlobal.topLikes); });
     socket.on('top_likes_limpiar_historial', () => { configGlobal.topLikes.recordHistorico = {}; guardarEnArchivo(); io.emit('top_likes_data_update', configGlobal.topLikes); });
     socket.on('top_likes_eliminar_ronda', (userKey) => { delete configGlobal.topLikes.currentRound[userKey]; guardarEnArchivo(); io.emit('top_likes_data_update', configGlobal.topLikes); });
     socket.on('top_likes_eliminar_historial', (userKey) => { delete configGlobal.topLikes.recordHistorico[userKey]; guardarEnArchivo(); io.emit('top_likes_data_update', configGlobal.topLikes); });
     socket.on('top_likes_ajuste_historial', (data) => { let hist = configGlobal.topLikes.recordHistorico[data.userKey]; if(hist) { hist.wins += data.amount; if(hist.wins < 0) hist.wins = 0; guardarEnArchivo(); io.emit('top_likes_data_update', configGlobal.topLikes); } });
 
+    // 🌟 EVENTOS TOP VIP (DONADORES)
     socket.on('top_vip_limpiar_ronda', () => { configGlobal.topVIP.currentRound = {}; guardarEnArchivo(); io.emit('top_vip_data_update', configGlobal.topVIP); });
     socket.on('top_vip_limpiar_historial', () => { configGlobal.topVIP.recordHistorico = {}; guardarEnArchivo(); io.emit('top_vip_data_update', configGlobal.topVIP); });
     socket.on('top_vip_eliminar_ronda', (userKey) => { delete configGlobal.topVIP.currentRound[userKey]; guardarEnArchivo(); io.emit('top_vip_data_update', configGlobal.topVIP); });
     socket.on('top_vip_eliminar_historial', (userKey) => { delete configGlobal.topVIP.recordHistorico[userKey]; guardarEnArchivo(); io.emit('top_vip_data_update', configGlobal.topVIP); });
     socket.on('top_vip_ajuste_historial', (data) => { let hist = configGlobal.topVIP.recordHistorico[data.userKey]; if(hist) { hist.wins += data.amount; if(hist.wins < 0) hist.wins = 0; guardarEnArchivo(); io.emit('top_vip_data_update', configGlobal.topVIP); } });
+    socket.on('top_vip_ajuste_ronda', (data) => { let ronda = configGlobal.topVIP.currentRound[data.userKey]; if(ronda) { ronda.coins += data.amount; if(ronda.coins < 0) ronda.coins = 0; guardarEnArchivo(); io.emit('top_vip_data_update', configGlobal.topVIP); } });
     
-    // 🌟 EVENTO NUEVO: AJUSTE MANUAL EN RONDA ACTUAL VIP
-    socket.on('top_vip_ajuste_ronda', (data) => { 
-        let ronda = configGlobal.topVIP.currentRound[data.userKey]; 
-        if(ronda) { 
-            ronda.coins += data.amount; 
-            if(ronda.coins < 0) ronda.coins = 0; 
-            guardarEnArchivo(); 
-            io.emit('top_vip_data_update', configGlobal.topVIP); 
-        } 
+    // 🌟 NUEVO COMANDO: GUARDAR OPCIONES TOP VIP (LIMITE DE VISUALIZACIÓN)
+    socket.on('top_vip_guardar_opciones', (opts) => {
+        configGlobal.topVIP.displayLimit = opts.displayLimit;
+        guardarEnArchivo();
+        io.emit('config_actual', configGlobal);
+        io.emit('top_vip_data_update', configGlobal.topVIP);
     });
 
     socket.on('guardar_config_bolita', (bolitaConfig) => { configGlobal.bolita = bolitaConfig; guardarEnArchivo(); io.emit('config_actual', configGlobal); });

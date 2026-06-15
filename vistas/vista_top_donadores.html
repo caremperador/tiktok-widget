@@ -50,6 +50,16 @@
 
         <div class="racha-layout">
             <div class="racha-col" style="border-color: #ffd700;">
+                
+                <!-- 🌟 CONFIGURACIÓN DE LÍMITE (TOP 2, 3, etc.) -->
+                <div style="margin-bottom: 15px; background: #111; padding: 10px; border-radius: 8px; border: 1px solid #333;">
+                    <label style="color:#00f2fe; margin-bottom: 5px;">Cantidad a mostrar en Overlay (Por defecto: 2)</label>
+                    <div style="display:flex; gap:10px;">
+                        <input type="number" id="inp-vip-limit" min="1" max="10" value="2" style="margin:0; width:80px; text-align:center;">
+                        <button class="btn-ctrl" style="width:auto; padding:0 15px; background:#00f2fe; color:black; font-size: 12px;" onclick="guardarOpcionesVIP()"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+                    </div>
+                </div>
+
                 <h3 style="color:#ffd700;">Ronda Actual (Monedas)</h3>
                 <div class="user-list" id="lista-ronda"></div>
                 
@@ -73,10 +83,15 @@
         let focusKey = null;
         let focusValue = "";
 
+        socket.on('config_actual', (config) => {
+            if(config.topVIP && config.topVIP.displayLimit) {
+                document.getElementById('inp-vip-limit').value = config.topVIP.displayLimit;
+            }
+        });
+
         socket.on('top_vip_data_update', (data) => {
             if(!data) return;
             
-            // ESCUDO ANTI-BORRADO: Guardamos qué recuadro estás escribiendo
             if(document.activeElement && document.activeElement.id && document.activeElement.id.startsWith('inp-coin-')) {
                 focusKey = document.activeElement.id;
                 focusValue = document.activeElement.value;
@@ -99,7 +114,6 @@
                         <div><span class="u-name">${u.displayName}</span><span class="u-data"><i class="fa-solid fa-coins"></i> ${u.coins.toLocaleString()}</span></div>
                     </div>
                     
-                    <!-- 🌟 CAMPO PEQUEÑITO PARA SUMAR MONEDAS -->
                     <div style="display:flex; gap:5px; align-items:center;">
                         <input type="number" id="inp-coin-${u.userKey}" style="width:45px; height:24px; margin:0; padding:0 4px; border:1px solid #555; background:#000; color:#00ff66; border-radius:4px; font-size:12px; font-weight:bold;" placeholder="+ Cant">
                         <button class="btn-ctrl" style="color:#00ff66;" onclick="sumarCoinsRonda('${u.userKey}')" title="Sumar Monedas manualmente"><i class="fa-solid fa-plus"></i></button>
@@ -108,7 +122,6 @@
                 </div>`;
             });
 
-            // Devolver el cursor a donde estabas escribiendo
             if(focusKey) {
                 let el = document.getElementById(focusKey);
                 if(el) {
@@ -138,13 +151,17 @@
             });
         });
 
-        // 🌟 FUNCIÓN PARA SUMAR MANUALMENTE
+        function guardarOpcionesVIP() {
+            let limit = parseInt(document.getElementById('inp-vip-limit').value) || 2;
+            socket.emit('top_vip_guardar_opciones', { displayLimit: limit });
+        }
+
         function sumarCoinsRonda(key) {
             let input = document.getElementById('inp-coin-' + key);
             let amount = parseInt(input.value);
             if(!isNaN(amount) && amount !== 0) {
                 socket.emit('top_vip_ajuste_ronda', { userKey: key, amount: amount });
-                input.value = ''; // Limpiar después de sumar
+                input.value = ''; 
             }
         }
 
