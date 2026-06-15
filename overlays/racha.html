@@ -32,16 +32,15 @@
             border: 5px solid #00f2fe; box-shadow: 0 0 25px #00f2fe, inset 0 0 20px #00f2fe;
         }
         
-        /* 🌟 FONDO TRANSPARENTE PARA LAS MONEDAS */
         .coins-badge {
             position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%);
             color: #fff; font-size: 32px; 
             -webkit-text-stroke: 1.5px #000; white-space: nowrap;
             text-shadow: 3px 3px 0px #000, -1px -1px 0px #000, 1px -1px 0px #000, -1px 1px 0px #000;
             display: flex; align-items: center; gap: 8px; font-family: 'Luckiest Guy', cursive;
-            background: transparent; /* Fondo eliminado */
-            border: none; /* Borde eliminado */
-            box-shadow: none; /* Sombra eliminada */
+            background: transparent; 
+            border: none; 
+            box-shadow: none; 
         }
 
         .fa-single-coin {
@@ -62,7 +61,7 @@
 <body>
 
     <div class="block" id="bloque-diario" style="display:none;">
-        <div class="heavy-text title-diario">🔥 RECORD DIARIO 🔥</div>
+        <div class="heavy-text title-diario">🔥 TOP HOY 🔥</div>
         <div class="avatar-container" id="container-foto-diario">
             <img src="" class="avatar" id="avatar-diario" onerror="this.src='https://via.placeholder.com/150/222/fff?text=?'">
             <div class="heavy-text coins-badge" id="coins-diario"></div>
@@ -72,7 +71,7 @@
     </div>
 
     <div class="block" id="bloque-historico" style="display:none;">
-        <div class="heavy-text title-historico">🏆 RECORD HISTORICO 🏆</div>
+        <div class="heavy-text title-historico">🏆 TOP HISTÓRICO 🏆</div>
         <div class="avatar-container" id="container-foto-historico">
             <img src="" class="avatar" id="avatar-historico" onerror="this.src='https://via.placeholder.com/150/222/fff?text=?'">
             <div class="heavy-text coins-badge" id="coins-historico"></div> 

@@ -2,12 +2,10 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Gatijuegos App - V1.4.0</title>
+    <title>Gatijuegos App - V1.5.0</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { margin: 0; display: flex; height: 100vh; background: #0f0f13; color: #eee; font-family: 'Segoe UI', sans-serif; overflow: hidden;}
-        
-        /* BARRA LATERAL */
         .sidebar { width: 260px; background: #1a1a1a; border-right: 1px solid #333; display: flex; flex-direction: column; }
         .logo { padding: 25px 20px 5px 20px; font-size: 22px; font-weight: 900; color: #00f2fe; text-transform: uppercase; text-align: center; letter-spacing: 1px;}
         .sidebar-status { text-align: center; font-size: 11px; font-weight: bold; margin-bottom: 10px; padding-bottom: 15px; border-bottom: 1px solid #333; color: #ff003c; text-transform: uppercase; letter-spacing: 1px;}
@@ -18,13 +16,10 @@
         .menu-item.active { background: linear-gradient(90deg, #00f2fe22, transparent); color: #00f2fe; border-left: 4px solid #00f2fe; border-radius: 0 8px 8px 0; font-weight: bold;}
         
         .sidebar-version { margin-top: auto; padding: 20px; text-align: center; font-size: 12px; color: #555; font-weight: bold; border-top: 1px solid #333;}
-
-        /* CONTENIDO Y PESTAÑAS */
         .content { flex: 1; position: relative; background: #0f0f13;}
         .tab-content { display: none; width: 100%; height: 100%; border: none; }
         .tab-content.active { display: block; }
         
-        /* UI DE CONEXIÓN */
         .conexion-wrapper { padding: 40px; }
         .status-bar { background: #000; padding: 15px; border-radius: 8px; border: 1px solid #444; font-family: monospace; font-size: 16px; margin-bottom: 20px; color: #ccc; text-align: center; max-width: 800px; font-weight: bold;}
         .box { background: #1a1a24; border: 1px solid #333; border-radius: 12px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); max-width: 800px;}
@@ -49,14 +44,16 @@
         
         <div class="menu-group">Overlays Web</div>
         <div class="menu-item" onclick="showTab('tab-batalla', this)"><i class="fa-solid fa-khanda"></i> Batalla de Equipos</div>
-        <div class="menu-item" onclick="showTab('tab-racha', this)"><i class="fa-solid fa-fire"></i> Rachas</div>
+        <div class="menu-item" onclick="showTab('tab-racha', this)"><i class="fa-solid fa-fire"></i> Rachas Regalos</div>
         <div class="menu-item" onclick="showTab('tab-racha-versus', this)"><i class="fa-solid fa-shield-halved"></i> Racha Versus</div>
+        <div class="menu-item" onclick="showTab('tab-top-likes', this)"><i class="fa-solid fa-hand-pointer"></i> Top Tap Tap</div>
+        <div class="menu-item" onclick="showTab('tab-top-vip', this)"><i class="fa-solid fa-gem"></i> Top Donadores</div>
         <div class="menu-item" onclick="showTab('tab-metalikes', this)"><i class="fa-solid fa-thumbs-up"></i> Meta de Likes</div>
 
         <div class="menu-group">Juegos Interactivos</div>
         <div class="menu-item" onclick="showTab('tab-bolita', this)"><i class="fa-solid fa-bowling-ball"></i> Bolita Globos</div>
 
-        <div class="sidebar-version">Versión Oficial 1.4.0</div>
+        <div class="sidebar-version">Versión Oficial 1.5.0</div>
     </div>
 
     <div class="content">
@@ -78,9 +75,11 @@
         <iframe id="tab-batalla" class="tab-content" src="/vista_versus"></iframe>
         <iframe id="tab-racha" class="tab-content" src="/vista_racha"></iframe>
         <iframe id="tab-racha-versus" class="tab-content" src="/vista_racha_versus"></iframe>
+        <iframe id="tab-top-likes" class="tab-content" src="/vista_top_likes"></iframe>
+        <iframe id="tab-top-vip" class="tab-content" src="/vista_top_donadores"></iframe>
         <iframe id="tab-regalos" class="tab-content" src="/vista_regalos"></iframe>
-        <iframe id="tab-bolita" class="tab-content" src="/vista_bolita_globos"></iframe>
         <iframe id="tab-metalikes" class="tab-content" src="/vista_meta_likes"></iframe>
+        <iframe id="tab-bolita" class="tab-content" src="/vista_bolita_globos"></iframe>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>

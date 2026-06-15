@@ -13,6 +13,8 @@
         .racha-col h3 { text-align: center; margin-top: 0; font-size: 16px; color: #fff; border-bottom: 1px solid #444; padding-bottom: 10px;}
         
         .user-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 5px;}
+        .user-list::-webkit-scrollbar { width: 5px; }
+        .user-list::-webkit-scrollbar-thumb { background: #555; border-radius: 10px; }
         .user-item { background: #111; padding: 10px; border-radius: 8px; border: 1px solid #333; display: flex; align-items: center; justify-content: space-between; gap: 10px;}
         .user-info { display: flex; align-items: center; gap: 10px; overflow: hidden;}
         .user-info img { width: 35px; height: 35px; border-radius: 50%; object-fit: cover;}
@@ -25,8 +27,8 @@
         .btn-del { color: #ff003c; }
         .btn-del:hover { background: #ff003c; color: white; }
 
-        .btn-add-win { background: #00ff66; color: black; border: none; padding: 10px; width: 100%; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px;}
-        .btn-clear { background: #444; color: white; border: none; padding: 10px; width: 100%; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px;}
+        .btn-add-win { background: #00ff66; color: black; border: none; padding: 10px; width: 100%; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; text-transform: uppercase;}
+        .btn-clear { background: #444; color: white; border: none; padding: 10px; width: 100%; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; text-transform: uppercase; font-size: 12px;}
         .btn-clear:hover { background: #ff003c; }
 
         .btn-overlay { padding: 10px 15px; background: #222; color: #ffaa00; font-size: 13px; font-weight: bold; border: 1px solid #ffaa00; cursor: pointer; border-radius: 8px;}
@@ -40,7 +42,6 @@
 </head>
 <body>
 
-    <!-- 🌟 SECCIÓN: COPIAS DE SEGURIDAD GENERAL (data.json) -->
     <div class="box" style="border: 2px solid #00ff66;">
         <div class="top-row" style="margin-bottom: 0; background: transparent; padding: 0;">
             <h2 style="margin:0; color:#00ff66; font-size: 18px;"><i class="fa-solid fa-server"></i> Copias de Seguridad (Historiales y Rachas)</h2>
@@ -53,7 +54,6 @@
         <p style="color:#aaa; font-size:13px; margin-top:10px;">Haz una copia de seguridad de tus rachas diarias, récords históricos y configuración visual antes de actualizar tu servidor en Render o GitHub.</p>
     </div>
 
-    <!-- 🌟 SECCIÓN: RACHAS -->
     <div class="box">
         <div class="top-row">
             <div style="display:flex; gap: 20px; align-items:center;">
@@ -71,19 +71,21 @@
                 <h3 style="color:#00f2fe;">🔄 Ronda Actual</h3>
                 <div class="user-list" id="lista-ronda"></div>
                 <div>
-                    <button class="btn-add-win" onclick="cerrarRonda()"><i class="fa-solid fa-trophy"></i> Cerrar Ronda (+1 Win al Top)</button>
-                    <button class="btn-clear" onclick="iniciarRonda()"><i class="fa-solid fa-rotate-left"></i> Limpiar Ronda</button>
+                    <!-- 🌟 BOTÓN CERRAR GLOBAL -->
+                    <button class="btn-add-win" onclick="cerrarRondaGlobal()"><i class="fa-solid fa-trophy"></i> Cerrar Ronda Global</button>
+                    <button class="btn-clear" onclick="iniciarRonda()"><i class="fa-solid fa-eraser"></i> Limpiar Ronda</button>
                 </div>
             </div>
 
+            <!-- 🌟 NOMBRES CORTOS -->
             <div class="racha-col" style="border-color: #ffaa00;">
-                <h3 style="color:#ffaa00;">🔥 Historial Diario</h3>
+                <h3 style="color:#ffaa00;">🔥 TOP HOY</h3>
                 <div class="user-list" id="lista-diario"></div>
                 <div><button class="btn-clear" onclick="cerrarRachaDiaria()"><i class="fa-solid fa-trash"></i> Cerrar Día (Borrar Todo)</button></div>
             </div>
 
             <div class="racha-col" style="border-color: #00ff66;">
-                <h3 style="color:#00ff66;">🏆 Récord Histórico</h3>
+                <h3 style="color:#00ff66;">🏆 TOP HISTÓRICO</h3>
                 <div class="user-list" id="lista-historico"></div>
                 <div><button class="btn-clear" onclick="cerrarRachaHistorica()"><i class="fa-solid fa-trash"></i> Borrar Histórico</button></div>
             </div>
@@ -137,25 +139,21 @@
         });
 
         function iniciarRonda() { socket.emit('racha_iniciar_ronda'); }
-        function cerrarRonda() { socket.emit('racha_cerrar_ronda'); }
+        
+        // 🌟 LLAMADA A LA FUNCIÓN GLOBAL
+        function cerrarRondaGlobal() { 
+            if(confirm("🏆 ¿Cerrar Ronda Global?\nSe le dará la victoria a los Tops de Regalos, Donadores y Likes al mismo tiempo.")) {
+                socket.emit('top_cerrar_ambas_rondas'); 
+            }
+        }
+        
         function ajustarWin(tipo, nombre, cant) { socket.emit('racha_ajuste', { tipo: tipo, name: nombre, amount: cant }); }
-        
-        function eliminarUser(tipo, nombre) {
-            if(confirm(`¿Eliminar a ${nombre} del récord ${tipo}?`)) {
-                socket.emit('racha_eliminar_usuario', { tipo: tipo, name: nombre });
-            }
-        }
-        function cerrarRachaHistorica() { 
-            if(confirm("🚨 ¿Estás seguro de borrar TODO el Récord Histórico? Esto no se puede deshacer.")) {
-                socket.emit('racha_cerrar_historico'); 
-            }
-        }
-        
+        function eliminarUser(tipo, nombre) { if(confirm(`¿Eliminar a ${nombre} del récord ${tipo}?`)) { socket.emit('racha_eliminar_usuario', { tipo: tipo, name: nombre }); } }
+        function cerrarRachaHistorica() { if(confirm("🚨 ¿Estás seguro de borrar TODO el Récord Histórico? Esto no se puede deshacer.")) { socket.emit('racha_cerrar_historico'); } }
         function cerrarRachaDiaria() { if(confirm("¿Borrar Racha Diaria? (El historial se mantendrá)")) socket.emit('racha_cerrar_diaria'); }
         function guardarOpts() { socket.emit('racha_guardar_opciones', { showPhoto: document.getElementById('opt-photo').checked, showCoins: document.getElementById('opt-coins').checked }); }
         function copiarURL() { navigator.clipboard.writeText(window.location.origin + '/racha'); alert("✅ Enlace copiado!"); }
 
-        // 🌟 LÓGICA DE EXPORTAR/IMPORTAR DATA.JSON
         function exportarHistorial() {
             if (Object.keys(configCompleta).length === 0) { alert("⚠️ No hay datos cargados en el sistema."); return; }
             let exportData = JSON.parse(JSON.stringify(configCompleta));
