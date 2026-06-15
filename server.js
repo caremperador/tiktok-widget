@@ -13,33 +13,31 @@ const pathCatalogo = path.join(__dirname, 'catalogo_regalos.json');
 // =========================================
 // 🌟 RUTAS ORGANIZADAS (MVC / Carpetas)
 // =========================================
-
-// Menú Principal
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html'))); 
 
-// 📁 VISTAS (Paneles de control)
 app.get('/vista_conexion', (req, res) => res.sendFile(path.join(__dirname, 'vistas', 'vista_conexion.html')));
 app.get('/vista_versus', (req, res) => res.sendFile(path.join(__dirname, 'vistas', 'vista_versus.html')));
 app.get('/vista_racha', (req, res) => res.sendFile(path.join(__dirname, 'vistas', 'vista_racha.html')));
 app.get('/vista_regalos', (req, res) => res.sendFile(path.join(__dirname, 'vistas', 'vista_regalos.html')));
 app.get('/vista_racha_versus', (req, res) => res.sendFile(path.join(__dirname, 'vistas', 'vista_racha_versus.html')));
 app.get('/vista_bolita_globos', (req, res) => res.sendFile(path.join(__dirname, 'vistas', 'vista_bolita_globos.html')));
+app.get('/vista_meta_likes', (req, res) => res.sendFile(path.join(__dirname, 'vistas', 'vista_meta_likes.html')));
 
-// 📁 OVERLAYS (Fuentes transparentes para OBS)
-app.get('/versus', (req, res) => res.sendFile(path.join(__dirname, 'overlays', 'versus.html'))); // Antes salvar.html
-app.get('/pop_regalos', (req, res) => res.sendFile(path.join(__dirname, 'overlays', 'pop_regalos.html'))); // Antes regalos_versus.html
+app.get('/versus', (req, res) => res.sendFile(path.join(__dirname, 'overlays', 'versus.html'))); 
+app.get('/pop_regalos', (req, res) => res.sendFile(path.join(__dirname, 'overlays', 'pop_regalos.html'))); 
 app.get('/racha', (req, res) => res.sendFile(path.join(__dirname, 'overlays', 'racha.html'))); 
 app.get('/racha_versus', (req, res) => res.sendFile(path.join(__dirname, 'overlays', 'racha_versus.html')));
+app.get('/meta_likes', (req, res) => res.sendFile(path.join(__dirname, 'overlays', 'meta_likes.html')));
 
 // =========================================
-// LÓGICA DEL SERVIDOR (Intacta)
+// LÓGICA DEL SERVIDOR
 // =========================================
-
 let topDonators = {};
 let topSorted = [];
 let teamSalvar = { total: 0, donators: {} };
 let teamReiniciar = { total: 0, donators: {} };
 let catalogoGlobal = [];
+let currentTotalLikes = 0; 
 
 const regalosEq1Defecto = [{ id: 6064, name: "GG", diamonds: 1 }, { id: 9947, name: "BFF Necklace", diamonds: 10 }];
 const regalosEq2Defecto = [{ id: 5655, name: "Rose", diamonds: 1 }, { id: 8913, name: "Rosa", diamonds: 10 }];
@@ -54,7 +52,7 @@ let configGlobal = {
     racha: { topRound: {}, recordDiario: {}, recordHistorico: {}, showPhoto: true, showCoins: false },
     rachaVersus: { salvadas: {}, reinicios: {}, showName: true, showCount: true, showCoins: true },
     bolita: { multiplicador: 2, chatWord: "globos, jugar", chatGlobos: 1, chatCooldown: 60, likesMeta: 50, likesGlobos: 1, followGlobos: 5, followCooldown: 300, allowFree: true, quiereMeGlobos: 60 },
-    battleStyle: { fontFamily: "'Lemon', serif", textStroke: 1.5, colorL1: "#ffd700", sizeL1: 38, colorL2: "#ff003c", sizeL2: 45, colorTimer: "#ffffff", sizeTimer: 140, shadowOpacity: 1.0, shadowDistance: 4 }
+    metaLikes: { active: false, firstGoal: 0, step: 20000, prefixText: "A los", actionText: "REINICIO", currentGoal: 20000, style: { fontSize: 45, color: "#ffffff", shadowColor: "#ff003c", fontFamily: "'Luckiest Guy', cursive" } }
 };
 
 if (fs.existsSync(pathData)) {
@@ -63,6 +61,7 @@ if (fs.existsSync(pathData)) {
         configGlobal = { ...configGlobal, ...guardado };
         if(!configGlobal.rachaVersus) configGlobal.rachaVersus = { salvadas: {}, reinicios: {}, showName: true, showCount: true, showCoins: true };
         if(!configGlobal.bolita) configGlobal.bolita = { multiplicador: 2, chatWord: "globos, jugar", chatGlobos: 1, chatCooldown: 60, likesMeta: 50, likesGlobos: 1, followGlobos: 5, followCooldown: 300, allowFree: true, quiereMeGlobos: 60 };
+        if(!configGlobal.metaLikes) configGlobal.metaLikes = { active: false, firstGoal: 0, step: 20000, prefixText: "A los", actionText: "REINICIO", currentGoal: 20000, style: { fontSize: 45, color: "#ffffff", shadowColor: "#ff003c", fontFamily: "'Luckiest Guy', cursive" } };
     } catch (e) {}
 }
 
@@ -92,6 +91,7 @@ function desconectarTikTok() {
         desconexionIntencional = true;
         try { tiktokLiveConnection.disconnect(); } catch (e) {}
         tiktokLiveConnection = null;
+        currentTotalLikes = 0; 
         io.emit('estado_conexion', { estado: 'desconectado', msg: '🔴 Desconectado manualmente' });
     }
 }
@@ -126,6 +126,51 @@ function conectarTikTok(usuario) {
 
     connectionInstance.on('streamEnd', () => {
         if (tiktokLiveConnection === connectionInstance) { desconexionIntencional = true; io.emit('estado_conexion', { estado: 'offline', msg: '⬛ El LIVE ha finalizado' }); }
+    });
+
+    // 🌟 EVENTO LIKES - LÓGICA DE METAS INTELIGENTE
+    connectionInstance.on('like', data => {
+        let totalTikTok = parseInt(data.totalLikeCount);
+        let batchLikes = parseInt(data.likeCount) || 1;
+
+        if (!isNaN(totalTikTok) && totalTikTok > currentTotalLikes) {
+            currentTotalLikes = totalTikTok;
+        } else {
+            currentTotalLikes += batchLikes;
+        }
+        
+        io.emit('sync_likes_actuales', currentTotalLikes);
+
+        if (configGlobal.metaLikes && configGlobal.metaLikes.active) {
+            let meta = configGlobal.metaLikes;
+            let cGoal = parseInt(meta.currentGoal) || 0;
+            let mStep = parseInt(meta.step) || 100;
+            
+            if (cGoal > 0 && currentTotalLikes >= cGoal) {
+                // 1. Avisar al overlay que celebre INMEDIATAMENTE
+                io.emit('meta_likes_reached', { goal: cGoal, text: meta.actionText });
+                
+                // Limpiamos el FirstGoal para que ya no estorbe en los siguientes ciclos
+                meta.firstGoal = 0;
+
+                // 2. Calcular matemáticamente la próxima meta (Avanza saltos hasta superar los likes actuales)
+                while (cGoal <= currentTotalLikes) {
+                    cGoal += mStep;
+                }
+                meta.currentGoal = cGoal; 
+                guardarEnArchivo();
+                
+                io.emit('config_actual', configGlobal);
+                
+                // 3. Manda el nuevo texto al overlay tras 4 segundos de celebración
+                setTimeout(() => {
+                    io.emit('meta_likes_update', { current: currentTotalLikes, goal: cGoal, text: meta.actionText, prefix: meta.prefixText, style: meta.style });
+                }, 4000); 
+
+            } else {
+                io.emit('meta_likes_update', { current: currentTotalLikes, goal: cGoal, text: meta.actionText, prefix: meta.prefixText, style: meta.style });
+            }
+        }
     });
 
     connectionInstance.on('gift', data => {
@@ -190,6 +235,10 @@ io.on('connection', (socket) => {
     socket.emit('actualizacion', topSorted);
     socket.emit('racha_data_update', configGlobal.racha);
     socket.emit('racha_versus_update', configGlobal.rachaVersus);
+    socket.emit('sync_likes_actuales', currentTotalLikes);
+    if(configGlobal.metaLikes) {
+        socket.emit('meta_likes_update', { current: currentTotalLikes, goal: configGlobal.metaLikes.currentGoal, text: configGlobal.metaLikes.actionText, prefix: configGlobal.metaLikes.prefixText, style: configGlobal.metaLikes.style });
+    }
     emitSalvarUpdate(socket);
 
     socket.on('comando_conectar', (usuario) => { configGlobal.username = usuario.trim(); guardarEnArchivo(); conectarTikTok(configGlobal.username); });
@@ -200,22 +249,42 @@ io.on('connection', (socket) => {
         nuevaConfig.regalosDisponibles = configGlobal.regalosDisponibles; 
         nuevaConfig.racha = configGlobal.racha; nuevaConfig.rachaVersus = configGlobal.rachaVersus;
         nuevaConfig.bolita = configGlobal.bolita; 
+        nuevaConfig.metaLikes = configGlobal.metaLikes; 
         configGlobal = nuevaConfig; guardarEnArchivo(); io.emit('config_actual', configGlobal); emitSalvarUpdate(io); 
     });
 
-    socket.on('guardar_config_bolita', (bolitaConfig) => {
-        configGlobal.bolita = bolitaConfig;
+    // 🌟 EVENTO ÚNICO PARA GUARDAR Y ACTIVAR LA META DESDE EL PANEL
+    socket.on('guardar_meta_likes', (data) => {
+        configGlobal.metaLikes = data.config;
+        
+        let mStep = parseInt(configGlobal.metaLikes.step) || 100;
+        let mFirstGoal = parseInt(configGlobal.metaLikes.firstGoal) || 0;
+        
+        // 🌟 LÓGICA DE PRIORIDAD ABSOLUTA DEL PRIMER OBJETIVO
+        if (mFirstGoal > currentTotalLikes) {
+            configGlobal.metaLikes.currentGoal = mFirstGoal;
+        } else {
+            // AUTO-REDONDEO MÁGICO: Si lo dejan en blanco, fuerza un número redondo 
+            // Ej: Si tienen 114,067 y el step es 500, la meta será 114,500 (No 114,567)
+            let base = Math.floor(currentTotalLikes / mStep) * mStep;
+            configGlobal.metaLikes.currentGoal = base + mStep;
+        }
+        
+        configGlobal.metaLikes.step = mStep;
+        configGlobal.metaLikes.firstGoal = mFirstGoal; // Lo guardamos para que no se borre del panel
+
         guardarEnArchivo();
-        io.emit('config_actual', configGlobal);
+        io.emit('config_actual', configGlobal); 
+        io.emit('meta_likes_update', { current: currentTotalLikes, goal: configGlobal.metaLikes.currentGoal, text: configGlobal.metaLikes.actionText, prefix: configGlobal.metaLikes.prefixText, style: configGlobal.metaLikes.style });
     });
 
+    socket.on('guardar_config_bolita', (bolitaConfig) => { configGlobal.bolita = bolitaConfig; guardarEnArchivo(); io.emit('config_actual', configGlobal); });
     socket.on('modificar_puntos_equipo', (data) => {
         if (data.equipo === 1) { teamSalvar.total += data.cantidad; if (teamSalvar.total < 0) teamSalvar.total = 0; } 
         else if (data.equipo === 2) { teamReiniciar.total += data.cantidad; if (teamReiniciar.total < 0) teamReiniciar.total = 0; }
         emitSalvarUpdate(io);
         if (data.cantidad > 0) io.emit('poder_salvar', { side: data.equipo === 1 ? 'salvar' : 'reiniciar', amount: data.cantidad });
     });
-
     socket.on('importar_catalogo', (nuevoData) => {
         if (Array.isArray(nuevoData)) {
             nuevoData.forEach(item => { let idx = catalogoGlobal.findIndex(g => g.id === item.id); if (idx === -1) catalogoGlobal.push(item); else catalogoGlobal[idx] = { ...catalogoGlobal[idx], ...item }; });
@@ -223,7 +292,6 @@ io.on('connection', (socket) => {
             guardarEnArchivo(); io.emit('config_actual', configGlobal);
         }
     });
-    
     socket.on('importar_historial', (nuevoData) => {
         if (typeof nuevoData === 'object' && nuevoData !== null && !Array.isArray(nuevoData)) {
             let userActivo = configGlobal.username;
@@ -232,36 +300,29 @@ io.on('connection', (socket) => {
             guardarEnArchivo(); io.emit('config_actual', configGlobal); io.emit('racha_data_update', configGlobal.racha); io.emit('racha_versus_update', configGlobal.rachaVersus);
         }
     });
-
     socket.on('agregar_regalo_manual', (nuevoRegalo) => {
         let index = catalogoGlobal.findIndex(g => g.id === nuevoRegalo.id);
         if (index === -1) catalogoGlobal.push(nuevoRegalo); else catalogoGlobal[index] = nuevoRegalo;
         catalogoGlobal.sort((a, b) => a.diamonds - b.diamonds); configGlobal.regalosDisponibles = catalogoGlobal;
         guardarEnArchivo(); io.emit('config_actual', configGlobal);
     });
-
     socket.on('eliminar_regalo_catalogo', (id) => {
         catalogoGlobal = catalogoGlobal.filter(g => g.id !== id); configGlobal.regalosDisponibles = catalogoGlobal;
         configGlobal.equipo1.regalos = configGlobal.equipo1.regalos.filter(g => g.id !== id); configGlobal.equipo2.regalos = configGlobal.equipo2.regalos.filter(g => g.id !== id);
         guardarEnArchivo(); io.emit('config_actual', configGlobal);
     });
-
     socket.on('reset', () => {
         topDonators = {}; topSorted = []; teamSalvar = { total: 0, donators: {} }; teamReiniciar = { total: 0, donators: {} };
         io.emit('actualizacion', topSorted); emitSalvarUpdate(io);
     });
-
     socket.on('registrar_victoria_versus', (data) => {
-        let tipo = data.tipo; 
-        let user = data.user;
+        let tipo = data.tipo; let user = data.user;
         if(!user || !user.name || user.name === 'ESPERANDO') return;
         let targetObj = tipo === 'salvada' ? configGlobal.rachaVersus.salvadas : configGlobal.rachaVersus.reinicios;
         if(!targetObj[user.name]) targetObj[user.name] = { avatar: user.avatar, displayName: user.name, count: 0 };
-        targetObj[user.name].count += 1;
-        targetObj[user.name].avatar = user.avatar;
+        targetObj[user.name].count += 1; targetObj[user.name].avatar = user.avatar;
         guardarEnArchivo(); io.emit('racha_versus_update', configGlobal.rachaVersus);
     });
-
     socket.on('racha_versus_ajuste', (data) => {
         let targetObj = data.tipo === 'salvadas' ? configGlobal.rachaVersus.salvadas : configGlobal.rachaVersus.reinicios;
         if(targetObj[data.name]) { targetObj[data.name].count += data.amount; if(targetObj[data.name].count < 0) targetObj[data.name].count = 0; guardarEnArchivo(); io.emit('racha_versus_update', configGlobal.rachaVersus); }
@@ -278,7 +339,6 @@ io.on('connection', (socket) => {
         configGlobal.rachaVersus.showName = opts.showName; configGlobal.rachaVersus.showCount = opts.showCount; configGlobal.rachaVersus.showCoins = opts.showCoins;
         guardarEnArchivo(); io.emit('racha_versus_update', configGlobal.rachaVersus);
     });
-
     socket.on('racha_iniciar_ronda', () => { configGlobal.racha.topRound = {}; guardarEnArchivo(); io.emit('racha_data_update', configGlobal.racha); });
     socket.on('racha_cerrar_ronda', () => {
         let arr = Object.values(configGlobal.racha.topRound).sort((a,b) => b.monedas - a.monedas);
@@ -304,7 +364,6 @@ io.on('connection', (socket) => {
     socket.on('racha_guardar_opciones', (opts) => { configGlobal.racha.showPhoto = opts.showPhoto; configGlobal.racha.showCoins = opts.showCoins; guardarEnArchivo(); io.emit('config_actual', configGlobal); io.emit('racha_data_update', configGlobal.racha); });
 });
 
-// 🌟 INICIAMOS EL MOTOR SAAS
 setupGameEvents(io, configGlobal);
 
 const PORT = process.env.PORT || 3000;

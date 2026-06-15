@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Lemon&family=Lilita+One&family=Luckiest+Guy&family=Montserrat:wght@900&family=Oswald:wght@700&family=Russo+One&family=Teko:wght@700&display=swap');
+        
+        body { 
+            margin: 0; padding: 0; overflow: hidden; 
+            display: flex; justify-content: center; align-items: center; 
+            height: 100vh; background: transparent; 
+        }
+
+        #meta-container {
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.4s ease; white-space: nowrap;
+            opacity: 0; 
+        }
+        
+        .heart-icon { 
+            color: #ff003c; margin-right: 15px; 
+            animation: beat 1s infinite; 
+        }
+        
+        @keyframes beat { 
+            0%, 100% { transform: scale(1); } 
+            50% { transform: scale(1.2); } 
+        }
+        
+        /* 🌟 ANIMACIÓN ROJA Y LLAMATIVA */
+        .celebrate { animation: pop 0.5s ease-in-out forwards; }
+        .blink { animation: blinker 0.4s linear infinite; color: #ff003c !important; text-shadow: 0 0 20px #ff003c, 0 0 40px #ff003c !important;}
+        
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.5) rotate(3deg); }
+            100% { transform: scale(1.2); }
+        }
+        
+        @keyframes blinker {
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div id="meta-container">
+        <i class="fa-solid fa-heart heart-icon"></i>
+        <span id="meta-text">0K LIKES</span>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const container = document.getElementById('meta-container');
+        const metaText = document.getElementById('meta-text');
+        
+        let isCelebrating = false;
+        let pendingData = null; 
+        
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playVictorySound() {
+            if(audioCtx.state === 'suspended') audioCtx.resume();
+            try {
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                osc.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(554.37, audioCtx.currentTime + 0.15);
+                osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.3);
+                osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.45);
+                
+                gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
+                
+                osc.start(audioCtx.currentTime);
+                osc.stop(audioCtx.currentTime + 0.8);
+            } catch(e) {}
+        }
+
+        function formatK(num) {
+            if (num >= 1000) {
+                return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+            }
+            return num.toString();
+        }
+
+        function aplicarDatosVisuales(data) {
+            if (data.goal <= 0) {
+                container.style.opacity = "0";
+                return;
+            }
+            
+            container.style.opacity = "1";
+            let goalStr = formatK(data.goal);
+            let prefixStr = data.prefix ? data.prefix + " " : "";
+            
+            metaText.innerText = `${prefixStr}${goalStr} LIKES = ${data.text}`;
+            
+            container.style.fontFamily = data.style.fontFamily;
+            container.style.fontSize = data.style.fontSize + "px";
+            container.style.color = data.style.color;
+            
+            let sh = data.style.shadowColor;
+            container.style.textShadow = `3px 3px 0 ${sh}, -2px -2px 0 ${sh}, 2px -2px 0 ${sh}, -2px 2px 0 ${sh}, 2px 2px 0 ${sh}`;
+        }
+
+        socket.on('meta_likes_update', (data) => {
+            if (isCelebrating) {
+                pendingData = data;
+                return; 
+            }
+            aplicarDatosVisuales(data);
+        });
+
+        socket.on('meta_likes_reached', (data) => {
+            isCelebrating = true;
+            playVictorySound(); 
+            
+            container.classList.add('celebrate', 'blink');
+            metaText.innerText = "¡OBJETIVO CUMPLIDO!";
+            
+            setTimeout(() => {
+                container.classList.remove('celebrate', 'blink');
+                isCelebrating = false;
+                
+                if (pendingData) {
+                    aplicarDatosVisuales(pendingData);
+                    pendingData = null;
+                }
+            }, 3500);
+        });
+        
+        document.body.addEventListener('click', () => {
+            if(audioCtx.state === 'suspended') audioCtx.resume();
+        });
+    </script>
+</body>
+</html>
