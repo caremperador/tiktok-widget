@@ -5,6 +5,7 @@ const io = require('socket.io')(http, { cors: { origin: "*" } });
 const { WebcastPushConnection } = require('tiktok-live-connector');
 const fs = require('fs'); 
 const path = require('path'); 
+const setupGameEvents = require('./gameEvents'); 
 
 const pathData = path.join(__dirname, 'data.json');
 const pathCatalogo = path.join(__dirname, 'catalogo_regalos.json'); 
@@ -17,9 +18,9 @@ app.get('/vista_regalos', (req, res) => res.sendFile(__dirname + '/vista_regalos
 app.get('/salvar', (req, res) => res.sendFile(__dirname + '/salvar.html'));
 app.get('/racha', (req, res) => res.sendFile(__dirname + '/racha.html')); 
 app.get('/regalos_versus.html', (req, res) => res.sendFile(__dirname + '/regalos_versus.html'));
-// 🌟 NUEVAS RUTAS: RACHA VERSUS
 app.get('/vista_racha_versus.html', (req, res) => res.sendFile(__dirname + '/vista_racha_versus.html'));
 app.get('/racha_versus.html', (req, res) => res.sendFile(__dirname + '/racha_versus.html'));
+app.get('/vista_bolita_globos', (req, res) => res.sendFile(__dirname + '/vista_bolita_globos.html'));
 
 let topDonators = {};
 let topSorted = [];
@@ -38,8 +39,8 @@ let configGlobal = {
     showEmoticons: true, roundGifts: true, showTopDonators: true,
     regalosDisponibles: [],
     racha: { topRound: {}, recordDiario: {}, recordHistorico: {}, showPhoto: true, showCoins: false },
-    // 🌟 NUEVA BD: RACHA VERSUS
     rachaVersus: { salvadas: {}, reinicios: {}, showName: true, showCount: true, showCoins: true },
+    bolita: { multiplicador: 2, chatWord: "globos, jugar", chatGlobos: 1, chatCooldown: 60, likesMeta: 50, likesGlobos: 1, followGlobos: 5, followCooldown: 300, allowFree: true, quiereMeGlobos: 60 },
     battleStyle: { fontFamily: "'Lemon', serif", textStroke: 1.5, colorL1: "#ffd700", sizeL1: 38, colorL2: "#ff003c", sizeL2: 45, colorTimer: "#ffffff", sizeTimer: 140, shadowOpacity: 1.0, shadowDistance: 4 }
 };
 
@@ -48,6 +49,7 @@ if (fs.existsSync(pathData)) {
         let guardado = JSON.parse(fs.readFileSync(pathData, 'utf8')); 
         configGlobal = { ...configGlobal, ...guardado };
         if(!configGlobal.rachaVersus) configGlobal.rachaVersus = { salvadas: {}, reinicios: {}, showName: true, showCount: true, showCoins: true };
+        if(!configGlobal.bolita) configGlobal.bolita = { multiplicador: 2, chatWord: "globos, jugar", chatGlobos: 1, chatCooldown: 60, likesMeta: 50, likesGlobos: 1, followGlobos: 5, followCooldown: 300, allowFree: true, quiereMeGlobos: 60 };
     } catch (e) {}
 }
 
@@ -99,6 +101,7 @@ function conectarTikTok(usuario) {
             guardarEnArchivo();
         }
         io.emit('config_actual', configGlobal);
+
     }).catch(err => { io.emit('estado_conexion', { estado: 'error', msg: `❌ Error: ${err.message}` }); });
 
     connectionInstance.on('disconnected', () => {
@@ -173,7 +176,7 @@ io.on('connection', (socket) => {
     socket.emit('config_actual', configGlobal);
     socket.emit('actualizacion', topSorted);
     socket.emit('racha_data_update', configGlobal.racha);
-    socket.emit('racha_versus_update', configGlobal.rachaVersus); // Emitimos al conectar
+    socket.emit('racha_versus_update', configGlobal.rachaVersus);
     emitSalvarUpdate(socket);
 
     socket.on('comando_conectar', (usuario) => { configGlobal.username = usuario.trim(); guardarEnArchivo(); conectarTikTok(configGlobal.username); });
@@ -183,7 +186,14 @@ io.on('connection', (socket) => {
         nuevaConfig.historial = configGlobal.historial; nuevaConfig.username = configGlobal.username;
         nuevaConfig.regalosDisponibles = configGlobal.regalosDisponibles; 
         nuevaConfig.racha = configGlobal.racha; nuevaConfig.rachaVersus = configGlobal.rachaVersus;
+        nuevaConfig.bolita = configGlobal.bolita; 
         configGlobal = nuevaConfig; guardarEnArchivo(); io.emit('config_actual', configGlobal); emitSalvarUpdate(io); 
+    });
+
+    socket.on('guardar_config_bolita', (bolitaConfig) => {
+        configGlobal.bolita = bolitaConfig;
+        guardarEnArchivo();
+        io.emit('config_actual', configGlobal);
     });
 
     socket.on('modificar_puntos_equipo', (data) => {
@@ -228,23 +238,17 @@ io.on('connection', (socket) => {
         io.emit('actualizacion', topSorted); emitSalvarUpdate(io);
     });
 
-    // 🌟 EVENTO: REGISTRAR VICTORIAS DE VERSUS
     socket.on('registrar_victoria_versus', (data) => {
-        let tipo = data.tipo; // 'salvada' o 'reinicio'
+        let tipo = data.tipo; 
         let user = data.user;
         if(!user || !user.name || user.name === 'ESPERANDO') return;
-        
         let targetObj = tipo === 'salvada' ? configGlobal.rachaVersus.salvadas : configGlobal.rachaVersus.reinicios;
         if(!targetObj[user.name]) targetObj[user.name] = { avatar: user.avatar, displayName: user.name, count: 0 };
-        
         targetObj[user.name].count += 1;
         targetObj[user.name].avatar = user.avatar;
-        
-        guardarEnArchivo();
-        io.emit('racha_versus_update', configGlobal.rachaVersus);
+        guardarEnArchivo(); io.emit('racha_versus_update', configGlobal.rachaVersus);
     });
 
-    // 🌟 EVENTOS: PANEL DE CONTROL RACHA VERSUS
     socket.on('racha_versus_ajuste', (data) => {
         let targetObj = data.tipo === 'salvadas' ? configGlobal.rachaVersus.salvadas : configGlobal.rachaVersus.reinicios;
         if(targetObj[data.name]) { targetObj[data.name].count += data.amount; if(targetObj[data.name].count < 0) targetObj[data.name].count = 0; guardarEnArchivo(); io.emit('racha_versus_update', configGlobal.rachaVersus); }
@@ -262,7 +266,6 @@ io.on('connection', (socket) => {
         guardarEnArchivo(); io.emit('racha_versus_update', configGlobal.rachaVersus);
     });
 
-    // Eventos normales de la racha
     socket.on('racha_iniciar_ronda', () => { configGlobal.racha.topRound = {}; guardarEnArchivo(); io.emit('racha_data_update', configGlobal.racha); });
     socket.on('racha_cerrar_ronda', () => {
         let arr = Object.values(configGlobal.racha.topRound).sort((a,b) => b.monedas - a.monedas);
@@ -288,4 +291,10 @@ io.on('connection', (socket) => {
     socket.on('racha_guardar_opciones', (opts) => { configGlobal.racha.showPhoto = opts.showPhoto; configGlobal.racha.showCoins = opts.showCoins; guardarEnArchivo(); io.emit('config_actual', configGlobal); io.emit('racha_data_update', configGlobal.racha); });
 });
 
-http.listen(3000, () => console.log('🚀 Servidor encendido en el puerto 3000.'));
+// 🌟 INICIAMOS EL MOTOR SAAS Y LE PASAMOS LA CONFIGURACIÓN GLOBAL
+setupGameEvents(io, configGlobal);
+
+const PORT = process.env.PORT || 3000;
+http.listen(PORT, () => {
+    console.log(`🚀 Servidor encendido en el puerto ${PORT}`);
+});

@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Gatijuegos App - V1.3.1</title>
+    <title>Gatijuegos App - V1.4.0</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { margin: 0; display: flex; height: 100vh; background: #0f0f13; color: #eee; font-family: 'Segoe UI', sans-serif; overflow: hidden;}
@@ -24,7 +24,7 @@
         .tab-content { display: none; width: 100%; height: 100%; border: none; }
         .tab-content.active { display: block; }
         
-        /* UI DE CONEXIÓN (Nativa en el panel) */
+        /* UI DE CONEXIÓN */
         .conexion-wrapper { padding: 40px; }
         .status-bar { background: #000; padding: 15px; border-radius: 8px; border: 1px solid #444; font-family: monospace; font-size: 16px; margin-bottom: 20px; color: #ccc; text-align: center; max-width: 800px; font-weight: bold;}
         .box { background: #1a1a24; border: 1px solid #333; border-radius: 12px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); max-width: 800px;}
@@ -52,7 +52,10 @@
         <div class="menu-item" onclick="showTab('tab-racha', this)"><i class="fa-solid fa-fire"></i> Rachas</div>
         <div class="menu-item" onclick="showTab('tab-racha-versus', this)"><i class="fa-solid fa-shield-halved"></i> Racha Versus</div>
 
-        <div class="sidebar-version">Versión Oficial 1.3.1</div>
+        <div class="menu-group">Juegos Interactivos</div>
+        <div class="menu-item" onclick="showTab('tab-bolita', this)"><i class="fa-solid fa-bowling-ball"></i> Bolita Globos</div>
+
+        <div class="sidebar-version">Versión Oficial 1.4.0</div>
     </div>
 
     <div class="content">
@@ -60,7 +63,7 @@
             <div class="status-bar" id="conexion-estado">🔴 Desconectado</div>
             <div class="box">
                 <label>👤 Cuenta de TikTok a monitorear</label>
-                <input type="text" id="input-usuario" placeholder="Ej. nghiateno">
+                <input type="text" id="input-usuario" placeholder="Ej. teamgatitos">
                 <div style="display: flex; gap: 10px;">
                     <button class="btn-play" onclick="conectar()"><i class="fa-solid fa-play"></i> Conectar</button>
                     <button class="btn-stop" onclick="desconectar()"><i class="fa-solid fa-stop"></i> Parar</button>
@@ -75,6 +78,7 @@
         <iframe id="tab-racha" class="tab-content" src="/vista_racha"></iframe>
         <iframe id="tab-racha-versus" class="tab-content" src="/vista_racha_versus.html"></iframe>
         <iframe id="tab-regalos" class="tab-content" src="/vista_regalos"></iframe>
+        <iframe id="tab-bolita" class="tab-content" src="/vista_bolita_globos"></iframe>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
@@ -92,10 +96,7 @@
         }
 
         socket.on('estado_conexion', (data) => {
-            // Actualiza la barra grande de detalles
             estadoBar.innerText = data.msg;
-            
-            // Actualiza el indicador rápido bajo el logo
             if (data.estado === 'conectado') {
                 estadoBar.style.color = '#00ff66';
                 sidebarStatus.innerText = '🟢 Conectado';
@@ -115,11 +116,15 @@
 
         socket.on('config_actual', (config) => {
             if(document.activeElement !== inputUsuario) inputUsuario.value = config.username;
-            let list = document.getElementById('historial-lista'); list.innerHTML = '';
+            let list = document.getElementById('historial-lista'); 
+            list.innerHTML = '';
             if(config.historial && config.historial.length > 0) {
                 config.historial.forEach(user => {
-                    let chip = document.createElement('div'); chip.className = 'chip'; chip.innerText = '@' + user;
-                    chip.onclick = () => { inputUsuario.value = user; conectar(); }; list.appendChild(chip);
+                    let chip = document.createElement('div'); 
+                    chip.className = 'chip'; 
+                    chip.innerText = '@' + user;
+                    chip.onclick = () => { inputUsuario.value = user; conectar(); }; 
+                    list.appendChild(chip);
                 });
             }
         });
