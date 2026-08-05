@@ -21,6 +21,8 @@ app.get('/vista_bolita_globos', (req, res) => res.sendFile(path.join(__dirname, 
 app.get('/vista_meta_likes', (req, res) => res.sendFile(path.join(__dirname, 'vistas', 'vista_meta_likes.html')));
 app.get('/vista_top_likes', (req, res) => res.sendFile(path.join(__dirname, 'vistas', 'vista_top_likes.html')));
 app.get('/vista_top_donadores', (req, res) => res.sendFile(path.join(__dirname, 'vistas', 'vista_top_donadores.html')));
+// NUEVA RUTA PARA EL BACKUP
+app.get('/vista_backup', (req, res) => res.sendFile(path.join(__dirname, 'vistas', 'vista_backup.html')));
 
 app.get('/versus', (req, res) => res.sendFile(path.join(__dirname, 'overlays', 'versus.html'))); 
 app.get('/pop_regalos', (req, res) => res.sendFile(path.join(__dirname, 'overlays', 'pop_regalos.html'))); 
@@ -51,8 +53,8 @@ let configGlobal = {
     rachaVersus: { salvadas: {}, reinicios: {}, showName: true, showCount: true, showCoins: true },
     bolita: { multiplicador: 2, chatWord: "globos, jugar", chatGlobos: 1, chatCooldown: 60, likesMeta: 50, likesGlobos: 1, followGlobos: 5, followCooldown: 300, allowFree: true, quiereMeGlobos: 60 },
     metaLikes: { active: false, firstGoal: 0, step: 20000, prefixText: "A los", actionText: "REINICIO", currentGoal: 20000, style: { fontSize: 45, color: "#ffffff", shadowColor: "#ff003c", fontFamily: "'Luckiest Guy', cursive" } },
-    topLikes: { currentRound: {}, recordHistorico: {}, mirrorMode: false }, // 🌟 Agregado mirrorMode
-    topVIP: { currentRound: {}, recordHistorico: {}, displayLimit: 2, mirrorMode: false } // 🌟 Agregado mirrorMode
+    topLikes: { currentRound: {}, recordHistorico: {}, mirrorMode: false },
+    topVIP: { currentRound: {}, recordHistorico: {}, displayLimit: 2, mirrorMode: false }
 };
 
 if (fs.existsSync(pathData)) {
@@ -412,7 +414,6 @@ io.on('connection', (socket) => {
         } 
     });
 
-    // 🌟 COMANDO NUEVO: Guardar Opciones (Espejo)
     socket.on('top_likes_guardar_opciones', (opts) => { 
         configGlobal.topLikes.mirrorMode = opts.mirrorMode; 
         guardarEnArchivo(); 
@@ -459,7 +460,6 @@ io.on('connection', (socket) => {
     
     socket.on('top_vip_ajuste_ronda', (data) => { let ronda = configGlobal.topVIP.currentRound[data.userKey]; if(ronda) { ronda.coins += data.amount; if(ronda.coins < 0) ronda.coins = 0; guardarEnArchivo(); io.emit('top_vip_data_update', configGlobal.topVIP); } });
     
-    // 🌟 ACTUALIZADO: Guardar Límite y Espejo
     socket.on('top_vip_guardar_opciones', (opts) => { 
         configGlobal.topVIP.displayLimit = opts.displayLimit; 
         configGlobal.topVIP.mirrorMode = opts.mirrorMode; 

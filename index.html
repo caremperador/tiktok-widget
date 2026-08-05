@@ -41,6 +41,8 @@
         <div class="menu-group">Acciones y Eventos</div>
         <div class="menu-item active" onclick="showTab('tab-conexion', this)"><i class="fa-solid fa-wifi"></i> Conexión a TikTok</div>
         <div class="menu-item" onclick="showTab('tab-regalos', this)"><i class="fa-solid fa-gift"></i> Gestor de Regalos</div>
+        <!-- NUEVO BOTÓN DE BACKUP -->
+        <div class="menu-item" onclick="showTab('tab-backup', this)"><i class="fa-solid fa-cloud-arrow-down"></i> Gestor de Backup</div>
         
         <div class="menu-group">Overlays Web</div>
         <div class="menu-item" onclick="showTab('tab-batalla', this)"><i class="fa-solid fa-khanda"></i> Batalla de Equipos</div>
@@ -80,6 +82,8 @@
         <iframe id="tab-regalos" class="tab-content" src="/vista_regalos"></iframe>
         <iframe id="tab-metalikes" class="tab-content" src="/vista_meta_likes"></iframe>
         <iframe id="tab-bolita" class="tab-content" src="/vista_bolita_globos"></iframe>
+        <!-- NUEVO IFRAME DE BACKUP -->
+        <iframe id="tab-backup" class="tab-content" src="/vista_backup"></iframe>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>

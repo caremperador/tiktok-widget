@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Gestor de Backup</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: #0f0f13; color: white; font-family: 'Segoe UI', sans-serif; padding: 40px; margin: 0; display: flex; justify-content: center; }
+        .box { background: #1a1a24; border: 1px solid #333; border-radius: 12px; padding: 40px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); width: 100%; max-width: 600px; text-align: center; }
+        h3 { color: #ffd700; text-transform: uppercase; margin-top: 0; font-size: 22px; margin-bottom: 10px; }
+        p { color: #aaa; font-size: 14px; margin-bottom: 35px; line-height: 1.6; }
+        
+        .btn-action { padding: 18px 30px; font-weight: bold; border: none; cursor: pointer; border-radius: 8px; text-transform: uppercase; font-size: 15px; width: 100%; max-width: 350px; margin: 12px auto; display: flex; align-items: center; justify-content: center; gap: 12px; transition: all 0.3s ease; }
+        
+        .btn-download { background: #00f2fe; color: black; }
+        .btn-download:hover { box-shadow: 0 0 20px rgba(0, 242, 254, 0.5); transform: translateY(-2px); }
+        
+        .btn-upload { background: #ffaa00; color: black; }
+        .btn-upload:hover { box-shadow: 0 0 20px rgba(255, 170, 0, 0.5); transform: translateY(-2px); }
+        
+        input[type="file"] { display: none; }
+        .status-msg { margin-top: 25px; font-weight: bold; font-size: 15px; padding: 15px; border-radius: 8px; display: none; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h3><i class="fa-solid fa-cloud-arrow-down"></i> Centro de Seguridad (Backup)</h3>
+        <p>Descarga una copia de seguridad de toda tu base de datos (Donadores VIP, Rachas, Configuraciones) o restaura un archivo anterior en caso de emergencia.</p>
+
+        <!-- Botón de Descarga -->
+        <button class="btn-action btn-download" onclick="descargarBackup()">
+            <i class="fa-solid fa-download"></i> Descargar data.json
+        </button>
+        
+        <!-- Botón de Carga -->
+        <label for="file-upload" class="btn-action btn-upload">
+            <i class="fa-solid fa-upload"></i> Cargar archivo data.json
+        </label>
+        <input type="file" id="file-upload" accept=".json" onchange="cargarBackup(event)">
+
+        <div id="status-msg" class="status-msg"></div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        let currentConfig = null;
+
+        // Recibimos la base de datos viva del servidor
+        socket.on('config_actual', (config) => {
+            currentConfig = config;
+        });
+
+        function descargarBackup() {
+            if (!currentConfig) {
+                mostrarMensaje("⚠️ Esperando conexión con el servidor...", "#ff003c", "#330000");
+                return;
+            }
+
+            // Formatear la fecha como pediste: data_8_de_agosto_2026_15_30
+            const now = new Date();
+            const meses = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+            
+            const dia = now.getDate();
+            const mes = meses[now.getMonth()];
+            const anio = now.getFullYear();
+            const horas = String(now.getHours()).padStart(2, '0');
+            const minutos = String(now.getMinutes()).padStart(2, '0');
+
+            const fileName = `data_${dia}_de_${mes}_${anio}_${horas}_${minutos}.json`;
+            const dataStr = JSON.stringify(currentConfig, null, 4);
+
+            // Ejecutar descarga en el navegador
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            mostrarMensaje("✅ ¡Backup descargado con éxito!", "#00ff66", "#003311");
+        }
+
+        function cargarBackup(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const parsedData = JSON.parse(e.target.result);
+                    
+                    if (confirm("🚨 ATENCIÓN: ¿Estás seguro de que deseas sobrescribir toda la base de datos actual con este archivo?")) {
+                        // Enviamos el backup al servidor usando tu evento existente
+                        socket.emit('importar_historial', parsedData);
+                        mostrarMensaje("✅ ¡Backup restaurado correctamente! El servidor ya tiene los nuevos datos.", "#00ff66", "#003311");
+                        // Limpiar el input por si quiere subir otro
+                        document.getElementById('file-upload').value = '';
+                    }
+                } catch (err) {
+                    mostrarMensaje("❌ Error: El archivo seleccionado no es un JSON válido.", "#ff003c", "#330000");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function mostrarMensaje(msg, colorTxt, colorBg) {
+            const el = document.getElementById("status-msg");
+            el.style.display = "block";
+            el.style.color = colorTxt;
+            el.style.backgroundColor = colorBg;
+            el.style.border = `1px solid ${colorTxt}`;
+            el.innerText = msg;
+            setTimeout(() => el.style.display = "none", 5000);
+        }
+    </script>
+</body>
+</html>
