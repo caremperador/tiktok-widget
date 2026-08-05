@@ -139,11 +139,19 @@
             let arrHist = Object.entries(data.recordHistorico).map(([u, d]) => ({userKey: u, ...d})).sort((a,b) => b.wins - a.wins);
 
             arrHist.forEach(u => {
+                // Nuevo indicador de Racha para el panel de control
+                let streakTxt = u.streak > 0 ? ` &nbsp;|&nbsp; <i class="fa-solid fa-fire" style="color:#00d2e6;"></i> Racha: ${u.streak}` : '';
+                
                 lHist.innerHTML += `
                 <div class="user-item">
                     <div class="user-info">
                         <img src="${u.avatar}">
-                        <div><span class="u-name">${u.displayName}</span><span class="u-data" style="color:#ffaa00;"><i class="fa-solid fa-trophy"></i> ${u.wins} Victorias</span></div>
+                        <div>
+                            <span class="u-name">${u.displayName}</span>
+                            <span class="u-data" style="color:#ffaa00;">
+                                <i class="fa-solid fa-trophy"></i> ${u.wins} Victorias${streakTxt}
+                            </span>
+                        </div>
                     </div>
                     <div style="display:flex;gap:5px;">
                         <button class="btn-ctrl" onclick="ajustarHistorial('${u.userKey}', -1)">-</button>
@@ -154,7 +162,6 @@
             });
         });
 
-        // 🌟 SE ACTUALIZÓ PARA ENVIAR EL MODO ESPEJO
         function guardarOpcionesVIP() {
             let limit = parseInt(document.getElementById('inp-vip-limit').value) || 2;
             let mirror = document.getElementById('inp-vip-mirror').checked;
@@ -171,7 +178,7 @@
         }
 
         function cerrarRondaGlobal() { 
-            if(confirm("🏆 ¿Cerrar Ronda Global?\nSe le dará la victoria al Top 1 de Donadores, Top Likes y Top Regalos a la vez.")) {
+            if(confirm("🏆 ¿Cerrar Ronda Global?\nSe le dará la victoria al Top 1 de Donadores, Top Likes y Top Regalos a la vez. ¡Se actualizarán las rachas!")) {
                 socket.emit('top_cerrar_ambas_rondas'); 
             }
         }

@@ -21,7 +21,6 @@ app.get('/vista_bolita_globos', (req, res) => res.sendFile(path.join(__dirname, 
 app.get('/vista_meta_likes', (req, res) => res.sendFile(path.join(__dirname, 'vistas', 'vista_meta_likes.html')));
 app.get('/vista_top_likes', (req, res) => res.sendFile(path.join(__dirname, 'vistas', 'vista_top_likes.html')));
 app.get('/vista_top_donadores', (req, res) => res.sendFile(path.join(__dirname, 'vistas', 'vista_top_donadores.html')));
-// NUEVA RUTA PARA EL BACKUP
 app.get('/vista_backup', (req, res) => res.sendFile(path.join(__dirname, 'vistas', 'vista_backup.html')));
 
 app.get('/versus', (req, res) => res.sendFile(path.join(__dirname, 'overlays', 'versus.html'))); 
@@ -100,10 +99,26 @@ function cerrarRondasGlobales() {
     let arrVIPs = Object.entries(configGlobal.topVIP.currentRound).map(([u, d]) => ({userKey: u, ...d})).sort((a,b) => b.coins - a.coins);
     if (arrVIPs.length > 0) {
         let top1 = arrVIPs[0]; 
-        if(!configGlobal.topVIP.recordHistorico[top1.userKey]) configGlobal.topVIP.recordHistorico[top1.userKey] = { avatar: top1.avatar, displayName: top1.displayName, wins: 0 };
+        
+        // Registrar o actualizar al Top 1 (Gana Victoria y Racha)
+        if(!configGlobal.topVIP.recordHistorico[top1.userKey]) {
+            configGlobal.topVIP.recordHistorico[top1.userKey] = { avatar: top1.avatar, displayName: top1.displayName, wins: 0, streak: 0 };
+        }
         configGlobal.topVIP.recordHistorico[top1.userKey].wins += 1; 
+        configGlobal.topVIP.recordHistorico[top1.userKey].streak = (configGlobal.topVIP.recordHistorico[top1.userKey].streak || 0) + 1;
         configGlobal.topVIP.recordHistorico[top1.userKey].avatar = top1.avatar; 
         configGlobal.topVIP.recordHistorico[top1.userKey].displayName = top1.displayName; 
+
+        // Lógica de Pérdida de Racha para los demás participantes de la ronda
+        for (let i = 1; i < arrVIPs.length; i++) {
+            let loser = arrVIPs[i];
+            if (configGlobal.topVIP.recordHistorico[loser.userKey]) {
+                configGlobal.topVIP.recordHistorico[loser.userKey].streak = 0; // Pierde la racha por no quedar primero
+            } else {
+                configGlobal.topVIP.recordHistorico[loser.userKey] = { avatar: loser.avatar, displayName: loser.displayName, wins: 0, streak: 0 };
+            }
+        }
+
         configGlobal.topVIP.currentRound = {}; 
         seCerroAlgo = true;
     }
@@ -442,6 +457,7 @@ io.on('connection', (socket) => {
         let hist = configGlobal.topVIP.recordHistorico[data.userKey]; 
         if(hist) { 
             hist.wins += data.amount; if(hist.wins < 0) hist.wins = 0; 
+            if(hist.wins === 0) hist.streak = 0; // Resetear racha si se le bajan todas las victorias manualmente
             
             let rachaKey = hist.displayName;
             if(!configGlobal.racha.recordHistorico[rachaKey]) configGlobal.racha.recordHistorico[rachaKey] = { avatar: hist.avatar, displayName: hist.displayName, wins: 0, monedas: 0 };
