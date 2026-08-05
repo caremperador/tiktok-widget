@@ -15,6 +15,10 @@
         .menu-item:hover { background: #2a2a2a; color: #fff;}
         .menu-item.active { background: linear-gradient(90deg, #00f2fe22, transparent); color: #00f2fe; border-left: 4px solid #00f2fe; border-radius: 0 8px 8px 0; font-weight: bold;}
         
+        /* Indicador de pestaña cargada (Lazy Loading) */
+        .loaded-dot { width: 6px; height: 6px; background-color: #00ff66; border-radius: 50%; margin-left: auto; display: none; box-shadow: 0 0 5px #00ff66;}
+        .menu-item.is-loaded .loaded-dot { display: block; }
+
         .sidebar-version { margin-top: auto; padding: 20px; text-align: center; font-size: 12px; color: #555; font-weight: bold; border-top: 1px solid #333;}
         .content { flex: 1; position: relative; background: #0f0f13;}
         .tab-content { display: none; width: 100%; height: 100%; border: none; }
@@ -40,20 +44,19 @@
         
         <div class="menu-group">Acciones y Eventos</div>
         <div class="menu-item active" onclick="showTab('tab-conexion', this)"><i class="fa-solid fa-wifi"></i> Conexión a TikTok</div>
-        <div class="menu-item" onclick="showTab('tab-regalos', this)"><i class="fa-solid fa-gift"></i> Gestor de Regalos</div>
-        <!-- NUEVO BOTÓN DE BACKUP -->
-        <div class="menu-item" onclick="showTab('tab-backup', this)"><i class="fa-solid fa-cloud-arrow-down"></i> Gestor de Backup</div>
+        <div class="menu-item" onclick="showTab('tab-regalos', this)"><i class="fa-solid fa-gift"></i> Gestor de Regalos <div class="loaded-dot"></div></div>
+        <div class="menu-item" onclick="showTab('tab-backup', this)"><i class="fa-solid fa-cloud-arrow-down"></i> Gestor de Backup <div class="loaded-dot"></div></div>
         
         <div class="menu-group">Overlays Web</div>
-        <div class="menu-item" onclick="showTab('tab-batalla', this)"><i class="fa-solid fa-khanda"></i> Batalla de Equipos</div>
-        <div class="menu-item" onclick="showTab('tab-racha', this)"><i class="fa-solid fa-fire"></i> Rachas Regalos</div>
-        <div class="menu-item" onclick="showTab('tab-racha-versus', this)"><i class="fa-solid fa-shield-halved"></i> Racha Versus</div>
-        <div class="menu-item" onclick="showTab('tab-top-likes', this)"><i class="fa-solid fa-hand-pointer"></i> Top Tap Tap</div>
-        <div class="menu-item" onclick="showTab('tab-top-vip', this)"><i class="fa-solid fa-gem"></i> Top Donadores</div>
-        <div class="menu-item" onclick="showTab('tab-metalikes', this)"><i class="fa-solid fa-thumbs-up"></i> Meta de Likes</div>
+        <div class="menu-item" onclick="showTab('tab-batalla', this)"><i class="fa-solid fa-khanda"></i> Batalla de Equipos <div class="loaded-dot"></div></div>
+        <div class="menu-item" onclick="showTab('tab-racha', this)"><i class="fa-solid fa-fire"></i> Rachas Regalos <div class="loaded-dot"></div></div>
+        <div class="menu-item" onclick="showTab('tab-racha-versus', this)"><i class="fa-solid fa-shield-halved"></i> Racha Versus <div class="loaded-dot"></div></div>
+        <div class="menu-item" onclick="showTab('tab-top-likes', this)"><i class="fa-solid fa-hand-pointer"></i> Top Tap Tap <div class="loaded-dot"></div></div>
+        <div class="menu-item" onclick="showTab('tab-top-vip', this)"><i class="fa-solid fa-gem"></i> Top Donadores <div class="loaded-dot"></div></div>
+        <div class="menu-item" onclick="showTab('tab-metalikes', this)"><i class="fa-solid fa-thumbs-up"></i> Meta de Likes <div class="loaded-dot"></div></div>
 
         <div class="menu-group">Juegos Interactivos</div>
-        <div class="menu-item" onclick="showTab('tab-bolita', this)"><i class="fa-solid fa-bowling-ball"></i> Bolita Globos</div>
+        <div class="menu-item" onclick="showTab('tab-bolita', this)"><i class="fa-solid fa-bowling-ball"></i> Bolita Globos <div class="loaded-dot"></div></div>
 
         <div class="sidebar-version">Versión Oficial 1.5.0</div>
     </div>
@@ -74,16 +77,16 @@
             </div>
         </div>
 
-        <iframe id="tab-batalla" class="tab-content" src="/vista_versus"></iframe>
-        <iframe id="tab-racha" class="tab-content" src="/vista_racha"></iframe>
-        <iframe id="tab-racha-versus" class="tab-content" src="/vista_racha_versus"></iframe>
-        <iframe id="tab-top-likes" class="tab-content" src="/vista_top_likes"></iframe>
-        <iframe id="tab-top-vip" class="tab-content" src="/vista_top_donadores"></iframe>
-        <iframe id="tab-regalos" class="tab-content" src="/vista_regalos"></iframe>
-        <iframe id="tab-metalikes" class="tab-content" src="/vista_meta_likes"></iframe>
-        <iframe id="tab-bolita" class="tab-content" src="/vista_bolita_globos"></iframe>
-        <!-- NUEVO IFRAME DE BACKUP -->
-        <iframe id="tab-backup" class="tab-content" src="/vista_backup"></iframe>
+        <!-- 🌟 LAZY LOADING: Las etiquetas data-src reemplazan a src. No cargan hasta hacer click. -->
+        <iframe id="tab-batalla" class="tab-content" data-src="/vista_versus"></iframe>
+        <iframe id="tab-racha" class="tab-content" data-src="/vista_racha"></iframe>
+        <iframe id="tab-racha-versus" class="tab-content" data-src="/vista_racha_versus"></iframe>
+        <iframe id="tab-top-likes" class="tab-content" data-src="/vista_top_likes"></iframe>
+        <iframe id="tab-top-vip" class="tab-content" data-src="/vista_top_donadores"></iframe>
+        <iframe id="tab-regalos" class="tab-content" data-src="/vista_regalos"></iframe>
+        <iframe id="tab-metalikes" class="tab-content" data-src="/vista_meta_likes"></iframe>
+        <iframe id="tab-bolita" class="tab-content" data-src="/vista_bolita_globos"></iframe>
+        <iframe id="tab-backup" class="tab-content" data-src="/vista_backup"></iframe>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
@@ -94,10 +97,20 @@
         const sidebarStatus = document.getElementById('sidebar-status');
 
         function showTab(id, el) {
+            // Limpiar clases activas
             document.querySelectorAll('.tab-content').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
+            
+            // Activar la nueva pestaña
+            let targetTab = document.getElementById(id);
+            targetTab.classList.add('active');
             el.classList.add('active');
+
+            // 🌟 MOTOR LAZY LOADING: Si es un Iframe y no tiene link, lo inyecta para que cargue
+            if (targetTab.tagName === 'IFRAME' && !targetTab.getAttribute('src')) {
+                targetTab.setAttribute('src', targetTab.getAttribute('data-src'));
+                el.classList.add('is-loaded'); // Agrega el puntito verde para saber que está despierta
+            }
         }
 
         socket.on('estado_conexion', (data) => {

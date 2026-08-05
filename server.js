@@ -38,18 +38,22 @@ let teamReiniciar = { total: 0, donators: {} };
 let catalogoGlobal = [];
 let currentTotalLikes = 0; 
 
+// 🌟 NUEVO: Memoria de asignación de equipos por chat
+let userTeams = {}; 
+
 const regalosEq1Defecto = [{ id: 6064, name: "GG", diamonds: 1 }, { id: 9947, name: "BFF Necklace", diamonds: 10 }];
 const regalosEq2Defecto = [{ id: 5655, name: "Rose", diamonds: 1 }, { id: 8913, name: "Rosa", diamonds: 10 }];
 
 let configGlobal = {
     username: "", historial: [],
-    equipo1: { nombre: "SALVAR", sub: "GG", color: "#00ff66", regalos: regalosEq1Defecto },
-    equipo2: { nombre: "REINICIAR", sub: "ROSA", color: "#ff003c", regalos: regalosEq2Defecto },
+    // 🌟 NUEVO: Palabras clave para unirse a los equipos comentando en el chat
+    equipo1: { nombre: "SALVAR", sub: "GG", color: "#00ff66", regalos: regalosEq1Defecto, joinWords: "chicos, heroes, salvar, 1" },
+    equipo2: { nombre: "REINICIAR", sub: "ROSA", color: "#ff003c", regalos: regalosEq2Defecto, joinWords: "chicas, villanos, reiniciar, 2" },
     enableCountdown: true, countdownSeconds: 30, showTopText: true, showDonatorCoins: true,
     showEmoticons: true, roundGifts: true, showTopDonators: true,
     regalosDisponibles: [],
     racha: { topRound: {}, recordDiario: {}, recordHistorico: {}, showPhoto: true, showCoins: false },
-    rachaVersus: { salvadas: {}, reinicios: {}, showName: true, showCount: true, showCoins: true },
+    rachaVersus: { salvadas: {}, reinicios: {}, showName: true, showCount: true, showCoins: true, continuousMode: true },
     bolita: { multiplicador: 2, chatWord: "globos, jugar", chatGlobos: 1, chatCooldown: 60, likesMeta: 50, likesGlobos: 1, followGlobos: 5, followCooldown: 300, allowFree: true, quiereMeGlobos: 60 },
     metaLikes: { active: false, firstGoal: 0, step: 20000, prefixText: "A los", actionText: "REINICIO", currentGoal: 20000, style: { fontSize: 45, color: "#ffffff", shadowColor: "#ff003c", fontFamily: "'Luckiest Guy', cursive" } },
     topLikes: { currentRound: {}, recordHistorico: {}, mirrorMode: false },
@@ -60,7 +64,13 @@ if (fs.existsSync(pathData)) {
     try { 
         let guardado = JSON.parse(fs.readFileSync(pathData, 'utf8')); 
         configGlobal = { ...configGlobal, ...guardado };
-        if(!configGlobal.rachaVersus) configGlobal.rachaVersus = { salvadas: {}, reinicios: {}, showName: true, showCount: true, showCoins: true };
+        
+        // Asignación de seguridad para configs antiguas
+        if(!configGlobal.equipo1.joinWords) configGlobal.equipo1.joinWords = "chicos, heroes, salvar, 1";
+        if(!configGlobal.equipo2.joinWords) configGlobal.equipo2.joinWords = "chicas, villanos, reiniciar, 2";
+
+        if(!configGlobal.rachaVersus) configGlobal.rachaVersus = { salvadas: {}, reinicios: {}, showName: true, showCount: true, showCoins: true, continuousMode: true };
+        if(configGlobal.rachaVersus.continuousMode === undefined) configGlobal.rachaVersus.continuousMode = true;
         if(!configGlobal.bolita) configGlobal.bolita = { multiplicador: 2, chatWord: "globos, jugar", chatGlobos: 1, chatCooldown: 60, likesMeta: 50, likesGlobos: 1, followGlobos: 5, followCooldown: 300, allowFree: true, quiereMeGlobos: 60 };
         if(!configGlobal.metaLikes) configGlobal.metaLikes = { active: false, firstGoal: 0, step: 20000, prefixText: "A los", actionText: "REINICIO", currentGoal: 20000, style: { fontSize: 45, color: "#ffffff", shadowColor: "#ff003c", fontFamily: "'Luckiest Guy', cursive" } };
         if(!configGlobal.topLikes) configGlobal.topLikes = { currentRound: {}, recordHistorico: {}, mirrorMode: false };
@@ -100,7 +110,6 @@ function cerrarRondasGlobales() {
     if (arrVIPs.length > 0) {
         let top1 = arrVIPs[0]; 
         
-        // Registrar o actualizar al Top 1 (Gana Victoria y Racha)
         if(!configGlobal.topVIP.recordHistorico[top1.userKey]) {
             configGlobal.topVIP.recordHistorico[top1.userKey] = { avatar: top1.avatar, displayName: top1.displayName, wins: 0, streak: 0 };
         }
@@ -109,11 +118,10 @@ function cerrarRondasGlobales() {
         configGlobal.topVIP.recordHistorico[top1.userKey].avatar = top1.avatar; 
         configGlobal.topVIP.recordHistorico[top1.userKey].displayName = top1.displayName; 
 
-        // Lógica de Pérdida de Racha para los demás participantes de la ronda
         for (let i = 1; i < arrVIPs.length; i++) {
             let loser = arrVIPs[i];
             if (configGlobal.topVIP.recordHistorico[loser.userKey]) {
-                configGlobal.topVIP.recordHistorico[loser.userKey].streak = 0; // Pierde la racha por no quedar primero
+                configGlobal.topVIP.recordHistorico[loser.userKey].streak = 0; 
             } else {
                 configGlobal.topVIP.recordHistorico[loser.userKey] = { avatar: loser.avatar, displayName: loser.displayName, wins: 0, streak: 0 };
             }
@@ -153,6 +161,7 @@ function cerrarRondasGlobales() {
 let tiktokLiveConnection = null;
 let desconexionIntencional = false;
 const regalosProcesados = new Set();
+const combosActivos = new Map(); // 🌟 Rastreador de envíos instantáneos
 
 function emitSalvarUpdate(target) {
     let topSalvar = Object.entries(teamSalvar.donators).map(([name, info]) => ({ name: info.displayName, coins: info.coins, avatar: info.avatar })).sort((a, b) => b.coins - a.coins)[0] || { name: 'ESPERANDO', coins: 0, avatar: '' };
@@ -200,6 +209,25 @@ function conectarTikTok(usuario) {
 
     connectionInstance.on('streamEnd', () => {
         if (tiktokLiveConnection === connectionInstance) { desconexionIntencional = true; io.emit('estado_conexion', { estado: 'offline', msg: '⬛ El LIVE ha finalizado' }); }
+    });
+
+    // 🌟 NUEVO: ESCUCHA DE CHAT PARA UNIRSE A EQUIPOS
+    connectionInstance.on('chat', data => {
+        let texto = data.comment.toLowerCase();
+        let user = data.uniqueId;
+        
+        let wordsEq1 = (configGlobal.equipo1.joinWords || "chicos, heroes, salvar, 1").toLowerCase().split(',').map(w=>w.trim()).filter(w=>w.length > 0);
+        let wordsEq2 = (configGlobal.equipo2.joinWords || "chicas, villanos, reiniciar, 2").toLowerCase().split(',').map(w=>w.trim()).filter(w=>w.length > 0);
+
+        let matchEq1 = wordsEq1.some(w => texto.includes(w));
+        let matchEq2 = wordsEq2.some(w => texto.includes(w));
+
+        // Si el chat incluye la palabra, asocia a ese usuario con el equipo en la memoria.
+        if (matchEq1) {
+            userTeams[user] = 1;
+        } else if (matchEq2) {
+            userTeams[user] = 2;
+        }
     });
 
     connectionInstance.on('like', data => {
@@ -258,23 +286,18 @@ function conectarTikTok(usuario) {
     });
 
     connectionInstance.on('gift', data => {
-        if (data.giftType === 1 && !data.repeatEnd) return;
-        let huellaRegalo = data.msgId || (data.uniqueId + data.timestamp);
-        if (regalosProcesados.has(huellaRegalo)) return; 
-        regalosProcesados.add(huellaRegalo);
-        if (regalosProcesados.size > 1000) regalosProcesados.clear(); 
-
         let user = data.uniqueId;
-        let unitPrice = data.diamondCount; 
         let cleanName = (data.nickname || data.uniqueId).replace(/[^a-zA-Z0-9\sÁÉÍÓÚáéíóúÑñ]/g, '').trim() || user; 
         if (cleanName.length > 12) { cleanName = cleanName.substring(0, 12) + "..."; }
         
         let avatarUrl = "https://www.gravatar.com/avatar/0?d=mp&f=y";
         if (data.userDetails && data.userDetails.profilePictureUrls && data.userDetails.profilePictureUrls.length > 0) avatarUrl = data.userDetails.profilePictureUrls[0];
         
-        let giftId = data.giftId; let giftName = data.giftName || "Regalo";
-        let knownGift = catalogoGlobal.find(g => g.id === giftId);
+        let giftId = data.giftId; 
+        let giftName = data.giftName || "Regalo";
+        let unitPrice = data.diamondCount; 
         
+        let knownGift = catalogoGlobal.find(g => g.id === giftId);
         if (knownGift) { unitPrice = knownGift.diamonds; } else {
             let nuevoRegalo = { id: giftId, name: giftName, diamonds: unitPrice };
             catalogoGlobal.push(nuevoRegalo); catalogoGlobal.sort((a, b) => a.diamonds - b.diamonds);
@@ -282,8 +305,38 @@ function conectarTikTok(usuario) {
         }
 
         if (configGlobal.roundGifts && unitPrice % 10 === 9) { unitPrice += 1; }
-        const totalCoins = unitPrice * data.repeatCount;
 
+        let cantidadAProcesar = 0;
+
+        // 🌟 LÓGICA DE PROCESAMIENTO INSTANTÁNEO
+        if (data.giftType === 1) {
+            let comboId = data.groupId || data.msgId; 
+            let countAnterior = combosActivos.get(comboId) || 0;
+            let nuevoCount = data.repeatCount;
+            let diferencia = nuevoCount - countAnterior;
+
+            if (diferencia <= 0) return; 
+
+            cantidadAProcesar = diferencia; 
+            combosActivos.set(comboId, nuevoCount);
+
+            if (data.repeatEnd) {
+                combosActivos.delete(comboId);
+            }
+        } else {
+            let huellaRegalo = data.msgId || (data.uniqueId + data.timestamp);
+            if (regalosProcesados.has(huellaRegalo)) return; 
+            regalosProcesados.add(huellaRegalo);
+            if (regalosProcesados.size > 1000) regalosProcesados.clear(); 
+            
+            cantidadAProcesar = data.repeatCount || 1;
+        }
+
+        if (cantidadAProcesar <= 0) return;
+
+        const totalCoins = unitPrice * cantidadAProcesar;
+
+        // Lógica de Top Donadores
         if (!configGlobal.topVIP.currentRound[user]) {
             configGlobal.topVIP.currentRound[user] = { coins: 0, avatar: avatarUrl, displayName: cleanName };
         } else {
@@ -304,9 +357,19 @@ function conectarTikTok(usuario) {
         configGlobal.racha.topRound[user].monedas += totalCoins;
         io.emit('racha_data_update', configGlobal.racha); 
 
+        // 🌟 LÓGICA DE ASIGNACIÓN DE EQUIPOS
         let isSalvar = configGlobal.equipo1.regalos.some(r => r.id === giftId);
         let isReiniciar = configGlobal.equipo2.regalos.some(r => r.id === giftId);
         let triggeredTeam = false;
+
+        // PRIORIDAD: Si el usuario ya comentó "chicos" o "chicas", se sobrescribe la naturaleza del regalo
+        if (userTeams[user] === 1) {
+            isSalvar = true;
+            isReiniciar = false;
+        } else if (userTeams[user] === 2) {
+            isSalvar = false;
+            isReiniciar = true;
+        }
 
         if (isSalvar) {
             teamSalvar.total += totalCoins;
@@ -350,6 +413,11 @@ io.on('connection', (socket) => {
         nuevaConfig.metaLikes = configGlobal.metaLikes; 
         nuevaConfig.topLikes = configGlobal.topLikes;
         nuevaConfig.topVIP = configGlobal.topVIP;
+        
+        // Mantener las joinWords para no borrarlas al guardar desde paneles viejos
+        if (!nuevaConfig.equipo1.joinWords) nuevaConfig.equipo1.joinWords = configGlobal.equipo1.joinWords;
+        if (!nuevaConfig.equipo2.joinWords) nuevaConfig.equipo2.joinWords = configGlobal.equipo2.joinWords;
+
         configGlobal = nuevaConfig; guardarEnArchivo(); io.emit('config_actual', configGlobal); emitSalvarUpdate(io); 
     });
 
@@ -457,7 +525,7 @@ io.on('connection', (socket) => {
         let hist = configGlobal.topVIP.recordHistorico[data.userKey]; 
         if(hist) { 
             hist.wins += data.amount; if(hist.wins < 0) hist.wins = 0; 
-            if(hist.wins === 0) hist.streak = 0; // Resetear racha si se le bajan todas las victorias manualmente
+            if(hist.wins === 0) hist.streak = 0; 
             
             let rachaKey = hist.displayName;
             if(!configGlobal.racha.recordHistorico[rachaKey]) configGlobal.racha.recordHistorico[rachaKey] = { avatar: hist.avatar, displayName: hist.displayName, wins: 0, monedas: 0 };
@@ -471,6 +539,16 @@ io.on('connection', (socket) => {
             guardarEnArchivo(); 
             io.emit('top_vip_data_update', configGlobal.topVIP); 
             io.emit('racha_data_update', configGlobal.racha);
+        } 
+    });
+
+    socket.on('top_vip_ajuste_racha', (data) => { 
+        let hist = configGlobal.topVIP.recordHistorico[data.userKey]; 
+        if(hist) { 
+            hist.streak = (hist.streak || 0) + data.amount; 
+            if(hist.streak < 0) hist.streak = 0; 
+            guardarEnArchivo(); 
+            io.emit('top_vip_data_update', configGlobal.topVIP); 
         } 
     });
     
@@ -556,6 +634,10 @@ io.on('connection', (socket) => {
     });
     socket.on('reset', () => {
         topDonators = {}; topSorted = []; teamSalvar = { total: 0, donators: {} }; teamReiniciar = { total: 0, donators: {} };
+        
+        // 🌟 NUEVO: Limpiamos los equipos por chat cuando la barra se resetea para iniciar una nueva ronda limpia
+        userTeams = {}; 
+
         io.emit('actualizacion', topSorted); emitSalvarUpdate(io);
     });
     socket.on('registrar_victoria_versus', (data) => {
@@ -579,8 +661,14 @@ io.on('connection', (socket) => {
         guardarEnArchivo(); io.emit('racha_versus_update', configGlobal.rachaVersus);
     });
     socket.on('racha_versus_guardar_opciones', (opts) => {
-        configGlobal.rachaVersus.showName = opts.showName; configGlobal.rachaVersus.showCount = opts.showCount; configGlobal.rachaVersus.showCoins = opts.showCoins;
+        configGlobal.rachaVersus.showName = opts.showName; 
+        configGlobal.rachaVersus.showCount = opts.showCount; 
+        configGlobal.rachaVersus.showCoins = opts.showCoins;
         guardarEnArchivo(); io.emit('racha_versus_update', configGlobal.rachaVersus);
+    });
+    
+    socket.on('racha_versus_clear_visual', () => {
+        io.emit('racha_versus_clear_visual');
     });
 });
 

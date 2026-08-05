@@ -1,7 +1,7 @@
-
 {
     "username": "teamgatitos_oficial",
     "historial": [
+        "juniorverificado",
         "teamgatitos_oficial",
         "elgarixito",
         "darkotyt",
@@ -174,33 +174,8 @@
             "diamonds": 1
         },
         {
-            "id": 7096,
-            "name": "It's corn",
-            "diamonds": 1
-        },
-        {
-            "id": 231956,
-            "name": "Clap Clap",
-            "diamonds": 1
-        },
-        {
-            "id": 15232,
-            "name": "You're awesome",
-            "diamonds": 1
-        },
-        {
             "id": 41837,
             "name": "Gatitos Miau",
-            "diamonds": 1
-        },
-        {
-            "id": 59881,
-            "name": "A Shard of Hope",
-            "diamonds": 1
-        },
-        {
-            "id": 15231,
-            "name": "Love you so much",
             "diamonds": 1
         },
         {
@@ -209,18 +184,8 @@
             "diamonds": 1
         },
         {
-            "id": 15104,
-            "name": "Guardian Wings",
-            "diamonds": 1
-        },
-        {
-            "id": 6784,
-            "name": "Cake Slice",
-            "diamonds": 1
-        },
-        {
-            "id": 19446,
-            "name": "Wink wink",
+            "id": 59881,
+            "name": "A Shard of Hope",
             "diamonds": 1
         },
         {
@@ -276,16 +241,6 @@
         {
             "id": 51281,
             "name": "DJ Vinyl",
-            "diamonds": 10
-        },
-        {
-            "id": 231958,
-            "name": "Mind Blown",
-            "diamonds": 10
-        },
-        {
-            "id": 231957,
-            "name": "Intimacy",
             "diamonds": 10
         },
         {
@@ -354,16 +309,6 @@
             "diamonds": 99
         },
         {
-            "id": 282739,
-            "name": "Fiesta Accordion",
-            "diamonds": 99
-        },
-        {
-            "id": 5659,
-            "name": "Paper Crane",
-            "diamonds": 99
-        },
-        {
             "id": 6968,
             "name": "Hand Heart",
             "diamonds": 100
@@ -384,16 +329,6 @@
             "diamonds": 100
         },
         {
-            "id": 5582,
-            "name": "Mishka Bear",
-            "diamonds": 100
-        },
-        {
-            "id": 5585,
-            "name": "Confetti",
-            "diamonds": 100
-        },
-        {
             "id": 170498,
             "name": "Bloom Brass",
             "diamonds": 199
@@ -401,6 +336,11 @@
         {
             "id": 5586,
             "name": "Hearts",
+            "diamonds": 199
+        },
+        {
+            "id": 5794,
+            "name": "Coconut Tree",
             "diamonds": 199
         },
         {
@@ -414,8 +354,8 @@
             "diamonds": 299
         },
         {
-            "id": 739730,
-            "name": "Rhythm Crown",
+            "id": 6267,
+            "name": "Corgi",
             "diamonds": 299
         },
         {
@@ -444,9 +384,9 @@
             "diamonds": 500
         },
         {
-            "id": 59882,
-            "name": "Shell of a Warrior",
-            "diamonds": 500
+            "id": 7697,
+            "name": "LOVE U",
+            "diamonds": 899
         },
         {
             "id": 11046,
@@ -483,10 +423,10 @@
         "topRound": {},
         "recordDiario": {
             "Wíldr Jrz": {
-                "avatar": "https://p16-common-sign.tiktokcdn-us.com/tos-useast8-avt-0068-tx2/7860a9dce40d671469eac3d4ec9ace56~tplv-tiktokx-cropcenter:100:100.webp?dr=9640&amp;refresh_token=a3c9a463&amp;x-expires=1786053600&amp;x-signature=noImbWChbksRM%2FJrlXFjgNDHLMA%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=useast8",
+                "avatar": "https://p19-common-sign.tiktokcdn-us.com/tos-useast8-avt-0068-tx2/7860a9dce40d671469eac3d4ec9ace56~tplv-tiktokx-cropcenter:100:100.webp?dr=9640&refresh_token=83db2a4a&x-expires=1786132800&x-signature=iBUDeub2YfhGohYyyoRZGAkMA%2F0%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=useast8",
                 "displayName": "Wíldr Jrz",
-                "wins": 5,
-                "monedas": 271
+                "wins": 6,
+                "monedas": 341
             },
             "fredd_yq1": {
                 "avatar": "https://p19-common-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/09c1b91d2ecb71e57f06e2b91dc42d40~tplv-tiktokx-cropcenter:100:100.webp?dr=9640&amp;refresh_token=9f033390&amp;x-expires=1786082400&amp;x-signature=tHvw68xvS9%2B8Bf%2Fc6BGApK6nivM%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=useast5",
@@ -501,10 +441,10 @@
                 "monedas": 0
             },
             "Alejandra": {
-                "avatar": "https://p19-common-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/ce81b7b08d61f5fee2f60bc27b215096~tplv-tiktokx-cropcenter:100:100.webp?dr=9640&amp;refresh_token=6df11e60&amp;x-expires=1786050000&amp;x-signature=ixAfdjC60aS6F%2BmgHYliSS9Z3rE%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=useast5",
+                "avatar": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/e0ccbcb179497f0b606c8969ea1f2756~tplv-tiktokx-cropcenter:100:100.webp?dr=9640&refresh_token=e7bd240c&x-expires=1786129200&x-signature=9LSPTH1j%2FzDlMFuG8GOLQsJ3%2Fh8%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=useast5",
                 "displayName": "Alejandra",
-                "wins": 2,
-                "monedas": 231
+                "wins": 3,
+                "monedas": 296
             },
             "D": {
                 "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/dec10e56e6e8ab4df7f781dc5c8c3fc7~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&amp;refresh_token=6b07b4ef&amp;x-expires=1786053600&amp;x-signature=c9%2BDrFo9xpkGAjy5q4XlFALluRk%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my2",
@@ -601,14 +541,116 @@
                 "displayName": "bz_ff0",
                 "wins": 1,
                 "monedas": 300
+            },
+            "isaacbla": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/88eb72b2b5586ce0470a6abcc9e2bf54~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=b11a71a4&x-expires=1786129200&x-signature=aVhwhNoKE17HD9gXio6g4iJwBjQ%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "isaacbla",
+                "wins": 1,
+                "monedas": 3
+            },
+            "Kevin de Jes...": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-maliva-avt-0068/7330676553078013957~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=1d396fd4&x-expires=1786129200&x-signature=jG2YO7eK0C4UmSex0ONUR49f1J8%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "Kevin de Jes...",
+                "wins": 1,
+                "monedas": 230
+            },
+            "Subaru D": {
+                "avatar": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/4ee4b1dfe6fd8f05f49ac01ae8dd6f2e~tplv-tiktokx-cropcenter:100:100.webp?dr=9640&refresh_token=2a051574&x-expires=1786129200&x-signature=Oph6NO2vONDzcGBv55dMmWG%2BwaQ%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=useast5",
+                "displayName": "Subaru D",
+                "wins": 1,
+                "monedas": 503
+            },
+            "Estrella": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/2f1e5665672b461eb200702cd15f603d~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&amp;refresh_token=fa467e32&amp;x-expires=1785369600&amp;x-signature=i4zwlreFO%2B91ld%2FwtnMCK%2BO21f0%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my3",
+                "displayName": "Estrella",
+                "wins": 3,
+                "monedas": 0
+            },
+            "Victor Flore...": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/51cd18b13baa8cadc3697eb0ccd724f0~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=c418f587&x-expires=1786129200&x-signature=KbvP2rkj7UnN7wA%2Fw8kEosn%2FLF0%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "Victor Flore...",
+                "wins": 1,
+                "monedas": 42
+            },
+            "ThiagoDannas...": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/e9166ff1503900634381c93d28b6e6bb~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=f3bb3734&x-expires=1786129200&x-signature=cndBOUe7gqhySN%2Fc%2FfErOjUnSRg%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=sg1",
+                "displayName": "ThiagoDannas...",
+                "wins": 1,
+                "monedas": 41
+            },
+            "JUANHENAO200...": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/336dd26defba4fb66e6ac5326614f967~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=bc92416f&x-expires=1786129200&x-signature=MA9AR8m6hBt2m0OT%2BcvbRtGqmGs%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "JUANHENAO200...",
+                "wins": 1,
+                "monedas": 30
+            },
+            "Geiner": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/a46978fbe9cfc1437c9019608e65450a~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=d439e692&x-expires=1786129200&x-signature=oqE2Id0Gys9z19%2BRBbffmLyqMeM%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "Geiner",
+                "wins": 2,
+                "monedas": 391
+            },
+            "Ale": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/fc2f79207da6cdcc922b29af150a7009~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=d428aaa5&x-expires=1786129200&x-signature=9j%2B5VYRo2pb8EIrq6J%2BCp7rujoU%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "Ale",
+                "wins": 1,
+                "monedas": 101
+            },
+            "younknowme": {
+                "avatar": "https://p16-common-sign.tiktokcdn-us.com/musically-maliva-obj/1594805258216454~tplv-tiktokx-cropcenter:100:100.webp?dr=9640&refresh_token=fb35b83b&x-expires=1786132800&x-signature=bjy2n7t9hGDHUkLbcgBMXQm3ipU%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=useast5",
+                "displayName": "younknowme",
+                "wins": 3,
+                "monedas": 4260
+            },
+            "SOMBRA": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/c6fea1e092d8f6cd71c9b7a361e3c0ef~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=fd9e938d&x-expires=1786132800&x-signature=9hWZf%2FfbGpeguijEGH2fqcWMkdA%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "SOMBRA",
+                "wins": 1,
+                "monedas": 7
+            },
+            "Verity": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/7062657b16c46c4868f4464aa9c57395~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=bddd6394&x-expires=1786132800&x-signature=KyVPKUsVafIK9lZted3rIopEbTs%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "Verity",
+                "wins": 1,
+                "monedas": 40
+            },
+            "Ari": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/01e82cd77d7ae83e49faaedb3590373f~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=d0af0b1f&x-expires=1786132800&x-signature=7xPcKqIUMjrEytiYVqCSPnkIbME%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "Ari",
+                "wins": 1,
+                "monedas": 4
+            },
+            "alex": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/cc21de98450230c073ad7e23bd62cdbd~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=1de5418d&x-expires=1786132800&x-signature=e4xyg8MyVoOAWyDWAW87m%2FyzDno%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "alex",
+                "wins": 2,
+                "monedas": 470
+            },
+            "ñukis360": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/e68dc334b921c20ce6b9daa5581d0eb6~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=16a641e0&x-expires=1786132800&x-signature=mawAVCAaaLtzN2IBXzNSiF2KdFE%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my3",
+                "displayName": "ñukis360",
+                "wins": 1,
+                "monedas": 30
+            },
+            "LFLAKI": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/b0325f262c30676a056b1204c0aefada~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=20822b3a&x-expires=1786132800&x-signature=k4AYD2FpdIYsH%2BxNsDCacB9nK3I%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "LFLAKI",
+                "wins": 2,
+                "monedas": 152
+            },
+            "Miguel Burci...": {
+                "avatar": "https://p19-common-sign.tiktokcdn.com/tos-alisg-avt-0068/971c31fcd622987c72df4892ed31131c~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=a3b488de&x-expires=1786132800&x-signature=Ta02UWtaNangaQq3Ekt7Pu8o6GA%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "Miguel Burci...",
+                "wins": 1,
+                "monedas": 41
             }
         },
         "recordHistorico": {
             "Wíldr Jrz": {
-                "avatar": "https://p16-common-sign.tiktokcdn-us.com/tos-useast8-avt-0068-tx2/7860a9dce40d671469eac3d4ec9ace56~tplv-tiktokx-cropcenter:100:100.webp?dr=9640&amp;refresh_token=a3c9a463&amp;x-expires=1786053600&amp;x-signature=noImbWChbksRM%2FJrlXFjgNDHLMA%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=useast8",
+                "avatar": "https://p19-common-sign.tiktokcdn-us.com/tos-useast8-avt-0068-tx2/7860a9dce40d671469eac3d4ec9ace56~tplv-tiktokx-cropcenter:100:100.webp?dr=9640&refresh_token=83db2a4a&x-expires=1786132800&x-signature=iBUDeub2YfhGohYyyoRZGAkMA%2F0%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=useast8",
                 "displayName": "Wíldr Jrz",
-                "wins": 5,
-                "monedas": 271
+                "wins": 6,
+                "monedas": 341
             },
             "fredd_yq1": {
                 "avatar": "https://p19-common-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/09c1b91d2ecb71e57f06e2b91dc42d40~tplv-tiktokx-cropcenter:100:100.webp?dr=9640&amp;refresh_token=9f033390&amp;x-expires=1786082400&amp;x-signature=tHvw68xvS9%2B8Bf%2Fc6BGApK6nivM%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=useast5",
@@ -623,10 +665,10 @@
                 "monedas": 0
             },
             "Alejandra": {
-                "avatar": "https://p19-common-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/ce81b7b08d61f5fee2f60bc27b215096~tplv-tiktokx-cropcenter:100:100.webp?dr=9640&amp;refresh_token=6df11e60&amp;x-expires=1786050000&amp;x-signature=ixAfdjC60aS6F%2BmgHYliSS9Z3rE%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=useast5",
+                "avatar": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/e0ccbcb179497f0b606c8969ea1f2756~tplv-tiktokx-cropcenter:100:100.webp?dr=9640&refresh_token=e7bd240c&x-expires=1786129200&x-signature=9LSPTH1j%2FzDlMFuG8GOLQsJ3%2Fh8%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=useast5",
                 "displayName": "Alejandra",
-                "wins": 2,
-                "monedas": 231
+                "wins": 3,
+                "monedas": 296
             },
             "D": {
                 "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/dec10e56e6e8ab4df7f781dc5c8c3fc7~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&amp;refresh_token=6b07b4ef&amp;x-expires=1786053600&amp;x-signature=c9%2BDrFo9xpkGAjy5q4XlFALluRk%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my2",
@@ -723,6 +765,108 @@
                 "displayName": "bz_ff0",
                 "wins": 1,
                 "monedas": 300
+            },
+            "isaacbla": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/88eb72b2b5586ce0470a6abcc9e2bf54~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=b11a71a4&x-expires=1786129200&x-signature=aVhwhNoKE17HD9gXio6g4iJwBjQ%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "isaacbla",
+                "wins": 1,
+                "monedas": 3
+            },
+            "Kevin de Jes...": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-maliva-avt-0068/7330676553078013957~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=1d396fd4&x-expires=1786129200&x-signature=jG2YO7eK0C4UmSex0ONUR49f1J8%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "Kevin de Jes...",
+                "wins": 1,
+                "monedas": 230
+            },
+            "Subaru D": {
+                "avatar": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/4ee4b1dfe6fd8f05f49ac01ae8dd6f2e~tplv-tiktokx-cropcenter:100:100.webp?dr=9640&refresh_token=2a051574&x-expires=1786129200&x-signature=Oph6NO2vONDzcGBv55dMmWG%2BwaQ%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=useast5",
+                "displayName": "Subaru D",
+                "wins": 1,
+                "monedas": 503
+            },
+            "Estrella": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/2f1e5665672b461eb200702cd15f603d~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&amp;refresh_token=fa467e32&amp;x-expires=1785369600&amp;x-signature=i4zwlreFO%2B91ld%2FwtnMCK%2BO21f0%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my3",
+                "displayName": "Estrella",
+                "wins": 3,
+                "monedas": 0
+            },
+            "Victor Flore...": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/51cd18b13baa8cadc3697eb0ccd724f0~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=c418f587&x-expires=1786129200&x-signature=KbvP2rkj7UnN7wA%2Fw8kEosn%2FLF0%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "Victor Flore...",
+                "wins": 1,
+                "monedas": 42
+            },
+            "ThiagoDannas...": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/e9166ff1503900634381c93d28b6e6bb~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=f3bb3734&x-expires=1786129200&x-signature=cndBOUe7gqhySN%2Fc%2FfErOjUnSRg%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=sg1",
+                "displayName": "ThiagoDannas...",
+                "wins": 1,
+                "monedas": 41
+            },
+            "JUANHENAO200...": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/336dd26defba4fb66e6ac5326614f967~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=bc92416f&x-expires=1786129200&x-signature=MA9AR8m6hBt2m0OT%2BcvbRtGqmGs%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "JUANHENAO200...",
+                "wins": 1,
+                "monedas": 30
+            },
+            "Geiner": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/a46978fbe9cfc1437c9019608e65450a~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=d439e692&x-expires=1786129200&x-signature=oqE2Id0Gys9z19%2BRBbffmLyqMeM%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "Geiner",
+                "wins": 2,
+                "monedas": 391
+            },
+            "Ale": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/fc2f79207da6cdcc922b29af150a7009~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=d428aaa5&x-expires=1786129200&x-signature=9j%2B5VYRo2pb8EIrq6J%2BCp7rujoU%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "Ale",
+                "wins": 1,
+                "monedas": 101
+            },
+            "younknowme": {
+                "avatar": "https://p16-common-sign.tiktokcdn-us.com/musically-maliva-obj/1594805258216454~tplv-tiktokx-cropcenter:100:100.webp?dr=9640&refresh_token=fb35b83b&x-expires=1786132800&x-signature=bjy2n7t9hGDHUkLbcgBMXQm3ipU%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=useast5",
+                "displayName": "younknowme",
+                "wins": 3,
+                "monedas": 4260
+            },
+            "SOMBRA": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/c6fea1e092d8f6cd71c9b7a361e3c0ef~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=fd9e938d&x-expires=1786132800&x-signature=9hWZf%2FfbGpeguijEGH2fqcWMkdA%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "SOMBRA",
+                "wins": 1,
+                "monedas": 7
+            },
+            "Verity": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/7062657b16c46c4868f4464aa9c57395~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=bddd6394&x-expires=1786132800&x-signature=KyVPKUsVafIK9lZted3rIopEbTs%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "Verity",
+                "wins": 1,
+                "monedas": 40
+            },
+            "Ari": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/01e82cd77d7ae83e49faaedb3590373f~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=d0af0b1f&x-expires=1786132800&x-signature=7xPcKqIUMjrEytiYVqCSPnkIbME%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "Ari",
+                "wins": 1,
+                "monedas": 4
+            },
+            "alex": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/cc21de98450230c073ad7e23bd62cdbd~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=1de5418d&x-expires=1786132800&x-signature=e4xyg8MyVoOAWyDWAW87m%2FyzDno%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "alex",
+                "wins": 2,
+                "monedas": 470
+            },
+            "ñukis360": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/e68dc334b921c20ce6b9daa5581d0eb6~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=16a641e0&x-expires=1786132800&x-signature=mawAVCAaaLtzN2IBXzNSiF2KdFE%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my3",
+                "displayName": "ñukis360",
+                "wins": 1,
+                "monedas": 30
+            },
+            "LFLAKI": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/b0325f262c30676a056b1204c0aefada~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=20822b3a&x-expires=1786132800&x-signature=k4AYD2FpdIYsH%2BxNsDCacB9nK3I%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "LFLAKI",
+                "wins": 2,
+                "monedas": 152
+            },
+            "Miguel Burci...": {
+                "avatar": "https://p19-common-sign.tiktokcdn.com/tos-alisg-avt-0068/971c31fcd622987c72df4892ed31131c~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=a3b488de&x-expires=1786132800&x-signature=Ta02UWtaNangaQq3Ekt7Pu8o6GA%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "Miguel Burci...",
+                "wins": 1,
+                "monedas": 41
             }
         },
         "showPhoto": true,
@@ -940,7 +1084,7 @@
         "prefixText": "A los",
         "step": 90000,
         "actionText": "- 1 WIN",
-        "currentGoal": 360000,
+        "currentGoal": 450000,
         "style": {
             "fontFamily": "'Luckiest Guy', cursive",
             "color": "#ffffff",
@@ -951,120 +1095,10 @@
     "topLikes": {
         "currentRound": {},
         "recordHistorico": {
-            "team.abrahaham9227293": {
-                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/ad2e9d70cd7a2eb58a9ab1e6a0c86e9d~tplv-tiktok-shrink:72:72.webp?dr=14561&amp;refresh_token=5e21531d&amp;x-expires=1786050000&amp;x-signature=avIEa6VIMdVekDgPT64skN4Otgo%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my3",
-                "displayName": "secta arcoir...",
+            "sanxtiah": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/5e57d0f0509629bc7a8f9b497d72674d~tplv-tiktok-shrink:72:72.webp?dr=14561&refresh_token=562bd28b&x-expires=1786132800&x-signature=8bSvrwyewgP76fVojYW9LiBdlcw%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "ElSanyi",
                 "wins": 1
-            },
-            "jose_victorg": {
-                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/26fb630bbabc3dabb8dc6374443a4892~tplv-tiktok-shrink:72:72.webp?dr=14561&amp;refresh_token=795c005c&amp;x-expires=1786050000&amp;x-signature=TRIF60liFc5Vf6zbqeEs4AIs7NA%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my",
-                "displayName": "jose_victorg",
-                "wins": 4
-            },
-            "sataandagi_osaka09": {
-                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/32a79f1d92ac1dbb1593d8a25b38bd0c~tplv-tiktok-shrink:72:72.webp?dr=14561&amp;refresh_token=2a1603dc&amp;x-expires=1786050000&amp;x-signature=i0G6ND0v%2BnVz1PryMHo5uOhpEmw%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my",
-                "displayName": "sataandagios...",
-                "wins": 1
-            },
-            "brayan.zavala016": {
-                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/9c027fe7fe1ea7e79b47b2515b85ee72~tplv-tiktok-shrink:72:72.webp?dr=14561&amp;refresh_token=3e1236a0&amp;x-expires=1786050000&amp;x-signature=kVwdoir9X70PJICUWZi9BFEKWQY%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my3",
-                "displayName": "sebastian",
-                "wins": 5
-            },
-            "_terror_27": {
-                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/9dafd70f923536ac478cb5c8ee361d08~tplv-tiktok-shrink:72:72.webp?dr=14561&amp;refresh_token=d10bb9f2&amp;x-expires=1786053600&amp;x-signature=PSc0XdL4q4wmOaY76rGFk97oWAs%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=sg1",
-                "displayName": "E",
-                "wins": 6
-            },
-            "boyfriend_rants28": {
-                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/f07bc0a0261d9cb1f90aa3dad2977e60~tplv-tiktok-shrink:72:72.webp?dr=14561&amp;refresh_token=c68690ae&amp;x-expires=1786053600&amp;x-signature=s1tOKy2EtkEPeMMskXxrwuhEImQ%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my2",
-                "displayName": "boyfriend ra...",
-                "wins": 1
-            },
-            "mxxc_132": {
-                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/e8ba2091f9a9fb656a3f7a0d298902f9~tplv-tiktok-shrink:72:72.webp?dr=14561&amp;refresh_token=0bb0d657&amp;x-expires=1786053600&amp;x-signature=IziC9noNhlVQuGqQxAEmTmnQyt0%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my",
-                "displayName": "mxxc_132",
-                "wins": 2
-            },
-            "adri_xd243": {
-                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/40b513c5b33b5e29d5468eca04b93db4~tplv-tiktok-shrink:72:72.webp?dr=14561&amp;refresh_token=5b4a6294&amp;x-expires=1786053600&amp;x-signature=woPl9qSmhjM4E7ly3hSnq9S59X0%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my2",
-                "displayName": "AdriXD24",
-                "wins": 1
-            },
-            "pedroalonsocamp": {
-                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/7336137544666447893~tplv-tiktok-shrink:72:72.webp?dr=14561&amp;refresh_token=71a6b056&amp;x-expires=1786053600&amp;x-signature=BoXgqhcF9NIrIHuJPTqpkBp9yXI%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my2",
-                "displayName": "Pedro Alonso...",
-                "wins": 1
-            },
-            "iam.glan": {
-                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-maliva-avt-0068/9836b7fed8fce579084f25dd565d4157~tplv-tiktok-shrink:72:72.webp?dr=14561&amp;refresh_token=f82ea40a&amp;x-expires=1786053600&amp;x-signature=cyZFxZz7NVI66XqSQxYbgdtk9mU%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my2",
-                "displayName": "iamian1111",
-                "wins": 2
-            },
-            "nik_c_1": {
-                "avatar": "https://p16-common-sign.tiktokcdn-eu.com/tos-useast2a-avt-0068-euttp/d13c38c012d6d53e61c6e1193dae7e44~tplv-tiktok-shrink:72:72.webp?dr=10381&amp;refresh_token=70f659e8&amp;x-expires=1786053600&amp;x-signature=khTbloRH0vJwtX2KjGwGnMjoL64%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=no1a",
-                "displayName": "nikC",
-                "wins": 2
-            },
-            "saulnerigomez": {
-                "avatar": "https://p16-common-sign.tiktokcdn-us.com/tos-useast8-avt-0068-tx2/9962632e9a6cec3fa548ad368a1eca13~tplv-tiktok-shrink:72:72.webp?dr=9622&amp;refresh_token=3b3ad115&amp;x-expires=1786053600&amp;x-signature=%2F0xS%2BK04%2B0N4bXwBjLbljenLPm4%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=useast8",
-                "displayName": "Saul",
-                "wins": 1
-            },
-            "d3sc0nfi4nz4": {
-                "avatar": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/3c2489d733fdfae628bb770f56e590f8~tplv-tiktok-shrink:72:72.webp?dr=9622&amp;refresh_token=027ab1c5&amp;x-expires=1786057200&amp;x-signature=Yk8IUQo6w4xjheRRZ3ESh%2BcRfdA%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=useast5",
-                "displayName": "d3sc0nfi4nz4",
-                "wins": 2
-            },
-            "abi_iloveevade": {
-                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/e0cd15ae9129f6ec27ab3b1f4848dd06~tplv-tiktok-shrink:72:72.webp?dr=14561&amp;refresh_token=88d4ba95&amp;x-expires=1786075200&amp;x-signature=yiglnBKfQgvgEFyInNlSQOLi41E%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my2",
-                "displayName": "abi_iloveeva...",
-                "wins": 2
-            },
-            "sixsevensssssssss": {
-                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/8d9d610f404c78b9fa29f32a41265fe6~tplv-tiktok-shrink:72:72.webp?dr=14561&amp;refresh_token=4f97e97b&amp;x-expires=1786075200&amp;x-signature=%2F4Qb24AluHcqy202feowbIgvK4s%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my2",
-                "displayName": "EIDER",
-                "wins": 1
-            },
-            "m.xrxo8": {
-                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/4cf8be4a4b9f6e1c9b0fc162ab0f53de~tplv-tiktok-shrink:72:72.webp?dr=14561&amp;refresh_token=459b37cd&amp;x-expires=1786078800&amp;x-signature=hmyKQYTKtL84z%2FU9zoNNz9ZkIrA%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my2",
-                "displayName": "mxrxo",
-                "wins": 5
-            },
-            "ryal8790722": {
-                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/e3cd628d0a08a203ec5cae56af618c26~tplv-tiktok-shrink:72:72.webp?dr=14561&amp;refresh_token=6d57f42b&amp;x-expires=1786078800&amp;x-signature=DHqq52GWPh8xgYWG3XIaz7knXIQ%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my2",
-                "displayName": "ryal8790722",
-                "wins": 7
-            },
-            "emanuel.rodriguez0637": {
-                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/65b635911b5a8197713a3284049b12ce~tplv-tiktok-shrink:72:72.webp?dr=14561&amp;refresh_token=692d4a65&amp;x-expires=1786078800&amp;x-signature=OgUAtBVA3numpzygJfBKZRQE3MQ%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=sg1",
-                "displayName": "Emanuel Rodr...",
-                "wins": 1
-            },
-            "apx1u._szn": {
-                "avatar": "https://p16-common-sign.tiktokcdn-us.com/tos-useast8-avt-0068-tx2/342b5b00c0111507e3f0911c0fefd8b2~tplv-tiktok-shrink:72:72.webp?dr=9622&amp;refresh_token=4d4f37c2&amp;x-expires=1786078800&amp;x-signature=GrZCC%2Byjd3ITtE8TfSOnQfgszIA%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=useast8",
-                "displayName": "Apelu Asaile...",
-                "wins": 1
-            },
-            "abdielacha": {
-                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-maliva-avt-0068/1140c44749d533e55aab3f88811045da~tplv-tiktok-shrink:72:72.webp?dr=14561&amp;refresh_token=03a7d16b&amp;x-expires=1786078800&amp;x-signature=OENBs6gbrg3a%2BxyKT%2F20zpZnFi8%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my2",
-                "displayName": "Abdiel Acha",
-                "wins": 1
-            },
-            "10003kpc_ff": {
-                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/731518582640851542b23aea775ef89c~tplv-tiktok-shrink:72:72.webp?dr=14561&amp;refresh_token=18f94a95&amp;x-expires=1786082400&amp;x-signature=4k8IG75xWsGLwRXLtBqoBms%2FbwM%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my2",
-                "displayName": "elbrocitoff",
-                "wins": 3
-            },
-            "vhernan.martinez": {
-                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/7bc230d87fbd7200ae8c471d0106ca4d~tplv-tiktok-shrink:72:72.webp?dr=14561&amp;refresh_token=1a94e6df&amp;x-expires=1786082400&amp;x-signature=a41qamoewyk9AG35%2FqilXhagm8M%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my2",
-                "displayName": "vHernan Mart...",
-                "wins": 1
-            },
-            "fw.nexus6": {
-                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/5c57db4e35cdf08b7cf3e5691a63f56c~tplv-tiktok-shrink:72:72.webp?dr=14561&amp;refresh_token=f85cdc3a&amp;x-expires=1786082400&amp;x-signature=sBwWNhb0HNf3onHT9b%2B0XnH9yAw%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my2",
-                "displayName": "FW Nexus",
-                "wins": 3
             }
         },
         "mirrorMode": true
@@ -1128,9 +1162,10 @@
                 "wins": 1
             },
             "chapin3364": {
-                "avatar": "https://p16-common-sign.tiktokcdn-us.com/tos-useast8-avt-0068-tx2/7860a9dce40d671469eac3d4ec9ace56~tplv-tiktokx-cropcenter:100:100.webp?dr=9640&amp;refresh_token=a3c9a463&amp;x-expires=1786053600&amp;x-signature=noImbWChbksRM%2FJrlXFjgNDHLMA%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=useast8",
+                "avatar": "https://p19-common-sign.tiktokcdn-us.com/tos-useast8-avt-0068-tx2/7860a9dce40d671469eac3d4ec9ace56~tplv-tiktokx-cropcenter:100:100.webp?dr=9640&refresh_token=83db2a4a&x-expires=1786132800&x-signature=iBUDeub2YfhGohYyyoRZGAkMA%2F0%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=useast8",
                 "displayName": "Wíldr Jrz",
-                "wins": 90
+                "wins": 91,
+                "streak": 1
             },
             "99_derek": {
                 "avatar": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/65e8a9241782e303242062cd25df5efa~tplv-tiktokx-cropcenter:100:100.webp?dr=9640&amp;refresh_token=c3a0ba76&amp;x-expires=1781730000&amp;x-signature=mGWI6FQ2ij85WRF2IOUXWeslrxQ%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=useast5",
@@ -1403,14 +1438,16 @@
                 "wins": 1
             },
             "carlos_345_566": {
-                "avatar": "https://p19-common-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/bebe3a0705f255004d2c31e570ab6eb7~tplv-tiktokx-cropcenter:100:100.webp?dr=9640&amp;refresh_token=9ef204f1&amp;x-expires=1783702800&amp;x-signature=7wSmy0TLGHpbLcZ2BsxrAff6HJU%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=useast5",
-                "displayName": "D",
-                "wins": 2
+                "avatar": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/4ee4b1dfe6fd8f05f49ac01ae8dd6f2e~tplv-tiktokx-cropcenter:100:100.webp?dr=9640&refresh_token=2a051574&x-expires=1786129200&x-signature=Oph6NO2vONDzcGBv55dMmWG%2BwaQ%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=useast5",
+                "displayName": "Subaru D",
+                "wins": 3,
+                "streak": 1
             },
             "wolf_luci1234": {
                 "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/2f1e5665672b461eb200702cd15f603d~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&amp;refresh_token=fa467e32&amp;x-expires=1785369600&amp;x-signature=i4zwlreFO%2B91ld%2FwtnMCK%2BO21f0%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my3",
                 "displayName": "Estrella",
-                "wins": 4
+                "wins": 7,
+                "streak": 0
             },
             "aleyami99": {
                 "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/3294d3e37e86e7e3507d7eca512ecb2b~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&amp;refresh_token=b2a2a79a&amp;x-expires=1783702800&amp;x-signature=RFXOefPG3grS9koK%2FwRrTAC%2FE8A%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my2",
@@ -1640,7 +1677,8 @@
             "grovrav": {
                 "avatar": "https://p16-common-sign.tiktokcdn.com/tos-maliva-avt-0068/cade9cd6bc37226b11ad3b7ef2c71dd1~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&amp;refresh_token=ad3090fc&amp;x-expires=1785448800&amp;x-signature=gSel40jEA01lYL2BDnMHoeL1KO4%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my2",
                 "displayName": "Grover AV",
-                "wins": 7
+                "wins": 7,
+                "streak": 0
             },
             "alejandro_suarez2": {
                 "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/7e4e815547c845b1a0464150b9e0aa5b~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&amp;refresh_token=9bc930ad&amp;x-expires=1784757600&amp;x-signature=BNFo3HUQprPuqShZwOYWOEtxra8%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my2",
@@ -2128,9 +2166,10 @@
                 "wins": 13
             },
             "tupeorpesadilla819": {
-                "avatar": "https://p19-common-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/ce81b7b08d61f5fee2f60bc27b215096~tplv-tiktokx-cropcenter:100:100.webp?dr=9640&amp;refresh_token=6df11e60&amp;x-expires=1786050000&amp;x-signature=ixAfdjC60aS6F%2BmgHYliSS9Z3rE%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=useast5",
+                "avatar": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/e0ccbcb179497f0b606c8969ea1f2756~tplv-tiktokx-cropcenter:100:100.webp?dr=9640&refresh_token=e7bd240c&x-expires=1786129200&x-signature=9LSPTH1j%2FzDlMFuG8GOLQsJ3%2Fh8%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=useast5",
                 "displayName": "Alejandra",
-                "wins": 4
+                "wins": 5,
+                "streak": 1
             },
             "moises.tucto": {
                 "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/f1b25c143fb517eefe77696d6e8f7d3f~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&amp;refresh_token=82d659b9&amp;x-expires=1785286800&amp;x-signature=yaUEXk9oyJvi0b%2FGU%2Fod773PkH4%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my",
@@ -2218,9 +2257,10 @@
                 "wins": 1
             },
             "younknowme1533": {
-                "avatar": "https://p19-common-sign.tiktokcdn-us.com/musically-maliva-obj/1594805258216454~tplv-tiktokx-cropcenter:100:100.webp?dr=9640&amp;refresh_token=6f538f54&amp;x-expires=1785366000&amp;x-signature=QchcyvBzvmg1s9y4NZO%2F07fZKvE%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=useast8",
+                "avatar": "https://p16-common-sign.tiktokcdn-us.com/musically-maliva-obj/1594805258216454~tplv-tiktokx-cropcenter:100:100.webp?dr=9640&refresh_token=fb35b83b&x-expires=1786132800&x-signature=bjy2n7t9hGDHUkLbcgBMXQm3ipU%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=useast8",
                 "displayName": "younknowme",
-                "wins": 2
+                "wins": 4,
+                "streak": 0
             },
             "santiago_..023": {
                 "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/cbd29c519619d63f416f3c999fe4aaba~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&amp;refresh_token=ad961472&amp;x-expires=1785366000&amp;x-signature=SpIcsxS5nndtNy7e0DoGXXhImco%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my",
@@ -2233,9 +2273,10 @@
                 "wins": 1
             },
             "yasuperame2412": {
-                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/b0325f262c30676a056b1204c0aefada~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&amp;refresh_token=493a3705&amp;x-expires=1785366000&amp;x-signature=USmRDddtaFS6io%2BoX9ygAWh6p40%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my",
-                "displayName": "HERMANA DE F...",
-                "wins": 4
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/b0325f262c30676a056b1204c0aefada~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=20822b3a&x-expires=1786132800&x-signature=k4AYD2FpdIYsH%2BxNsDCacB9nK3I%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "LFLAKI",
+                "wins": 6,
+                "streak": 2
             },
             "riley_grimmell": {
                 "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/f0a33aaee976d47cd2f6c1be6b4a216d~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&amp;refresh_token=0ad6d501&amp;x-expires=1785369600&amp;x-signature=Kv0Rai1bpY3HOqmrFWWqefSkT78%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my",
@@ -2411,6 +2452,480 @@
                 "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/23c8b5b133a963fd481e703444110828~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&amp;refresh_token=49bd2a9f&amp;x-expires=1786078800&amp;x-signature=FzDG%2BFUROb%2FlNztBbi3Sqf7In%2F0%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=fdd36af4&amp;idc=my2",
                 "displayName": "bz_ff0",
                 "wins": 1
+            },
+            "leo.ffqworjjj": {
+                "avatar": "https://p16-common-sign.tiktokcdn-eu.com/tos-useast2a-avt-0068-euttp/5b1663cf38b3a01bb88ee178cdf146c5~tplv-tiktokx-cropcenter:100:100.webp?dr=10399&refresh_token=4c279107&x-expires=1786129200&x-signature=4B%2FH25NDGHIQ1gHPtyo3Y4I8194%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=useast2b",
+                "displayName": "leo",
+                "wins": 1,
+                "streak": 1
+            },
+            "isaac10357": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/88eb72b2b5586ce0470a6abcc9e2bf54~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=b11a71a4&x-expires=1786129200&x-signature=aVhwhNoKE17HD9gXio6g4iJwBjQ%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "isaacbla",
+                "wins": 0,
+                "streak": 0
+            },
+            "jayrolsihuesnieto": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/b1b73b5510e8297453f86f8e776bd831~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=af855b33&x-expires=1786129200&x-signature=pvnhIGRpnRfjlOAOt6Wy43AYatk%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "Jayrol Sihue...",
+                "wins": 1,
+                "streak": 1
+            },
+            "ateo125": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/06af208d1416815651bf71f76b1741eb~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=982d3eab&x-expires=1786129200&x-signature=6GwXSjDjSc4bMMY%2FVMxI6XpFPPg%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "Ateo125",
+                "wins": 0,
+                "streak": 0
+            },
+            "alanvzlam12": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-maliva-avt-0068/79ff7f087d8016cd83e5bb85fc31f506~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=f0b665ec&x-expires=1786129200&x-signature=4HOcQu06OHvJfhjrwD0qZjHED4E%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "ALANVZLAM",
+                "wins": 0,
+                "streak": 0
+            },
+            "sanguche_de_miga198": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/ee1988360b42f906bbd4c2dd851e4393~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=8b13f4f8&x-expires=1786129200&x-signature=OCW0pIpDHvZl%2FvQJlEg2KqHlyEU%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "sanguche_de_...",
+                "wins": 0,
+                "streak": 0
+            },
+            "marcomendozajanam": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-maliva-avt-0068/7145675700312866821~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=0dea7f43&x-expires=1786129200&x-signature=QpUAsOHYQ1xJTJfBdeBH6rFTKOY%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "marcomendoza...",
+                "wins": 0,
+                "streak": 0
+            },
+            "violeta.castillo718": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/8226f9d07d18d9546e8fd290913a31ab~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=61100b64&x-expires=1786129200&x-signature=YyKu6w1B9qi9ZJNSJl%2FaKLDkqBs%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "Nahomy",
+                "wins": 0,
+                "streak": 0
+            },
+            "daassalazar": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/d922746919357c009d81f8e0e7d592d7~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=71ec2b98&x-expires=1786129200&x-signature=HY%2FpM4HDUKyE3YRLbvxuqh78tRk%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my3",
+                "displayName": "DAASsalazar",
+                "wins": 0,
+                "streak": 0
+            },
+            "osmar.yael43": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/20802859bd8a21a7bf699858f5cda562~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=4b13c40f&x-expires=1786129200&x-signature=qw0A%2FYO%2F%2FRM2lI8Ghu52Z6vouU0%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "Osmar Yael",
+                "wins": 0,
+                "streak": 0
+            },
+            "styben43": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/2aaadc003e824b4597eb99c408980321~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=61198e6a&x-expires=1786129200&x-signature=ZcFYLR2AQw671DEI06vaegN3wpQ%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "STYBENpankei...",
+                "wins": 0,
+                "streak": 0
+            },
+            "xzan4": {
+                "avatar": "https://p19-common-sign.tiktokcdn-us.com/tos-useast8-avt-0068-tx2/93e86c8896c28fbb3c9f02fa1b03e62d~tplv-tiktokx-cropcenter:100:100.webp?dr=9640&refresh_token=9f93aca2&x-expires=1786129200&x-signature=hjHIu59cL8hnlmJpVuQgj9zuDiQ%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=useast8",
+                "displayName": "xzan4",
+                "wins": 0,
+                "streak": 0
+            },
+            "elcppx": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/da2cab7f626727193c9957ad777ddb9f~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=df584d91&x-expires=1786129200&x-signature=04rzRTxE6ucuK%2BYvXbtokMht6MU%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my3",
+                "displayName": "MRSHLLPOOH",
+                "wins": 0,
+                "streak": 0
+            },
+            "digmarconlafe": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/5c5111049cc79d819e32ba54836ceb3b~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=ebda80af&x-expires=1786129200&x-signature=jB9Gc8o8cygqVUtyJz5NwgNSVSc%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my3",
+                "displayName": "DigmarConLaF...",
+                "wins": 0,
+                "streak": 0
+            },
+            "francituu_b_a": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/7865c39563c257da306a8e1acb6c0e7a~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=b05497c1&x-expires=1786129200&x-signature=drRmeQCGJxXYbI4AcZ6ifbn6lSg%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "Frankb",
+                "wins": 0,
+                "streak": 0
+            },
+            "usuariodesconocido.0890": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/725963208b0ce66665caa0f570af83f5~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=e2ebd459&x-expires=1786129200&x-signature=JoRE6rhPmvsir%2Fu%2BKdhm9aZly8A%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "Usuario desc...",
+                "wins": 0,
+                "streak": 0
+            },
+            "elianortiz08": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-maliva-avt-0068/c97858aadce13d7066e183edbe2712a8~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=d1834566&x-expires=1786129200&x-signature=0KCBWR4DSmHmrK7FbH230gooiGI%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "Elian Ortiz",
+                "wins": 0,
+                "streak": 0
+            },
+            "000024sjjj": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/51cd18b13baa8cadc3697eb0ccd724f0~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=c418f587&x-expires=1786129200&x-signature=KbvP2rkj7UnN7wA%2Fw8kEosn%2FLF0%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "Victor Flore...",
+                "wins": 1,
+                "streak": 0
+            },
+            "nemocontreraz": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/e50f9b1002aca3635207a8a857753d49~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=81b3aced&x-expires=1786129200&x-signature=Gyg3MBaxuDZIlNR6cVU4j0FwYH4%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=sg1",
+                "displayName": "Nemo Contrer...",
+                "wins": 0,
+                "streak": 0
+            },
+            "martin.carlin5": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/3cc5dda2e54ab5edfb6b435fc451de73~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=737ab2e4&x-expires=1786129200&x-signature=Vfw0eY%2Bz9Ahw0ynGXYm7hDrMH1g%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "martincarlin",
+                "wins": 0,
+                "streak": 0
+            },
+            "leoo_ggm": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/348d5efb6106a37b8c524feb247fdf12~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=3a003630&x-expires=1786129200&x-signature=UN3ySWSC%2FIxY4Mft6zAesqfbNMc%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "leooggm",
+                "wins": 0,
+                "streak": 0
+            },
+            "fernando_alejos11": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/1a42b7b3c1067078ccfd4b5ae1057697~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=9bd20402&x-expires=1786129200&x-signature=drs2R1kxs4Bb18sykxIhaBkOT8o%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my3",
+                "displayName": "Luis",
+                "wins": 0,
+                "streak": 0
+            },
+            "jdcy29": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/6c6bb52a2dc55e238361824443d992f5~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=cd0c44e1&x-expires=1786129200&x-signature=2HYtvvFbFp80JwvfbhGzEyZSQe4%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my3",
+                "displayName": "jhosep",
+                "wins": 0,
+                "streak": 0
+            },
+            "nycrelly": {
+                "avatar": "https://p16-common-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/d22e4143fa25c6a6f5e605b82b4432c7~tplv-tiktokx-cropcenter:100:100.webp?dr=9640&refresh_token=80ced0c8&x-expires=1786129200&x-signature=h9ymPlNiIjnzrvY1OIxXyBe91qs%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=useast5",
+                "displayName": "Rell",
+                "wins": 0,
+                "streak": 0
+            },
+            "thiagq56": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/e9166ff1503900634381c93d28b6e6bb~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=f3bb3734&x-expires=1786129200&x-signature=cndBOUe7gqhySN%2Fc%2FfErOjUnSRg%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=sg1",
+                "displayName": "ThiagoDannas...",
+                "wins": 1,
+                "streak": 1
+            },
+            "juanpablo_2009_6_11": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/336dd26defba4fb66e6ac5326614f967~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=bc92416f&x-expires=1786129200&x-signature=MA9AR8m6hBt2m0OT%2BcvbRtGqmGs%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "JUANHENAO200...",
+                "wins": 1,
+                "streak": 0
+            },
+            "denuarfigueroa": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/d9e6745b27c0feeb9b87530d270dc580~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=8f9680da&x-expires=1786129200&x-signature=BPD6Rb%2BDz6HAZgxHv%2FXH6ojYI%2FY%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "D",
+                "wins": 0,
+                "streak": 0
+            },
+            "alexis.zavala.vel": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/d80174cbf5564d76157ca0d1449710f9~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=4864c9e5&x-expires=1786129200&x-signature=FslIg8iTRNLR9%2FQ5jKOMugvftm4%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my3",
+                "displayName": "alex",
+                "wins": 0,
+                "streak": 0
+            },
+            "jeremy_frias_": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/ffbcfb9300c749fdaf50be38d03eed28~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=4b1b6cad&x-expires=1786129200&x-signature=vBmLpabkl8HJJCeMjrnJnCEhrSE%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "Jeremy",
+                "wins": 0,
+                "streak": 0
+            },
+            "nicotaborda2": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-maliva-avt-0068/08fc9737f7ecb56207c377f6c0a50b03~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=cf5439a6&x-expires=1786129200&x-signature=SNrsrYFjziD284aZ2SKhA4iW6Xo%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "nicotaborda",
+                "wins": 0,
+                "streak": 0
+            },
+            "blas0020": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/72d76a079ee4dbc191ccfee100626b03~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=da0c5fa7&x-expires=1786129200&x-signature=CLwSPfLRkTdr8Q1W37bD0BIBGJg%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "Blas",
+                "wins": 0,
+                "streak": 0
+            },
+            "geinerbarretocruz": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/a46978fbe9cfc1437c9019608e65450a~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=d439e692&x-expires=1786129200&x-signature=oqE2Id0Gys9z19%2BRBbffmLyqMeM%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "Geiner",
+                "wins": 2,
+                "streak": 2
+            },
+            "elsolitario1890": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/380b32f7176b51b4f6181b943bf4aff8~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=5c28dc6c&x-expires=1786129200&x-signature=4ejuUy%2BoN226V1uJ2gTUZmmFN%2B0%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my3",
+                "displayName": "elsolitario1...",
+                "wins": 0,
+                "streak": 0
+            },
+            "mauricio_gf71": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-maliva-avt-0068/53c5de4a24c08949a2022ce9da41ea47~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=939301de&x-expires=1786129200&x-signature=nkoUFG8R%2FRvOCgla%2BLk%2BZpbKOPA%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "mauriciogf71",
+                "wins": 0,
+                "streak": 0
+            },
+            "alexanderplaza13": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/902fa6b99b00e90b029864f67b507f2f~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=2b1ff714&x-expires=1786129200&x-signature=Z%2BWkyxIDDOcJ3tveZ0rYnMaKC0g%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "El moreno Al...",
+                "wins": 0,
+                "streak": 0
+            },
+            "guachinanguito": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-maliva-avt-0068/7699bad6193ca00524de00036e8e1c02~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=862e0be6&x-expires=1786129200&x-signature=SzOi9o57RAxLG7f%2FclY7GlyLS7I%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my3",
+                "displayName": "Damián Bobad...",
+                "wins": 0,
+                "streak": 0
+            },
+            "rodrigo_saenzz6": {
+                "avatar": "https://p16-common-sign.tiktokcdn-eu.com/tos-no1a-avt-0068c001-no/23288565d1f292b03be4e1d629617a04~tplv-tiktokx-cropcenter:100:100.webp?dr=10399&refresh_token=266d702f&x-expires=1786129200&x-signature=YL1DQXW07OABO26Mvw6GPatMFPU%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=no1a",
+                "displayName": "rodrigosaenz...",
+                "wins": 0,
+                "streak": 0
+            },
+            "diego_lilspice1233": {
+                "avatar": "https://p19-common-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/746348db5e6455a080b326363f10f0b2~tplv-tiktokx-cropcenter:100:100.webp?dr=9640&refresh_token=4ae375de&x-expires=1786129200&x-signature=KhXmo8WlKWWQKO%2FtL8bgxrNXWkY%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=useast5",
+                "displayName": "D",
+                "wins": 0,
+                "streak": 0
+            },
+            "user103746194857200": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-maliva-avt-0068/7322485290397024262~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=99343f40&x-expires=1786129200&x-signature=xgQqqiesOhznLZdTw%2Br0Yf0IOcc%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "el Pitbull",
+                "wins": 0,
+                "streak": 0
+            },
+            "mcises": {
+                "avatar": "https://p19-common-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/c299723be2d6f35537b6a0084bc47084~tplv-tiktokx-cropcenter:100:100.webp?dr=9640&refresh_token=1d8c10ef&x-expires=1786129200&x-signature=LIVPu2btbhYzyiS%2BpTCp9%2FebS7w%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=useast5",
+                "displayName": "mcises",
+                "wins": 0,
+                "streak": 0
+            },
+            "vip3__0": {
+                "avatar": "https://p16-common-sign.tiktokcdn-us.com/tos-useast8-avt-0068-tx2/bf30c16a0000013503ba97006e6f1ea0~tplv-tiktokx-cropcenter:100:100.webp?dr=9640&refresh_token=1e858fbe&x-expires=1786129200&x-signature=0p27WyBI6FBzu5mGU16L%2FiV12OE%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=useast8",
+                "displayName": "305kevin",
+                "wins": 0,
+                "streak": 0
+            },
+            "ale.simplemente.ale": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/fc2f79207da6cdcc922b29af150a7009~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=d428aaa5&x-expires=1786129200&x-signature=9j%2B5VYRo2pb8EIrq6J%2BCp7rujoU%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "Ale",
+                "wins": 1,
+                "streak": 0
+            },
+            "josue.argueta807": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/4555536773dadfe88386acd9c290c8ca~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=32f11221&x-expires=1786129200&x-signature=9K7oqHh3LY3Q4OZJ3I4zkcqkcTM%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my3",
+                "displayName": "Josue Arguet...",
+                "wins": 0,
+                "streak": 0
+            },
+            "erikantoniovidales": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/bf08ee16535c034323b857c15fe7c02c~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=d9a7c81e&x-expires=1786129200&x-signature=bu6zpcE3Ja1h4SjcF396FTuoo%2BI%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "Erik av",
+                "wins": 0,
+                "streak": 0
+            },
+            "shyjak5": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/b21faad4c1d3c7e4d052f0702fb1f258~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=62ce7a8f&x-expires=1786129200&x-signature=jURC6Hefc0vdFwwfE8jvdbfZmgo%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my3",
+                "displayName": "shyjak5",
+                "wins": 0,
+                "streak": 0
+            },
+            "tteconejodox": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/8a357a1ad2035c6bca9c34d23eed2cfa~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=0b4dfb59&x-expires=1786129200&x-signature=GuAM5bLBRIjwTcMGjXHkPld%2FxWY%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "TTECONEJODOX",
+                "wins": 0,
+                "streak": 0
+            },
+            "tuchicofiel121": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/8a49929fd54856bb020d3bd3b088365a~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=23b944a3&x-expires=1786129200&x-signature=krlWP8FrkcxliDNxiV4dFeqqy5s%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "tu osito fie...",
+                "wins": 0,
+                "streak": 0
+            },
+            "alejandroochoa501": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/68a43462704381eff5b75e5d3d4cfbc7~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=f8ee8f12&x-expires=1786132800&x-signature=wOc5TDPwlY9cjXTJ%2FFVx%2BgYQETY%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "Alejandro Oc...",
+                "wins": 1,
+                "streak": 0
+            },
+            "benjagb52": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/3f08ca4a6711d28a6fd019132982811d~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=785398cd&x-expires=1786129200&x-signature=JvibNBkjPrTbXoeZzXIb%2B9dS%2BJo%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "benjagb52",
+                "wins": 0,
+                "streak": 0
+            },
+            "elpanack": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-maliva-avt-0068/c87cdf005843ebcbd15a5d0ec8d1a403~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=78b742e0&x-expires=1786132800&x-signature=8QNDgM53ufrazXc2Cp7uPGY%2BhU4%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "Elpana",
+                "wins": 0,
+                "streak": 0
+            },
+            "abcapin": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/fdf22a0cf572b3d7e0feceabffce2e52~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=d037a6ee&x-expires=1786132800&x-signature=tfxpIGhEf%2FkpCVkWHTOCsDg9hKM%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "ivan mtz",
+                "wins": 0,
+                "streak": 0
+            },
+            "sombrafreefire56": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/c6fea1e092d8f6cd71c9b7a361e3c0ef~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=fd9e938d&x-expires=1786132800&x-signature=9hWZf%2FfbGpeguijEGH2fqcWMkdA%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "SOMBRA",
+                "wins": 1,
+                "streak": 1
+            },
+            "pay_dequeso18": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/667043b5cdf6b56fcd69685f3e2c8362~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=a90bea25&x-expires=1786132800&x-signature=A8VnOTbUEXogIdqgwoFQBnOY5bs%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "pay de queso",
+                "wins": 0,
+                "streak": 0
+            },
+            "jean.paul.bracho": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/4f60e49c5dd253d966f74a947a1b2080~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=e8c45dbc&x-expires=1786132800&x-signature=RLs8Qvy1CFj2kcNRGJfI1y3avn4%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "Jean Paul Br...",
+                "wins": 0,
+                "streak": 0
+            },
+            "verty.34": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/7062657b16c46c4868f4464aa9c57395~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=bddd6394&x-expires=1786132800&x-signature=KyVPKUsVafIK9lZted3rIopEbTs%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "Verity",
+                "wins": 1,
+                "streak": 0
+            },
+            "shadowz0978": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/c615d982a83a52fa89021d02693136ee~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=0204ceee&x-expires=1786132800&x-signature=6yKMmHiLgk2u6Ul5D578rJaNI4A%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "Shadowz",
+                "wins": 0,
+                "streak": 0
+            },
+            "jadenespinoza3": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/509b355231059ac6b38159bb7d4fc8d1~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=dc6c7caa&x-expires=1786132800&x-signature=t6RIJcBvwD79Xqisb18MNCCgcNE%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my3",
+                "displayName": "tam mini y f...",
+                "wins": 0,
+                "streak": 0
+            },
+            "andymorales8048": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/802e8609f7a089fe82f1d3c3f9e924d4~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=2560c5df&x-expires=1786132800&x-signature=P%2BDfy23%2BAFI937%2BzI%2Fiv5tD7%2F9o%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "Anderson",
+                "wins": 0,
+                "streak": 0
+            },
+            "......xxxxx....x": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/8565f6d1809579bfd0f10913f7cb650d~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=6ec8f7da&x-expires=1786132800&x-signature=WH2eoy4GSf0AV3luvbiS729Ceog%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "xx",
+                "wins": 0,
+                "streak": 0
+            },
+            "holax0.0": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/c258c32b7cb4ce4937f9eb5aa918648b~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=cfa1cd36&x-expires=1786132800&x-signature=ULGmRCaA%2BUPpDP8w5hvEaFtBwUs%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "holax0.0",
+                "wins": 0,
+                "streak": 0
+            },
+            "overkillsmax": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/ffbb416dffc31e65531da54c0f3f3811~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=86315186&x-expires=1786132800&x-signature=EOjKzOeBK9B3Fj0uY3LKbqI3pgE%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my3",
+                "displayName": "overkillsmax",
+                "wins": 0,
+                "streak": 0
+            },
+            "ari_0libra": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/01e82cd77d7ae83e49faaedb3590373f~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=d0af0b1f&x-expires=1786132800&x-signature=7xPcKqIUMjrEytiYVqCSPnkIbME%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "Ari",
+                "wins": 1,
+                "streak": 1
+            },
+            "mauro.rey.cruz0": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/214c5aae6b4cb42ab18f71dda324d015~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=c98a358e&x-expires=1786132800&x-signature=5GzfMOSUImATFE8DvP48zXhji%2Fg%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "Mauro",
+                "wins": 0,
+                "streak": 0
+            },
+            "yesner316": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/896fa5105985b8921b9544d9ad51f78b~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=941b3334&x-expires=1786132800&x-signature=oFxUa%2FKN2PmEGe5wEjXewJY5WSw%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "Yesner Arago...",
+                "wins": 0,
+                "streak": 0
+            },
+            "nik_c_1": {
+                "avatar": "https://p16-common-sign.tiktokcdn-eu.com/tos-useast2a-avt-0068-euttp/d13c38c012d6d53e61c6e1193dae7e44~tplv-tiktokx-cropcenter:100:100.webp?dr=10399&refresh_token=8138bd3b&x-expires=1786132800&x-signature=H60GYp7lrKGSmS6PXiXhjpGnRgI%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=no1a",
+                "displayName": "nikC",
+                "wins": 0,
+                "streak": 0
+            },
+            "alexcobaruvias": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/cc21de98450230c073ad7e23bd62cdbd~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=1de5418d&x-expires=1786132800&x-signature=e4xyg8MyVoOAWyDWAW87m%2FyzDno%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "alex",
+                "wins": 2,
+                "streak": 0
+            },
+            "adnergaleas": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/ed8f8a7d0603789216925d2a78a52fca~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=0bca34ae&x-expires=1786132800&x-signature=ghlEXh8h07ah%2BkwDhtFV1f528QE%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "Daniel galea...",
+                "wins": 0,
+                "streak": 0
+            },
+            "moha013_benkk": {
+                "avatar": "https://p16-common-sign.tiktokcdn-eu.com/tos-no1a-avt-0068c001-no/2e1ed7836ad38729257c6fbea334a158~tplv-tiktokx-cropcenter:100:100.webp?dr=10399&refresh_token=33b4752e&x-expires=1786132800&x-signature=K6d%2B5KtdBWVkREklKgfEvawnebA%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=no1a",
+                "displayName": "Moha",
+                "wins": 0,
+                "streak": 0
+            },
+            "j.priv033": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/2fd277e0dc599aa22d2a539f862d432d~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=c0323dd5&x-expires=1786132800&x-signature=yHTyg0aKWVqJxWaTPY5pMrqqqnY%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "Jpriv",
+                "wins": 0,
+                "streak": 0
+            },
+            "antoine.taveras83": {
+                "avatar": "https://p16-common-sign.tiktokcdn-eu.com/tos-no1a-avt-0068c001-no/6055d1a17a8adef1eb84961f137f8c8d~tplv-tiktokx-cropcenter:100:100.webp?dr=10399&refresh_token=ca1c4c91&x-expires=1786132800&x-signature=v8aNrw%2FB8oKCHWG2Gpb%2FkVGXxp4%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=no1a",
+                "displayName": "antoine tave...",
+                "wins": 0,
+                "streak": 0
+            },
+            "ethelene.amyx39": {
+                "avatar": "https://p19-common-sign.tiktokcdn-eu.com/tos-no1a-avt-0068c001-no/2b623cba04cec15ad1762c60610ee439~tplv-tiktokx-cropcenter:100:100.webp?dr=10399&refresh_token=eef74c62&x-expires=1786132800&x-signature=iNkEC%2FjdiXEt359h8e%2B03AxU2H4%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=no1a",
+                "displayName": "ethelene amy...",
+                "wins": 0,
+                "streak": 0
+            },
+            "les.foulk84": {
+                "avatar": "https://p16-common-sign.tiktokcdn-eu.com/tos-no1a-avt-0068c001-no/eea68d8b5caeb272fb848f84e67977ff~tplv-tiktokx-cropcenter:100:100.webp?dr=10399&refresh_token=d8762981&x-expires=1786132800&x-signature=juyDrmR1QPDXsG0pOkcFTx%2BdCaE%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=no1a",
+                "displayName": "les foulk",
+                "wins": 0,
+                "streak": 0
+            },
+            "harley.jansky65": {
+                "avatar": "https://p16-common-sign.tiktokcdn-eu.com/tos-no1a-avt-0068c001-no/a99923e6842986c1bd0533f5ac993e93~tplv-tiktokx-cropcenter:100:100.webp?dr=10399&refresh_token=fdaca745&x-expires=1786132800&x-signature=lBwKVCd0DB%2BflEi70fAQ%2BN%2BBIak%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=no1a",
+                "displayName": "harley jansk...",
+                "wins": 0,
+                "streak": 0
+            },
+            "maud.strawn50": {
+                "avatar": "https://p16-common-sign.tiktokcdn-eu.com/tos-no1a-avt-0068c001-no/13b899eba1702782b786fdc13daf757c~tplv-tiktokx-cropcenter:100:100.webp?dr=10399&refresh_token=aba108bc&x-expires=1786132800&x-signature=n5biPTfajde8oVkFAt33lbE%2BncU%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=no1a",
+                "displayName": "maud strawn",
+                "wins": 0,
+                "streak": 0
+            },
+            "foxi.ff18": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/e29af6c32dbb7c7684473d9d0d40b4c6~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=de886403&x-expires=1786132800&x-signature=3B4hwLvmbOH8%2BAlzrgfajtVtutI%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "Foxi ff",
+                "wins": 0,
+                "streak": 0
+            },
+            "isai_arl": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/e68dc334b921c20ce6b9daa5581d0eb6~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=16a641e0&x-expires=1786132800&x-signature=mawAVCAaaLtzN2IBXzNSiF2KdFE%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my3",
+                "displayName": "ñukis360",
+                "wins": 1,
+                "streak": 1
+            },
+            "steven_rg86": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/7ffe35cdbdf4a77a8aedc97cab5949df~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=129f5bf7&x-expires=1786132800&x-signature=fViMYjE2Q62avhzcVc%2Brprs0h9I%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=sg1",
+                "displayName": "stevenrg",
+                "wins": 0,
+                "streak": 0
+            },
+            "miguelburciaga02": {
+                "avatar": "https://p19-common-sign.tiktokcdn.com/tos-alisg-avt-0068/971c31fcd622987c72df4892ed31131c~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=a3b488de&x-expires=1786132800&x-signature=Ta02UWtaNangaQq3Ekt7Pu8o6GA%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my",
+                "displayName": "Miguel Burci...",
+                "wins": 1,
+                "streak": 1
+            },
+            "lukonuv": {
+                "avatar": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/61ce2f69464ac03db1c2d155e14b096c~tplv-tiktokx-cropcenter:100:100.webp?dr=14579&refresh_token=4255ad15&x-expires=1786132800&x-signature=3K%2BKgylogFRTfE3kyAtyUEf%2FTho%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=fdd36af4&idc=my2",
+                "displayName": "lukovrutal",
+                "wins": 0,
+                "streak": 0
             }
         },
         "displayLimit": 2,

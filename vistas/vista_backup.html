@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Gestor de Backup</title>
+    <title>Gestor de Backup y Debug</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { background: #0f0f13; color: white; font-family: 'Segoe UI', sans-serif; padding: 40px; margin: 0; display: flex; justify-content: center; }
@@ -17,6 +17,9 @@
         
         .btn-upload { background: #ffaa00; color: black; }
         .btn-upload:hover { box-shadow: 0 0 20px rgba(255, 170, 0, 0.5); transform: translateY(-2px); }
+
+        .btn-debug { background: #444; color: white; border: 1px solid #666; margin-top: 30px; }
+        .btn-debug:hover { background: #ff003c; border-color: #ff003c; box-shadow: 0 0 20px rgba(255, 0, 60, 0.5); transform: translateY(-2px); }
         
         input[type="file"] { display: none; }
         .status-msg { margin-top: 25px; font-weight: bold; font-size: 15px; padding: 15px; border-radius: 8px; display: none; }
@@ -24,8 +27,8 @@
 </head>
 <body>
     <div class="box">
-        <h3><i class="fa-solid fa-cloud-arrow-down"></i> Centro de Seguridad (Backup)</h3>
-        <p>Descarga una copia de seguridad de toda tu base de datos (Donadores VIP, Rachas, Configuraciones) o restaura un archivo anterior en caso de emergencia.</p>
+        <h3><i class="fa-solid fa-cloud-arrow-down"></i> Centro de Seguridad y Debug</h3>
+        <p>Descarga una copia de seguridad, restaura datos o genera un reporte de rendimiento del servidor.</p>
 
         <!-- Botón de Descarga -->
         <button class="btn-action btn-download" onclick="descargarBackup()">
@@ -38,6 +41,11 @@
         </label>
         <input type="file" id="file-upload" accept=".json" onchange="cargarBackup(event)">
 
+        <!-- NUEVO BOTÓN DEBUG -->
+        <button class="btn-action btn-debug" onclick="descargarDebug()">
+            <i class="fa-solid fa-bug"></i> Descargar Reporte Debug
+        </button>
+
         <div id="status-msg" class="status-msg"></div>
     </div>
 
@@ -46,41 +54,23 @@
         const socket = io();
         let currentConfig = null;
 
-        // Recibimos la base de datos viva del servidor
         socket.on('config_actual', (config) => {
             currentConfig = config;
         });
 
         function descargarBackup() {
             if (!currentConfig) {
-                mostrarMensaje("⚠️ Esperando conexión con el servidor...", "#ff003c", "#330000");
-                return;
+                mostrarMensaje("⚠️ Esperando conexión con el servidor...", "#ff003c", "#330000"); return;
             }
-
-            // Formatear la fecha como pediste: data_8_de_agosto_2026_15_30
             const now = new Date();
             const meses = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
-            
-            const dia = now.getDate();
-            const mes = meses[now.getMonth()];
-            const anio = now.getFullYear();
-            const horas = String(now.getHours()).padStart(2, '0');
-            const minutos = String(now.getMinutes()).padStart(2, '0');
+            const dia = now.getDate(); const mes = meses[now.getMonth()]; const anio = now.getFullYear();
+            const horas = String(now.getHours()).padStart(2, '0'); const minutos = String(now.getMinutes()).padStart(2, '0');
 
             const fileName = `data_${dia}_de_${mes}_${anio}_${horas}_${minutos}.json`;
             const dataStr = JSON.stringify(currentConfig, null, 4);
 
-            // Ejecutar descarga en el navegador
-            const blob = new Blob([dataStr], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = fileName;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-
+            ejecutarDescarga(dataStr, fileName, "application/json");
             mostrarMensaje("✅ ¡Backup descargado con éxito!", "#00ff66", "#003311");
         }
 
@@ -92,19 +82,66 @@
             reader.onload = function(e) {
                 try {
                     const parsedData = JSON.parse(e.target.result);
-                    
-                    if (confirm("🚨 ATENCIÓN: ¿Estás seguro de que deseas sobrescribir toda la base de datos actual con este archivo?")) {
-                        // Enviamos el backup al servidor usando tu evento existente
+                    if (confirm("🚨 ATENCIÓN: ¿Estás seguro de que deseas sobrescribir toda la base de datos actual?")) {
                         socket.emit('importar_historial', parsedData);
-                        mostrarMensaje("✅ ¡Backup restaurado correctamente! El servidor ya tiene los nuevos datos.", "#00ff66", "#003311");
-                        // Limpiar el input por si quiere subir otro
+                        mostrarMensaje("✅ ¡Backup restaurado correctamente!", "#00ff66", "#003311");
                         document.getElementById('file-upload').value = '';
                     }
                 } catch (err) {
-                    mostrarMensaje("❌ Error: El archivo seleccionado no es un JSON válido.", "#ff003c", "#330000");
+                    mostrarMensaje("❌ Error: El archivo seleccionado no es válido.", "#ff003c", "#330000");
                 }
             };
             reader.readAsText(file);
+        }
+
+        function descargarDebug() {
+            if (!currentConfig) {
+                mostrarMensaje("⚠️ Aún no hay datos para el debug...", "#ff003c", "#330000"); return;
+            }
+
+            let report = "=== REPORTE DE DEBUG Y RENDIMIENTO - LAGATI APP ===\n\n";
+            report += "Fecha del reporte: " + new Date().toLocaleString() + "\n";
+            report += "Navegador: " + navigator.userAgent + "\n\n";
+
+            // Calculamos el peso real en memoria
+            const rawSize = new Blob([JSON.stringify(currentConfig)]).size;
+            const kbSize = (rawSize / 1024).toFixed(2);
+            
+            report += "📦 TAMAÑO DE LA BASE DE DATOS EN MEMORIA:\n";
+            report += "Peso total del JSON: " + kbSize + " KB\n\n";
+
+            report += "🔍 CONTEO DE REGISTROS HISTÓRICOS:\n";
+            report += "- Top VIP (Donadores): " + Object.keys(currentConfig.topVIP?.recordHistorico || {}).length + "\n";
+            report += "- Top Likes: " + Object.keys(currentConfig.topLikes?.recordHistorico || {}).length + "\n";
+            report += "- Rachas de Regalos: " + Object.keys(currentConfig.racha?.recordHistorico || {}).length + "\n";
+            report += "- Racha Versus (Salvadas): " + Object.keys(currentConfig.rachaVersus?.salvadas || {}).length + "\n";
+            report += "- Racha Versus (Reinicios): " + Object.keys(currentConfig.rachaVersus?.reinicios || {}).length + "\n";
+            report += "- Catálogo de Regalos Guardados: " + (currentConfig.regalosDisponibles?.length || 0) + "\n\n";
+
+            report += "⚠️ DIAGNÓSTICO DE RENDIMIENTO:\n";
+            report += "1. En tu index.html, cada pestaña oculta es un iframe activo. Estás ejecutando 8 iframes (8 conexiones de red) al mismo tiempo.\n";
+            report += "2. Cada vez que recibes 1 regalo en TikTok, el servidor intenta enviar este archivo de " + kbSize + " KB a las 8 pestañas simultáneamente.\n";
+            
+            if (rawSize > 100000) { // Si pesa más de 100KB, ya es crítico bajo este modelo
+                report += ">>> ESTADO: CRÍTICO. Tu historial es masivo. Estás enviando megabytes por segundo innecesariamente, causando el congelamiento del navegador.\n";
+            } else {
+                report += ">>> ESTADO: ADVERTENCIA. El peso es manejable, pero la arquitectura de iframes simultáneos causará lag al crecer.\n";
+            }
+
+            ejecutarDescarga(report, `debug_lagati_${Date.now()}.txt`, "text/plain");
+            mostrarMensaje("✅ Reporte Debug descargado. ¡Ábrelo para ver los detalles!", "#ffaa00", "#332200");
+        }
+
+        function ejecutarDescarga(dataStr, fileName, mimeType) {
+            const blob = new Blob([dataStr], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
 
         function mostrarMensaje(msg, colorTxt, colorBg) {

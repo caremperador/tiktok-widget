@@ -9,7 +9,7 @@
         .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; background: #222; padding: 15px; border-radius: 8px;}
         
         .racha-layout { display: flex; gap: 20px; align-items: flex-start;}
-        .racha-col { flex: 1; background: #222; border: 1px solid #444; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; max-height: 500px;}
+        .racha-col { flex: 1; background: #222; border: 1px solid #444; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; max-height: 550px;}
         .racha-col h3 { text-align: center; margin-top: 0; font-size: 16px; color: #fff; border-bottom: 1px solid #444; padding-bottom: 10px; text-transform: uppercase;}
         
         .user-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 5px;}
@@ -20,8 +20,8 @@
         .user-info { display: flex; align-items: center; gap: 10px; overflow: hidden;}
         .user-info img { width: 35px; height: 35px; border-radius: 50%; object-fit: cover;}
         .user-info div { display: flex; flex-direction: column; }
-        .u-name { font-weight: bold; font-size: 13px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;}
-        .u-data { font-size: 12px; color: #ffd700; font-weight: bold;}
+        .u-name { font-weight: bold; font-size: 13px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 130px;}
+        .u-data { font-size: 12px; font-weight: bold;}
         
         .btn-ctrl { background: #333; border: none; color: white; width: 28px; height: 28px; border-radius: 4px; cursor: pointer; font-weight: bold; display: flex; justify-content: center; align-items: center;}
         .btn-ctrl:hover { background: #555;}
@@ -36,6 +36,10 @@
 
         .btn-overlay { padding: 10px 15px; background: #222; color: #ffd700; font-size: 13px; font-weight: bold; border: 1px solid #ffd700; cursor: pointer; border-radius: 8px;}
         .btn-overlay:hover { background: #ffd700; color: black;}
+
+        /* ESTILO DEL BUSCADOR */
+        .search-bar { width: 100%; background: #111; border: 1px solid #555; color: #fff; border-radius: 6px; padding: 10px 12px; font-size: 13px; box-sizing: border-box; margin-bottom: 10px; }
+        .search-bar:focus { outline: none; border-color: #ffaa00; }
     </style>
 </head>
 <body>
@@ -50,7 +54,6 @@
 
         <div class="racha-layout">
             <div class="racha-col" style="border-color: #ffd700;">
-                
                 <div style="margin-bottom: 15px; background: #111; padding: 10px; border-radius: 8px; border: 1px solid #333;">
                     <label style="color:#00f2fe; margin-bottom: 5px; font-size: 11px;">Ajustes del Overlay</label>
                     <div style="display:flex; gap:10px; align-items: center;">
@@ -70,10 +73,14 @@
             </div>
 
             <div class="racha-col" style="border-color: #ffaa00;">
-                <h3 style="color:#ffaa00;">Historial de Victorias</h3>
+                <h3 style="color:#ffaa00;">Historial de Victorias y Rachas</h3>
+                
+                <!-- 🌟 NUEVO: BUSCADOR EN TIEMPO REAL -->
+                <input type="text" id="buscador-historial" class="search-bar" placeholder="🔍 Buscar usuario en el historial...">
+
                 <div class="user-list" id="lista-historial"></div>
                 
-                <button class="btn-action btn-danger" onclick="limpiarHistorial()" style="margin-top: 60px;"><i class="fa-solid fa-trash-can"></i> Limpiar Todo el Historial</button>
+                <button class="btn-action btn-danger" onclick="limpiarHistorial()" style="margin-top: 15px;"><i class="fa-solid fa-trash-can"></i> Limpiar Todo el Historial</button>
             </div>
         </div>
     </div>
@@ -85,11 +92,23 @@
         let focusKey = null;
         let focusValue = "";
 
+        // Variables para la carga progresiva (Anti-Lag)
+        let arrHistGlobal = []; 
+        let limitVisibles = 20; 
+        let filtroTexto = ""; 
+
         socket.on('config_actual', (config) => {
             if(config.topVIP) {
                 if(config.topVIP.displayLimit) document.getElementById('inp-vip-limit').value = config.topVIP.displayLimit;
                 if(config.topVIP.mirrorMode !== undefined) document.getElementById('inp-vip-mirror').checked = config.topVIP.mirrorMode;
             }
+        });
+
+        // Evento del Buscador
+        document.getElementById('buscador-historial').addEventListener('input', (e) => {
+            filtroTexto = e.target.value.toLowerCase();
+            limitVisibles = 20; // Reinicia el límite al buscar
+            renderHistorial();
         });
 
         socket.on('top_vip_data_update', (data) => {
@@ -102,6 +121,7 @@
                 focusKey = null;
             }
 
+            // --- RENDER RONDA ACTUAL ---
             let lRonda = document.getElementById('lista-ronda'); 
             lRonda.innerHTML = '';
             
@@ -114,7 +134,7 @@
                     <div class="user-info">
                         <span style="font-weight:bold; color:#888; width:20px;">${badge}</span>
                         <img src="${u.avatar}">
-                        <div><span class="u-name">${u.displayName}</span><span class="u-data"><i class="fa-solid fa-coins"></i> ${u.coins.toLocaleString()}</span></div>
+                        <div><span class="u-name">${u.displayName}</span><span class="u-data" style="color:#ffd700;"><i class="fa-solid fa-coins"></i> ${u.coins.toLocaleString()}</span></div>
                     </div>
                     
                     <div style="display:flex; gap:5px; align-items:center;">
@@ -133,34 +153,75 @@
                 }
             }
 
+            // --- ACTUALIZAR HISTORIAL GLOBAL ---
+            arrHistGlobal = Object.entries(data.recordHistorico).map(([u, d]) => ({userKey: u, ...d})).sort((a,b) => b.wins - a.wins);
+            renderHistorial();
+        });
+
+        // 🌟 NUEVO: FUNCIÓN QUE CARGA EL HISTORIAL SIN LAG 🌟
+        function renderHistorial() {
             let lHist = document.getElementById('lista-historial'); 
             lHist.innerHTML = '';
             
-            let arrHist = Object.entries(data.recordHistorico).map(([u, d]) => ({userKey: u, ...d})).sort((a,b) => b.wins - a.wins);
+            // 1. Filtrar por el buscador
+            let filtrados = arrHistGlobal.filter(u => u.displayName.toLowerCase().includes(filtroTexto) || u.userKey.toLowerCase().includes(filtroTexto));
 
-            arrHist.forEach(u => {
-                // Nuevo indicador de Racha para el panel de control
-                let streakTxt = u.streak > 0 ? ` &nbsp;|&nbsp; <i class="fa-solid fa-fire" style="color:#00d2e6;"></i> Racha: ${u.streak}` : '';
+            // 2. Aplicar el límite de visualización (Para que no se congele el navegador)
+            let mostrar = filtrados.slice(0, limitVisibles);
+
+            mostrar.forEach(u => {
+                // Calcula el puesto real global del usuario
+                let globalRank = arrHistGlobal.findIndex(x => x.userKey === u.userKey) + 1;
                 
+                let rankColor = globalRank === 1 ? '#ffd700' : (globalRank === 2 ? '#c0c0c0' : '#888');
+                let rankBadge = `<span style="font-weight:900; color:${rankColor}; width:25px; font-size: 14px;">#${globalRank}</span>`;
+
                 lHist.innerHTML += `
                 <div class="user-item">
                     <div class="user-info">
+                        ${rankBadge}
                         <img src="${u.avatar}">
                         <div>
                             <span class="u-name">${u.displayName}</span>
-                            <span class="u-data" style="color:#ffaa00;">
-                                <i class="fa-solid fa-trophy"></i> ${u.wins} Victorias${streakTxt}
-                            </span>
+                            <div style="display:flex; gap:10px;">
+                                <span class="u-data" style="color:#ffaa00;"><i class="fa-solid fa-trophy"></i> ${u.wins}</span>
+                                <span class="u-data" style="color:#00d2e6;"><i class="fa-solid fa-fire"></i> ${u.streak || 0}</span>
+                            </div>
                         </div>
                     </div>
-                    <div style="display:flex;gap:5px;">
-                        <button class="btn-ctrl" onclick="ajustarHistorial('${u.userKey}', -1)">-</button>
-                        <button class="btn-ctrl" onclick="ajustarHistorial('${u.userKey}', 1)">+</button>
-                        <button class="btn-ctrl btn-del" onclick="eliminarHistorial('${u.userKey}')"><i class="fa-solid fa-trash"></i></button>
+
+                    <div style="display:flex; flex-direction:column; gap:4px; align-items:flex-end;">
+                        <!-- Controles de Copas -->
+                        <div style="display:flex; gap:4px; align-items:center;">
+                            <span style="font-size:10px; color:#ffaa00; font-weight:bold;">COPAS</span>
+                            <button class="btn-ctrl" style="height:22px; width:22px;" onclick="ajustarHistorial('${u.userKey}', -1)">-</button>
+                            <button class="btn-ctrl" style="height:22px; width:22px;" onclick="ajustarHistorial('${u.userKey}', 1)">+</button>
+                            <button class="btn-ctrl btn-del" style="height:22px; width:22px;" onclick="eliminarHistorial('${u.userKey}')" title="Eliminar del Historial"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                        <!-- Controles de Racha -->
+                        <div style="display:flex; gap:4px; align-items:center;">
+                            <span style="font-size:10px; color:#00d2e6; font-weight:bold;">RACHA</span>
+                            <button class="btn-ctrl" style="height:22px; width:22px;" onclick="ajustarRacha('${u.userKey}', -1)">-</button>
+                            <button class="btn-ctrl" style="height:22px; width:22px;" onclick="ajustarRacha('${u.userKey}', 1)">+</button>
+                            <div style="width:22px;"></div><!-- Espaciador para alinear con el botón de borrar -->
+                        </div>
                     </div>
                 </div>`;
             });
-        });
+
+            // 3. Botón de Cargar Más
+            if (limitVisibles < filtrados.length) {
+                lHist.innerHTML += `
+                <button class="btn-action" style="background:#2a2a35; color:#fff; border: 1px solid #444;" onclick="cargarMas()">
+                    <i class="fa-solid fa-rotate-right"></i> Mostrar más resultados (${filtrados.length - limitVisibles} ocultos)
+                </button>`;
+            }
+        }
+
+        function cargarMas() {
+            limitVisibles += 20; // Suma 20 usuarios más a la lista
+            renderHistorial();
+        }
 
         function guardarOpcionesVIP() {
             let limit = parseInt(document.getElementById('inp-vip-limit').value) || 2;
@@ -182,12 +243,16 @@
                 socket.emit('top_cerrar_ambas_rondas'); 
             }
         }
+        
         function limpiarRonda() { if(confirm("🚨 ¿Limpiar todas las monedas de la ronda actual?")) socket.emit('top_vip_limpiar_ronda'); }
         function limpiarHistorial() { if(confirm("🚨 ¿Borrar TODO el historial de victorias?")) socket.emit('top_vip_limpiar_historial'); }
         
         function eliminarRonda(key) { socket.emit('top_vip_eliminar_ronda', key); }
         function eliminarHistorial(key) { if(confirm("¿Eliminar usuario del historial?")) socket.emit('top_vip_eliminar_historial', key); }
+        
+        // Ajustes manuales
         function ajustarHistorial(key, amount) { socket.emit('top_vip_ajuste_historial', { userKey: key, amount: amount }); }
+        function ajustarRacha(key, amount) { socket.emit('top_vip_ajuste_racha', { userKey: key, amount: amount }); }
 
         function copiarURL() { navigator.clipboard.writeText(window.location.origin + '/top_donadores'); alert("✅ Enlace copiado!"); }
     </script>
