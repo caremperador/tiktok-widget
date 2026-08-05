@@ -70,7 +70,6 @@
         .info-col { display: flex; flex-direction: column; justify-content: center; gap: 4px; }
         .name-row { display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; white-space: nowrap; }
         
-        /* 🌟 NUEVO: TAMAÑO DE FUENTE MÁS GRANDE (26px) */
         .name { 
             font-size: 26px; font-weight: 900; 
             text-transform: uppercase; white-space: nowrap;
@@ -98,7 +97,6 @@
             text-shadow: 0 0 6px rgba(255,215,0,0.6);
         }
 
-        /* 🌟 ETIQUETAS MINIMALISTAS Y TEMÁTICAS */
         .badge {
             display: flex; align-items: center; gap: 5px;
             color: white; font-size: 14px; font-weight: 900;
@@ -139,7 +137,6 @@
         });
 
         socket.on('actualizacion_salvar', (data) => {
-            // 🌟 CACHÉ VISUAL: Ignoramos el reseteo de la barra (ESPERANDO)
             if (data.topSalvar && data.topSalvar.name !== 'ESPERANDO') {
                 currentSalvar = data.topSalvar;
             }
@@ -149,7 +146,6 @@
             renderOverlay();
         });
 
-        // 🌟 NUEVO EVENTO: LIMPIAR VISUALMENTE
         socket.on('racha_versus_clear_visual', () => {
             currentSalvar = null;
             currentReiniciar = null;
@@ -162,64 +158,72 @@
             let container = document.getElementById('ranking-box');
             container.innerHTML = '';
 
-            // 1. RENDERIZAR EQUIPO SALVAR
+            let activeItems = [];
+
             if (currentSalvar && currentSalvar.name && currentSalvar.name !== 'ESPERANDO') {
-                let sName = currentSalvar.name.replace(/[^a-zA-Z0-9\sÁÉÍÓÚáéíóúÑñ]/g, '').trim();
-                let histCount = histData.salvadas[currentSalvar.name] ? histData.salvadas[currentSalvar.name].count : 0;
-                
-                let badgesHtml = '';
-                if (histCount > 0 && configOpciones.showCount) {
-                    // Ícono de escudo protector
-                    badgesHtml = `<span class="badge badge-salvar"><i class="fa-solid fa-shield-halved"></i> x${histCount}</span>`;
-                }
-                
-                let nameHtml = configOpciones.showName ? `<span class="name name-salvar">${sName}</span>` : '';
-                let coinsHtml = configOpciones.showCoins ? `<div class="likes-row"><i class="fa-solid fa-coins coin-icon"></i> ${formatNumber(currentSalvar.coins)}</div>` : '';
-
-                container.innerHTML += `
-                <div class="user-row row-salvar">
-                    <div class="avatar-container">
-                        <div class="halo"></div>
-                        <img src="${currentSalvar.avatar}" class="avatar avatar-salvar" onerror="this.src='https://via.placeholder.com/150/222/fff?text=?'">
-                    </div>
-                    <div class="info-col">
-                        <div class="name-row">${nameHtml} <div style="display:flex; gap:6px; align-items:center;">${badgesHtml}</div></div>
-                        ${coinsHtml}
-                    </div>
-                </div>`;
+                activeItems.push({ type: 'salvar', data: currentSalvar, coins: currentSalvar.coins || 0 });
             }
-
-            // 2. RENDERIZAR EQUIPO REINICIAR
             if (currentReiniciar && currentReiniciar.name && currentReiniciar.name !== 'ESPERANDO') {
-                let rName = currentReiniciar.name.replace(/[^a-zA-Z0-9\sÁÉÍÓÚáéíóúÑñ]/g, '').trim();
-                let histCount = histData.reinicios[currentReiniciar.name] ? histData.reinicios[currentReiniciar.name].count : 0;
-                
-                let badgesHtml = '';
-                if (histCount > 0 && configOpciones.showCount) {
-                    // Ícono de flechas giratorias de reseteo
-                    badgesHtml = `<span class="badge badge-reiniciar"><i class="fa-solid fa-rotate-left"></i> x${histCount}</span>`;
-                }
-                
-                let nameHtml = configOpciones.showName ? `<span class="name name-reiniciar">${rName}</span>` : '';
-                let coinsHtml = configOpciones.showCoins ? `<div class="likes-row"><i class="fa-solid fa-coins coin-icon"></i> ${formatNumber(currentReiniciar.coins)}</div>` : '';
-
-                container.innerHTML += `
-                <div class="user-row row-reiniciar">
-                    <div class="avatar-container">
-                        <svg class="svg-horns" viewBox="0 0 160 80" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M 60,70 C 40,50 15,35 10,10 C 25,25 45,20 55,40 C 58,48 60,60 60,70 Z" fill="#ff003c" stroke="#000" stroke-width="2.5"/>
-                            <path d="M 100,70 C 120,50 145,35 150,10 C 135,25 115,20 105,40 C 102,48 100,60 100,70 Z" fill="#ff003c" stroke="#000" stroke-width="2.5"/>
-                        </svg>
-                        <div class="tail"><i class="fa-solid fa-arrow-trend-down"></i></div>
-                        
-                        <img src="${currentReiniciar.avatar}" class="avatar avatar-reiniciar" onerror="this.src='https://via.placeholder.com/150/222/fff?text=?'">
-                    </div>
-                    <div class="info-col">
-                        <div class="name-row">${nameHtml} <div style="display:flex; gap:6px; align-items:center;">${badgesHtml}</div></div>
-                        ${coinsHtml}
-                    </div>
-                </div>`;
+                activeItems.push({ type: 'reiniciar', data: currentReiniciar, coins: currentReiniciar.coins || 0 });
             }
+
+            // Ordenamiento dinámico: mayor cantidad de monedas va arriba
+            activeItems.sort((a, b) => b.coins - a.coins);
+
+            activeItems.forEach(item => {
+                if (item.type === 'salvar') {
+                    let sName = item.data.name.replace(/[^a-zA-Z0-9\sÁÉÍÓÚáéíóúÑñ]/g, '').trim();
+                    let histCount = histData.salvadas[item.data.name] ? histData.salvadas[item.data.name].count : 0;
+                    
+                    let badgesHtml = '';
+                    if (histCount > 0 && configOpciones.showCount) {
+                        badgesHtml = `<span class="badge badge-salvar"><i class="fa-solid fa-shield-halved"></i> x${histCount}</span>`;
+                    }
+                    
+                    let nameHtml = configOpciones.showName ? `<span class="name name-salvar">${sName}</span>` : '';
+                    let coinsHtml = configOpciones.showCoins ? `<div class="likes-row"><i class="fa-solid fa-coins coin-icon"></i> ${formatNumber(item.data.coins)}</div>` : '';
+
+                    container.innerHTML += `
+                    <div class="user-row row-salvar">
+                        <div class="avatar-container">
+                            <div class="halo"></div>
+                            <img src="${item.data.avatar}" class="avatar avatar-salvar" onerror="this.src='https://via.placeholder.com/150/222/fff?text=?'">
+                        </div>
+                        <div class="info-col">
+                            <div class="name-row">${nameHtml} <div style="display:flex; gap:6px; align-items:center;">${badgesHtml}</div></div>
+                            ${coinsHtml}
+                        </div>
+                    </div>`;
+                } else if (item.type === 'reiniciar') {
+                    let rName = item.data.name.replace(/[^a-zA-Z0-9\sÁÉÍÓÚáéíóúÑñ]/g, '').trim();
+                    let histCount = histData.reinicios[item.data.name] ? histData.reinicios[item.data.name].count : 0;
+                    
+                    let badgesHtml = '';
+                    if (histCount > 0 && configOpciones.showCount) {
+                        badgesHtml = `<span class="badge badge-reiniciar"><i class="fa-solid fa-rotate-left"></i> x${histCount}</span>`;
+                    }
+                    
+                    let nameHtml = configOpciones.showName ? `<span class="name name-reiniciar">${rName}</span>` : '';
+                    let coinsHtml = configOpciones.showCoins ? `<div class="likes-row"><i class="fa-solid fa-coins coin-icon"></i> ${formatNumber(item.data.coins)}</div>` : '';
+
+                    container.innerHTML += `
+                    <div class="user-row row-reiniciar">
+                        <div class="avatar-container">
+                            <svg class="svg-horns" viewBox="0 0 160 80" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M 60,70 C 40,50 15,35 10,10 C 25,25 45,20 55,40 C 58,48 60,60 60,70 Z" fill="#ff003c" stroke="#000" stroke-width="2.5"/>
+                                <path d="M 100,70 C 120,50 145,35 150,10 C 135,25 115,20 105,40 C 102,48 100,60 100,70 Z" fill="#ff003c" stroke="#000" stroke-width="2.5"/>
+                            </svg>
+                            <div class="tail"><i class="fa-solid fa-arrow-trend-down"></i></div>
+                            
+                            <img src="${item.data.avatar}" class="avatar avatar-reiniciar" onerror="this.src='https://via.placeholder.com/150/222/fff?text=?'">
+                        </div>
+                        <div class="info-col">
+                            <div class="name-row">${nameHtml} <div style="display:flex; gap:6px; align-items:center;">${badgesHtml}</div></div>
+                            ${coinsHtml}
+                        </div>
+                    </div>`;
+                }
+            });
         }
     </script>
 </body>
