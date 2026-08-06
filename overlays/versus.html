@@ -286,64 +286,64 @@
             if (e.ctrlKey && e.key === 'ArrowDown') socket.emit('reset');
         });
 
-function triggerGameOver(topReiniciar) {
-    isGameOver = true;
-    
-    if (countdownInterval) {
-        clearInterval(countdownInterval);
-        countdownInterval = null;
-    }
-    
-    if (!winRegistered) {
-        socket.emit('registrar_victoria_versus', { tipo: 'reinicio', user: topReiniciar });
-        winRegistered = true;
-    }
-    
-    document.getElementById('countdown-line1-text').style.display = 'none';
-    document.getElementById('countdown-line2-text').style.display = 'none';
-    document.getElementById('timer').style.display = 'none';
-    
-    let c2 = currentConfig.equipo2.color || "#ff003c";
-    
-    let rawName = topReiniciar && topReiniciar.name && topReiniciar.name !== 'ESPERANDO' ? topReiniciar.name : 'EL EQUIPO 2';
-    let cleanName = rawName.replace(/[^a-zA-Z0-9\sÁÉÍÓÚáéíóúÑñ]/g, '').trim();
-    if(!cleanName) cleanName = 'EL EQUIPO 2';
+        function triggerGameOver(topReiniciar) {
+            isGameOver = true;
+            
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+            }
+            
+            if (!winRegistered) {
+                socket.emit('registrar_victoria_versus', { tipo: 'reinicio', user: topReiniciar });
+                winRegistered = true;
+            }
+            
+            document.getElementById('countdown-line1-text').style.display = 'none';
+            document.getElementById('countdown-line2-text').style.display = 'none';
+            document.getElementById('timer').style.display = 'none';
+            
+            let c2 = currentConfig.equipo2.color || "#ff003c";
+            
+            let rawName = topReiniciar && topReiniciar.name && topReiniciar.name !== 'ESPERANDO' ? topReiniciar.name : 'EL EQUIPO 2';
+            let cleanName = rawName.replace(/[^a-zA-Z0-9\sÁÉÍÓÚáéíóúÑñ]/g, '').trim();
+            if(!cleanName) cleanName = 'EL EQUIPO 2';
 
-    let winnerImg = document.getElementById('winner-avatar');
-    let winnerTitle = document.getElementById('winner-title');
-    let winnerName = document.getElementById('winner-name');
+            let winnerImg = document.getElementById('winner-avatar');
+            let winnerTitle = document.getElementById('winner-title');
+            let winnerName = document.getElementById('winner-name');
 
-    winnerImg.src = topReiniciar && topReiniciar.avatar ? topReiniciar.avatar : 'https://via.placeholder.com/150/222/fff?text=?';
-    winnerImg.style.borderColor = c2;
-    winnerImg.style.boxShadow = `0 0 20px ${c2}`;
-    
-    winnerTitle.innerText = `¡TE REINICIÓ!`;
-    winnerTitle.style.color = c2;
-    winnerName.innerText = cleanName;
-    winnerName.style.color = "#ffffff";
-    
-    const op = currentConfig.battleStyle?.shadowOpacity !== undefined ? currentConfig.battleStyle.shadowOpacity : 1.0;
-    const dist = currentConfig.battleStyle?.shadowDistance !== undefined ? currentConfig.battleStyle.shadowDistance : 4;
-    
-    let shadowStr = `${dist}px ${dist}px 0px rgba(0,0,0,${op}), 0 0 20px ${c2}`;
-    winnerTitle.style.textShadow = shadowStr;
-    winnerName.style.textShadow = `${dist}px ${dist}px 0px rgba(0,0,0,${op})`; 
+            winnerImg.src = topReiniciar && topReiniciar.avatar ? topReiniciar.avatar : 'https://via.placeholder.com/150/222/fff?text=?';
+            winnerImg.style.borderColor = c2;
+            winnerImg.style.boxShadow = `0 0 20px ${c2}`;
+            
+            winnerTitle.innerText = `¡TE REINICIÓ!`;
+            winnerTitle.style.color = c2;
+            winnerName.innerText = cleanName;
+            winnerName.style.color = "#ffffff";
+            
+            const op = currentConfig.battleStyle?.shadowOpacity !== undefined ? currentConfig.battleStyle.shadowOpacity : 1.0;
+            const dist = currentConfig.battleStyle?.shadowDistance !== undefined ? currentConfig.battleStyle.shadowDistance : 4;
+            
+            let shadowStr = `${dist}px ${dist}px 0px rgba(0,0,0,${op}), 0 0 20px ${c2}`;
+            winnerTitle.style.textShadow = shadowStr;
+            winnerName.style.textShadow = `${dist}px ${dist}px 0px rgba(0,0,0,${op})`; 
 
-    document.getElementById('winner-zone').style.display = 'flex';
+            document.getElementById('winner-zone').style.display = 'flex';
 
-    // 🌟 SIEMPRE RESETEA LA BARRA
-    socket.emit('reset');
+            // Siempre resetea la barra al terminar
+            socket.emit('reset');
 
-    setTimeout(() => {
-        isGameOver = false;
-        document.getElementById('winner-zone').style.display = 'none';
-        
-        if (latestData) {
-            wasLosing = latestData.totalReiniciar > latestData.totalSalvar; 
-            procesarActualizacionVisual(latestData);
+            setTimeout(() => {
+                isGameOver = false;
+                document.getElementById('winner-zone').style.display = 'none';
+                
+                if (latestData) {
+                    wasLosing = latestData.totalReiniciar > latestData.totalSalvar; 
+                    procesarActualizacionVisual(latestData);
+                }
+            }, 2000);
         }
-    }, 2000);
-}
 
         function triggerSaved(topSalvar) {
             isGameOver = true; 
@@ -390,6 +390,9 @@ function triggerGameOver(topReiniciar) {
 
             document.getElementById('winner-zone').style.display = 'flex';
 
+            // 🌟 SOLUCIÓN: Limpiamos la barra también al salvar para que no se quede atascada
+            socket.emit('reset');
+
             setTimeout(() => {
                 isGameOver = false;
                 document.getElementById('winner-zone').style.display = 'none';
@@ -425,7 +428,8 @@ function triggerGameOver(topReiniciar) {
             
             if (wasLosing && !isLosing && data.totalSalvar > 0) {
                 wasLosing = false; 
-                triggerSaved(data.topSalvar);
+                // Usamos la data más fresca al instante de salvar
+                triggerSaved(latestData.topSalvar);
                 return; 
             }
             wasLosing = isLosing; 
@@ -530,7 +534,8 @@ function triggerGameOver(topReiniciar) {
                         
                         if (timer <= 0) { 
                             timer = 0; 
-                            triggerGameOver(data.topReiniciar); 
+                            // 🌟 SOLUCIÓN: Usar always 'latestData' para que no recuerde al usuario viejo
+                            triggerGameOver(latestData.topReiniciar); 
                         }
                         if (!isGameOver) timerEl.innerText = timer;
                     }, 1000);

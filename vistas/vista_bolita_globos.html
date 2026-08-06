@@ -29,6 +29,9 @@
         .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: #00ff66; }
         input:checked + .slider:before { transform: translateX(22px); }
+        
+        .check-line { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 12px; color: #fff; margin-bottom: 15px; }
+        .check-line input { width: 16px; height: 16px; accent-color: #00f2fe; }
     </style>
 </head>
 <body>
@@ -44,14 +47,13 @@
             </div>
         </div>
 
-        <!-- 🌟 SWITCH DE COSAS GRATIS -->
         <div class="switch-container">
             <label class="switch">
                 <input type="checkbox" id="inp-allow-free">
                 <span class="slider"></span>
             </label>
             <div>
-                <strong style="color: #fff; font-size: 14px;">Habilitar cosas Gratis (Chat, Likes, Follows)</strong>
+                <strong style="color: #fff; font-size: 14px;">Habilitar cosas Gratis (Chat, Likes, Follows, Joins)</strong>
                 <p style="margin: 3px 0 0 0; font-size: 12px; color: #ccc;">Apágalo cuando quieras ganar la partida. Los regalos con monedas seguirán funcionando.</p>
             </div>
         </div>
@@ -70,9 +72,29 @@
                 </div>
             </div>
 
+            <!-- LIKES (TAP TAP) -->
+            <div>
+                <h3 style="color: #ff0050; font-size: 14px;"><i class="fa-solid fa-heart"></i> Likes / Tap Tap (Modo Sigilo)</h3>
+                <div class="input-group">
+                    <label>Meta de Likes ACUMULADOS en la sala</label>
+                    <input type="number" id="inp-likes-meta" value="50" min="1">
+                </div>
+                <div class="input-group">
+                    <label>Globos al cumplir la meta de Likes</label>
+                    <input type="number" id="inp-likes-globos" value="1" min="0">
+                </div>
+            </div>
+
             <!-- CHAT -->
             <div>
                 <h3 style="color: #00f2fe; font-size: 14px;"><i class="fa-solid fa-comment"></i> Comandos en el Chat (Modo Sigilo)</h3>
+                
+                <!-- 🌟 NUEVO COMANDO NUMÉRICO -->
+                <label class="check-line">
+                    <input type="checkbox" id="inp-allow-numbers"> 
+                    Permitir comandos numéricos (Ej. escribir "67" = 67 globos)
+                </label>
+
                 <div class="input-group">
                     <label>Palabras Clave (Separadas por coma)</label>
                     <input type="text" id="inp-chat-word" value="globos, jugar">
@@ -87,29 +109,28 @@
                 </div>
             </div>
 
-            <!-- FOLLOWS -->
+            <!-- FOLLOWS & JOINS -->
             <div>
-                <h3 style="color: #ffaa00; font-size: 14px;"><i class="fa-solid fa-user-plus"></i> Seguidores / Follows (Modo Sigilo)</h3>
+                <h3 style="color: #ffaa00; font-size: 14px;"><i class="fa-solid fa-user-plus"></i> Seguidores & Espectadores</h3>
+                
                 <div class="input-group">
-                    <label>Globos por cada nuevo Seguidor</label>
+                    <label>Globos por cada NUEVO SEGUIDOR</label>
                     <input type="number" id="inp-follow" value="5" min="0">
                 </div>
+                
+                <!-- 🌟 NUEVO EVENTO JOIN -->
+                <label class="check-line" style="margin-top: 15px; border-top: 1px solid #333; padding-top: 10px;">
+                    <input type="checkbox" id="inp-enable-join"> 
+                    Premiar a los Espectadores que se Unen (Join)
+                </label>
                 <div class="input-group">
+                    <label>Globos por cada Espectador que entra</label>
+                    <input type="number" id="inp-join-globos" value="1" min="0">
+                </div>
+
+                <div class="input-group" style="margin-top: 20px;">
                     <label>Antispam: Cooldown por usuario (Segundos)</label>
                     <input type="number" id="inp-follow-cooldown" value="300" min="0">
-                </div>
-            </div>
-
-            <!-- LIKES (TAP TAP) -->
-            <div>
-                <h3 style="color: #ff0050; font-size: 14px;"><i class="fa-solid fa-heart"></i> Likes / Tap Tap (Modo Sigilo)</h3>
-                <div class="input-group">
-                    <label>Meta de Likes INDIVIDUAL por ráfaga</label>
-                    <input type="number" id="inp-likes-meta" value="50" min="1">
-                </div>
-                <div class="input-group">
-                    <label>Globos al cumplir la ráfaga de Likes</label>
-                    <input type="number" id="inp-likes-globos" value="1" min="0">
                 </div>
             </div>
         </div>
@@ -127,16 +148,23 @@
         socket.on('config_actual', (config) => {
             if (config && config.bolita) {
                 configDescarga = config.bolita;
-                document.getElementById('inp-allow-free').checked = config.bolita.allowFree !== false; // true por defecto
+                document.getElementById('inp-allow-free').checked = config.bolita.allowFree !== false; 
                 document.getElementById('inp-multiplicador').value = config.bolita.multiplicador !== undefined ? config.bolita.multiplicador : 2;
                 document.getElementById('inp-quiereme').value = config.bolita.quiereMeGlobos !== undefined ? config.bolita.quiereMeGlobos : 60;
+                
                 document.getElementById('inp-follow').value = config.bolita.followGlobos !== undefined ? config.bolita.followGlobos : 5;
                 document.getElementById('inp-follow-cooldown').value = config.bolita.followCooldown !== undefined ? config.bolita.followCooldown : 300;
+                
+                document.getElementById('inp-allow-numbers').checked = config.bolita.allowNumberCommands === true;
                 document.getElementById('inp-chat-word').value = config.bolita.chatWord !== undefined ? config.bolita.chatWord : "globos";
                 document.getElementById('inp-chat-globos').value = config.bolita.chatGlobos !== undefined ? config.bolita.chatGlobos : 1;
                 document.getElementById('inp-chat-cooldown').value = config.bolita.chatCooldown !== undefined ? config.bolita.chatCooldown : 60;
+                
                 document.getElementById('inp-likes-meta').value = config.bolita.likesMeta !== undefined ? config.bolita.likesMeta : 50;
                 document.getElementById('inp-likes-globos').value = config.bolita.likesGlobos !== undefined ? config.bolita.likesGlobos : 1;
+                
+                document.getElementById('inp-enable-join').checked = config.bolita.enableJoin === true;
+                document.getElementById('inp-join-globos').value = config.bolita.joinGlobos !== undefined ? config.bolita.joinGlobos : 1;
             }
         });
 
@@ -147,18 +175,21 @@
                 quiereMeGlobos: parseInt(document.getElementById('inp-quiereme').value) || 0,
                 followGlobos: parseInt(document.getElementById('inp-follow').value) || 0,
                 followCooldown: parseInt(document.getElementById('inp-follow-cooldown').value) || 300,
+                allowNumberCommands: document.getElementById('inp-allow-numbers').checked,
                 chatWord: document.getElementById('inp-chat-word').value.trim() || "globos",
                 chatGlobos: parseInt(document.getElementById('inp-chat-globos').value) || 0,
                 chatCooldown: parseInt(document.getElementById('inp-chat-cooldown').value) || 60,
                 likesMeta: parseInt(document.getElementById('inp-likes-meta').value) || 50,
-                likesGlobos: parseInt(document.getElementById('inp-likes-globos').value) || 0
+                likesGlobos: parseInt(document.getElementById('inp-likes-globos').value) || 0,
+                enableJoin: document.getElementById('inp-enable-join').checked,
+                joinGlobos: parseInt(document.getElementById('inp-join-globos').value) || 0
             };
         }
 
         function guardarConfig() {
             const nuevaConfig = obtenerValoresInput();
             socket.emit('guardar_config_bolita', nuevaConfig);
-            alert("✅ Configuración guardada en el servidor.");
+            alert("✅ Configuración guardada en el servidor (Actualización en tiempo real lograda).");
         }
 
         function exportarConfig() {

@@ -22,6 +22,7 @@ app.get('/vista_meta_likes', (req, res) => res.sendFile(path.join(__dirname, 'vi
 app.get('/vista_top_likes', (req, res) => res.sendFile(path.join(__dirname, 'vistas', 'vista_top_likes.html')));
 app.get('/vista_top_donadores', (req, res) => res.sendFile(path.join(__dirname, 'vistas', 'vista_top_donadores.html')));
 app.get('/vista_backup', (req, res) => res.sendFile(path.join(__dirname, 'vistas', 'vista_backup.html')));
+app.get('/vista_sociales', (req, res) => res.sendFile(path.join(__dirname, 'vistas', 'vista_sociales.html')));
 
 app.get('/versus', (req, res) => res.sendFile(path.join(__dirname, 'overlays', 'versus.html'))); 
 app.get('/pop_regalos', (req, res) => res.sendFile(path.join(__dirname, 'overlays', 'pop_regalos.html'))); 
@@ -30,6 +31,10 @@ app.get('/racha_versus', (req, res) => res.sendFile(path.join(__dirname, 'overla
 app.get('/meta_likes', (req, res) => res.sendFile(path.join(__dirname, 'overlays', 'meta_likes.html')));
 app.get('/top_likes', (req, res) => res.sendFile(path.join(__dirname, 'overlays', 'top_likes.html')));
 app.get('/top_donadores', (req, res) => res.sendFile(path.join(__dirname, 'overlays', 'top_donadores.html')));
+app.get('/ultimo_seguidor', (req, res) => res.sendFile(path.join(__dirname, 'overlays', 'ultimo_seguidor.html')));
+
+// 🌟 NUEVA RUTA PARA EL OVERLAY DEL QUIÉREME
+app.get('/ultimo_quiereme', (req, res) => res.sendFile(path.join(__dirname, 'overlays', 'ultimo_quiereme.html')));
 
 let topDonators = {};
 let topSorted = [];
@@ -37,16 +42,17 @@ let teamSalvar = { total: 0, donators: {} };
 let teamReiniciar = { total: 0, donators: {} };
 let catalogoGlobal = [];
 let currentTotalLikes = 0; 
-
-// 🌟 NUEVO: Memoria de asignación de equipos por chat
 let userTeams = {}; 
+
+let ultimoSeguidorData = { name: "ESPERANDO...", avatar: "https://via.placeholder.com/150/222/fff?text=?" };
+let ultimoQuieremeData = { name: "ESPERANDO...", avatar: "https://via.placeholder.com/150/222/fff?text=?" };
+let recentFollowers = new Set(); // Memoria temporal para quienes deben escribir la palabra
 
 const regalosEq1Defecto = [{ id: 6064, name: "GG", diamonds: 1 }, { id: 9947, name: "BFF Necklace", diamonds: 10 }];
 const regalosEq2Defecto = [{ id: 5655, name: "Rose", diamonds: 1 }, { id: 8913, name: "Rosa", diamonds: 10 }];
 
 let configGlobal = {
     username: "", historial: [],
-    // 🌟 NUEVO: Palabras clave para unirse a los equipos comentando en el chat
     equipo1: { nombre: "SALVAR", sub: "GG", color: "#00ff66", regalos: regalosEq1Defecto, joinWords: "chicos, heroes, salvar, 1" },
     equipo2: { nombre: "REINICIAR", sub: "ROSA", color: "#ff003c", regalos: regalosEq2Defecto, joinWords: "chicas, villanos, reiniciar, 2" },
     enableCountdown: true, countdownSeconds: 30, showTopText: true, showDonatorCoins: true,
@@ -57,18 +63,17 @@ let configGlobal = {
     bolita: { multiplicador: 2, chatWord: "globos, jugar", chatGlobos: 1, chatCooldown: 60, likesMeta: 50, likesGlobos: 1, followGlobos: 5, followCooldown: 300, allowFree: true, quiereMeGlobos: 60 },
     metaLikes: { active: false, firstGoal: 0, step: 20000, prefixText: "A los", actionText: "REINICIO", currentGoal: 20000, style: { fontSize: 45, color: "#ffffff", shadowColor: "#ff003c", fontFamily: "'Luckiest Guy', cursive" } },
     topLikes: { currentRound: {}, recordHistorico: {}, mirrorMode: false },
-    topVIP: { currentRound: {}, recordHistorico: {}, displayLimit: 2, mirrorMode: false }
+    topVIP: { currentRound: {}, recordHistorico: {}, displayLimit: 2, mirrorMode: false },
+    // 🌟 NUEVO: CONFIGURACIÓN DE SOCIALES
+    sociales: { followRequiresChat: false, followChatWord: "yo" } 
 };
 
 if (fs.existsSync(pathData)) {
     try { 
         let guardado = JSON.parse(fs.readFileSync(pathData, 'utf8')); 
         configGlobal = { ...configGlobal, ...guardado };
-        
-        // Asignación de seguridad para configs antiguas
         if(!configGlobal.equipo1.joinWords) configGlobal.equipo1.joinWords = "chicos, heroes, salvar, 1";
         if(!configGlobal.equipo2.joinWords) configGlobal.equipo2.joinWords = "chicas, villanos, reiniciar, 2";
-
         if(!configGlobal.rachaVersus) configGlobal.rachaVersus = { salvadas: {}, reinicios: {}, showName: true, showCount: true, showCoins: true, continuousMode: true };
         if(configGlobal.rachaVersus.continuousMode === undefined) configGlobal.rachaVersus.continuousMode = true;
         if(!configGlobal.bolita) configGlobal.bolita = { multiplicador: 2, chatWord: "globos, jugar", chatGlobos: 1, chatCooldown: 60, likesMeta: 50, likesGlobos: 1, followGlobos: 5, followCooldown: 300, allowFree: true, quiereMeGlobos: 60 };
@@ -78,6 +83,7 @@ if (fs.existsSync(pathData)) {
         if(!configGlobal.topVIP) configGlobal.topVIP = { currentRound: {}, recordHistorico: {}, displayLimit: 2, mirrorMode: false };
         if(!configGlobal.topVIP.displayLimit) configGlobal.topVIP.displayLimit = 2; 
         if(configGlobal.topVIP.mirrorMode === undefined) configGlobal.topVIP.mirrorMode = false;
+        if(!configGlobal.sociales) configGlobal.sociales = { followRequiresChat: false, followChatWord: "yo" };
     } catch (e) {}
 }
 
@@ -161,7 +167,7 @@ function cerrarRondasGlobales() {
 let tiktokLiveConnection = null;
 let desconexionIntencional = false;
 const regalosProcesados = new Set();
-const combosActivos = new Map(); // 🌟 Rastreador de envíos instantáneos
+const combosActivos = new Map(); 
 
 function emitSalvarUpdate(target) {
     let topSalvar = Object.entries(teamSalvar.donators).map(([name, info]) => ({ name: info.displayName, coins: info.coins, avatar: info.avatar })).sort((a, b) => b.coins - a.coins)[0] || { name: 'ESPERANDO', coins: 0, avatar: '' };
@@ -211,23 +217,33 @@ function conectarTikTok(usuario) {
         if (tiktokLiveConnection === connectionInstance) { desconexionIntencional = true; io.emit('estado_conexion', { estado: 'offline', msg: '⬛ El LIVE ha finalizado' }); }
     });
 
-    // 🌟 NUEVO: ESCUCHA DE CHAT PARA UNIRSE A EQUIPOS
     connectionInstance.on('chat', data => {
         let texto = data.comment.toLowerCase();
         let user = data.uniqueId;
         
+        // 🌟 LÓGICA: SEGUIDOR CON PALABRA CLAVE
+        if (configGlobal.sociales && configGlobal.sociales.followRequiresChat) {
+            let requiredWord = (configGlobal.sociales.followChatWord || "yo").toLowerCase().trim();
+            if (texto.trim() === requiredWord && recentFollowers.has(user)) {
+                let cleanName = (data.nickname || data.uniqueId).replace(/[^a-zA-Z0-9\sÁÉÍÓÚáéíóúÑñ]/g, '').trim() || data.uniqueId;
+                if (cleanName.length > 18) cleanName = cleanName.substring(0, 18) + "...";
+                let avatarUrl = (data.userDetails && data.userDetails.profilePictureUrls && data.userDetails.profilePictureUrls.length > 0) ? data.userDetails.profilePictureUrls[0] : "https://www.gravatar.com/avatar/0?d=mp&f=y";
+                
+                ultimoSeguidorData = { name: cleanName, avatar: avatarUrl };
+                io.emit('update_ultimo_seguidor', ultimoSeguidorData);
+                recentFollowers.delete(user); // Ya lo procesamos, lo sacamos de la lista
+            }
+        }
+
+        // Lógica de Equipos
         let wordsEq1 = (configGlobal.equipo1.joinWords || "chicos, heroes, salvar, 1").toLowerCase().split(',').map(w=>w.trim()).filter(w=>w.length > 0);
         let wordsEq2 = (configGlobal.equipo2.joinWords || "chicas, villanos, reiniciar, 2").toLowerCase().split(',').map(w=>w.trim()).filter(w=>w.length > 0);
 
         let matchEq1 = wordsEq1.some(w => texto.includes(w));
         let matchEq2 = wordsEq2.some(w => texto.includes(w));
 
-        // Si el chat incluye la palabra, asocia a ese usuario con el equipo en la memoria.
-        if (matchEq1) {
-            userTeams[user] = 1;
-        } else if (matchEq2) {
-            userTeams[user] = 2;
-        }
+        if (matchEq1) { userTeams[user] = 1; } 
+        else if (matchEq2) { userTeams[user] = 2; }
     });
 
     connectionInstance.on('like', data => {
@@ -285,6 +301,26 @@ function conectarTikTok(usuario) {
         io.emit('top_likes_data_update', configGlobal.topLikes);
     });
 
+    connectionInstance.on('follow', data => {
+        let cleanName = (data.nickname || data.uniqueId).replace(/[^a-zA-Z0-9\sÁÉÍÓÚáéíóúÑñ]/g, '').trim() || data.uniqueId;
+        if (cleanName.length > 18) { cleanName = cleanName.substring(0, 18) + "..."; }
+        
+        let avatarUrl = "https://www.gravatar.com/avatar/0?d=mp&f=y";
+        if (data.userDetails && data.userDetails.profilePictureUrls && data.userDetails.profilePictureUrls.length > 0) {
+            avatarUrl = data.userDetails.profilePictureUrls[0];
+        }
+
+        // 🌟 LÓGICA: ¿REQUIERE CHAT PARA APARECER?
+        if (configGlobal.sociales && configGlobal.sociales.followRequiresChat) {
+            recentFollowers.add(data.uniqueId);
+            // Limpiamos la memoria del seguidor después de 15 minutos si no escribió la palabra
+            setTimeout(() => recentFollowers.delete(data.uniqueId), 900000); 
+        } else {
+            ultimoSeguidorData = { name: cleanName, avatar: avatarUrl };
+            io.emit('update_ultimo_seguidor', ultimoSeguidorData);
+        }
+    });
+
     connectionInstance.on('gift', data => {
         let user = data.uniqueId;
         let cleanName = (data.nickname || data.uniqueId).replace(/[^a-zA-Z0-9\sÁÉÍÓÚáéíóúÑñ]/g, '').trim() || user; 
@@ -297,6 +333,14 @@ function conectarTikTok(usuario) {
         let giftName = data.giftName || "Regalo";
         let unitPrice = data.diamondCount; 
         
+        // 🌟 DETECTOR DEL REGALO "QUIÉREME" (ID: 7934) 🌟
+        if (giftId === 7934 || giftId === "7934") {
+            let fullName = (data.nickname || data.uniqueId).replace(/[^a-zA-Z0-9\sÁÉÍÓÚáéíóúÑñ]/g, '').trim() || data.uniqueId;
+            if (fullName.length > 18) fullName = fullName.substring(0, 18) + "...";
+            ultimoQuieremeData = { name: fullName, avatar: avatarUrl };
+            io.emit('update_ultimo_quiereme', ultimoQuieremeData);
+        }
+
         let knownGift = catalogoGlobal.find(g => g.id === giftId);
         if (knownGift) { unitPrice = knownGift.diamonds; } else {
             let nuevoRegalo = { id: giftId, name: giftName, diamonds: unitPrice };
@@ -308,7 +352,6 @@ function conectarTikTok(usuario) {
 
         let cantidadAProcesar = 0;
 
-        // 🌟 LÓGICA DE PROCESAMIENTO INSTANTÁNEO
         if (data.giftType === 1) {
             let comboId = data.groupId || data.msgId; 
             let countAnterior = combosActivos.get(comboId) || 0;
@@ -336,7 +379,6 @@ function conectarTikTok(usuario) {
 
         const totalCoins = unitPrice * cantidadAProcesar;
 
-        // Lógica de Top Donadores
         if (!configGlobal.topVIP.currentRound[user]) {
             configGlobal.topVIP.currentRound[user] = { coins: 0, avatar: avatarUrl, displayName: cleanName };
         } else {
@@ -357,12 +399,10 @@ function conectarTikTok(usuario) {
         configGlobal.racha.topRound[user].monedas += totalCoins;
         io.emit('racha_data_update', configGlobal.racha); 
 
-        // 🌟 LÓGICA DE ASIGNACIÓN DE EQUIPOS
         let isSalvar = configGlobal.equipo1.regalos.some(r => r.id === giftId);
         let isReiniciar = configGlobal.equipo2.regalos.some(r => r.id === giftId);
         let triggeredTeam = false;
 
-        // PRIORIDAD: Si el usuario ya comentó "chicos" o "chicas", se sobrescribe la naturaleza del regalo
         if (userTeams[user] === 1) {
             isSalvar = true;
             isReiniciar = false;
@@ -396,6 +436,10 @@ io.on('connection', (socket) => {
     socket.emit('sync_likes_actuales', currentTotalLikes);
     socket.emit('top_likes_data_update', configGlobal.topLikes); 
     socket.emit('top_vip_data_update', configGlobal.topVIP); 
+    
+    // 🌟 REFRESCAR LOS DATOS SOCIALES
+    socket.emit('update_ultimo_seguidor', ultimoSeguidorData);
+    socket.emit('update_ultimo_quiereme', ultimoQuieremeData);
 
     if(configGlobal.metaLikes) {
         socket.emit('meta_likes_update', { current: currentTotalLikes, goal: configGlobal.metaLikes.currentGoal, text: configGlobal.metaLikes.actionText, prefix: configGlobal.metaLikes.prefixText, style: configGlobal.metaLikes.style });
@@ -414,11 +458,18 @@ io.on('connection', (socket) => {
         nuevaConfig.topLikes = configGlobal.topLikes;
         nuevaConfig.topVIP = configGlobal.topVIP;
         
-        // Mantener las joinWords para no borrarlas al guardar desde paneles viejos
         if (!nuevaConfig.equipo1.joinWords) nuevaConfig.equipo1.joinWords = configGlobal.equipo1.joinWords;
         if (!nuevaConfig.equipo2.joinWords) nuevaConfig.equipo2.joinWords = configGlobal.equipo2.joinWords;
+        if (!nuevaConfig.sociales) nuevaConfig.sociales = configGlobal.sociales;
 
-        configGlobal = nuevaConfig; guardarEnArchivo(); io.emit('config_actual', configGlobal); emitSalvarUpdate(io); 
+        Object.assign(configGlobal, nuevaConfig); guardarEnArchivo(); io.emit('config_actual', configGlobal); emitSalvarUpdate(io); 
+    });
+
+    // 🌟 GUARDAR CONFIGURACIÓN DEL PANEL DE SOCIALES
+    socket.on('guardar_config_sociales', (data) => {
+        configGlobal.sociales = data;
+        guardarEnArchivo();
+        io.emit('config_actual', configGlobal);
     });
 
     socket.on('guardar_meta_likes', (data) => {
@@ -634,10 +685,7 @@ io.on('connection', (socket) => {
     });
     socket.on('reset', () => {
         topDonators = {}; topSorted = []; teamSalvar = { total: 0, donators: {} }; teamReiniciar = { total: 0, donators: {} };
-        
-        // 🌟 NUEVO: Limpiamos los equipos por chat cuando la barra se resetea para iniciar una nueva ronda limpia
         userTeams = {}; 
-
         io.emit('actualizacion', topSorted); emitSalvarUpdate(io);
     });
     socket.on('registrar_victoria_versus', (data) => {
@@ -669,6 +717,17 @@ io.on('connection', (socket) => {
     
     socket.on('racha_versus_clear_visual', () => {
         io.emit('racha_versus_clear_visual');
+    });
+
+    socket.on('test_ultimo_seguidor', () => {
+        ultimoSeguidorData = { name: "UsuarioPrueba", avatar: "https://via.placeholder.com/150/00f2fe/fff?text=TEST" };
+        io.emit('update_ultimo_seguidor', ultimoSeguidorData);
+    });
+
+    // 🌟 TESTEO DE ÚLTIMO QUIÉREME 
+    socket.on('test_ultimo_quiereme', () => {
+        ultimoQuieremeData = { name: "FanNumero1", avatar: "https://via.placeholder.com/150/ff0055/fff?text=TEST" };
+        io.emit('update_ultimo_quiereme', ultimoQuieremeData);
     });
 });
 

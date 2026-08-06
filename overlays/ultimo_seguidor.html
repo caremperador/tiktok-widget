@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&display=swap');
+        
+        body { 
+            margin: 0; padding: 20px; overflow: hidden; 
+            background-color: transparent; 
+            font-family: 'Montserrat', sans-serif;
+            display: flex; justify-content: flex-start; align-items: flex-start;
+        }
+
+        .social-container {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(90deg, rgba(15, 15, 19, 0.9) 0%, rgba(20, 20, 30, 0.6) 100%);
+            border: 2px solid rgba(0, 242, 254, 0.3);
+            border-radius: 50px;
+            padding: 8px 30px 8px 10px; /* Espacio extra a la derecha */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(0, 242, 254, 0.1);
+            backdrop-filter: blur(5px);
+            animation: floatUI 4s ease-in-out infinite;
+        }
+
+        @keyframes floatUI {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .avatar-wrap {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            flex-shrink: 0;
+            margin-right: 15px;
+        }
+
+        /* Anillo Neón Dinámico */
+        .avatar-wrap::before {
+            content: "";
+            position: absolute;
+            top: -4px; left: -4px; right: -4px; bottom: -4px;
+            border-radius: 50%;
+            background: conic-gradient(#00f2fe, #4facfe, #00f2fe);
+            animation: spinRing 3s linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes spinRing {
+            100% { transform: rotate(360deg); }
+        }
+
+        .avatar {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #00f2fe;
+            box-sizing: border-box;
+            z-index: 2;
+        }
+
+        .info-col {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .title {
+            font-size: 11px;
+            color: #00f2fe;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 900;
+            text-shadow: 0 0 5px rgba(0, 242, 254, 0.8);
+            margin-bottom: -2px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .name {
+            font-size: 22px;
+            color: #ffffff;
+            font-weight: 900;
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 250px;
+            text-shadow: 2px 2px 2px rgba(0,0,0,0.9), 0 0 10px rgba(255,255,255,0.3);
+            letter-spacing: 1px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="social-container" id="social-box">
+        <div class="avatar-wrap">
+            <img id="s-avatar" class="avatar" src="https://via.placeholder.com/150/222/fff?text=?">
+        </div>
+        <div class="info-col">
+            <div class="title"><i class="fa-solid fa-user-plus"></i> Último Seguidor</div>
+            <div class="name" id="s-name">ESPERANDO...</div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        socket.on('update_ultimo_seguidor', (data) => {
+            if(!data) return;
+            
+            // Animación de actualización (parpadeo suave)
+            let box = document.getElementById('social-box');
+            box.style.opacity = '0';
+            
+            setTimeout(() => {
+                document.getElementById('s-avatar').src = data.avatar;
+                document.getElementById('s-name').innerText = data.name;
+                box.style.transition = 'opacity 0.3s ease';
+                box.style.opacity = '1';
+            }, 300);
+        });
+    </script>
+</body>
+</html>

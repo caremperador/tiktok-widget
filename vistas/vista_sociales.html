@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: #0f0f13; color: white; font-family: 'Segoe UI', sans-serif; padding: 40px; margin: 0; display: flex; justify-content: center;}
+        .box { background: #1a1a24; border: 1px solid #333; border-radius: 12px; padding: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); width: 100%; max-width: 600px;}
+        .header-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 25px;}
+        h2 { margin: 0; color: #00f2fe; font-size: 18px;}
+        h3 { margin: 0 0 15px 0; color: #fff; font-size: 14px; text-transform: uppercase; border-bottom: 1px solid #444; padding-bottom: 8px;}
+        
+        .follower-card { background: #111; border: 1px solid #444; border-radius: 8px; padding: 20px; display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 15px;}
+        .follower-card img { width: 60px; height: 60px; border-radius: 50%; border: 2px solid #00f2fe; object-fit: cover;}
+        .card-quiereme img { border-color: #ff0055; }
+        
+        .follower-info { display: flex; flex-direction: column; gap: 5px; flex: 1;}
+        .follower-title { font-size: 12px; color: #aaa; text-transform: uppercase; font-weight: bold; }
+        .follower-name { font-size: 18px; font-weight: bold; color: #fff; }
+
+        .btn-action { padding: 12px; font-weight: bold; border: none; cursor: pointer; border-radius: 8px; text-transform: uppercase; font-size: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;}
+        .btn-test { background: #ffaa00; color: black; }
+        .btn-test:hover { background: #e69900; }
+        
+        .btn-overlay { padding: 10px 15px; background: #222; color: #00f2fe; font-size: 13px; font-weight: bold; border: 1px solid #00f2fe; cursor: pointer; border-radius: 8px;}
+        .btn-overlay:hover { background: #00f2fe; color: black;}
+
+        .btn-overlay-pink { border-color: #ff0055; color: #ff0055;}
+        .btn-overlay-pink:hover { background: #ff0055; color: white;}
+
+        .settings-panel { background: rgba(0, 242, 254, 0.05); border: 1px solid rgba(0, 242, 254, 0.3); padding: 15px; border-radius: 8px; margin-bottom: 25px; }
+        .check-line { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; font-weight: bold; color: #00f2fe; margin-bottom: 10px; }
+        .check-line input { width: 16px; height: 16px; accent-color: #00f2fe; cursor: pointer; }
+        
+        .input-group { margin-top: 10px; display: none; }
+        .input-group.active { display: flex; gap: 10px; }
+        input[type="text"] { flex: 1; background: #000; color: #fff; border: 1px solid #444; border-radius: 6px; padding: 10px; font-size: 14px; box-sizing: border-box; }
+        input:focus { outline: none; border-color: #00f2fe; }
+        .btn-save { background: #00f2fe; color: black; border: none; padding: 0 20px; font-weight: bold; border-radius: 6px; cursor: pointer;}
+    </style>
+</head>
+<body>
+
+    <div class="box">
+        <div class="header-row">
+            <h2><i class="fa-solid fa-users"></i> Gestor de Eventos Sociales</h2>
+        </div>
+
+        <!-- 🌟 SECCIÓN 1: ÚLTIMO SEGUIDOR -->
+        <h3><i class="fa-solid fa-user-plus" style="color: #00f2fe;"></i> Módulo Último Seguidor</h3>
+        
+        <div class="settings-panel">
+            <label class="check-line">
+                <!-- 🌟 FIX APLICADO AQUÍ: Ejecuta toggleInput al hacer clic -->
+                <input type="checkbox" id="inp-require-chat" onchange="toggleInput()"> 
+                Requerir que el seguidor comente para aparecer en el Overlay
+            </label>
+            <div class="input-group" id="word-group">
+                <input type="text" id="inp-chat-word" placeholder="Ej: yo, 67, hola...">
+                <button class="btn-save" onclick="guardarAjustes(event)">Guardar</button>
+            </div>
+            <p style="margin: 5px 0 0 0; font-size: 11px; color: #aaa;">Si está activado, la persona debe presionar "Seguir" y luego escribir la palabra exacta en el chat. Si está apagado, saldrá al instante solo con seguirte.</p>
+        </div>
+
+        <div class="follower-card">
+            <img id="s-avatar" src="https://via.placeholder.com/150/222/fff?text=?">
+            <div class="follower-info">
+                <span class="follower-title">Último Seguidor Registrado</span>
+                <span class="follower-name" id="s-name">Esperando...</span>
+            </div>
+            <div style="display:flex; flex-direction: column; gap: 5px;">
+                <button class="btn-action btn-test" onclick="socket.emit('test_ultimo_seguidor')"><i class="fa-solid fa-vial"></i> Probar</button>
+                <button class="btn-overlay" onclick="window.open('/ultimo_seguidor', '_blank')"><i class="fa-solid fa-eye"></i> Overlay</button>
+                <button class="btn-overlay" style="border-color:#555; color:#aaa;" onclick="copiarURL('/ultimo_seguidor')"><i class="fa-solid fa-link"></i> Copiar</button>
+            </div>
+        </div>
+
+        <!-- 🌟 SECCIÓN 2: ÚLTIMO QUIÉREME -->
+        <h3 style="margin-top: 35px;"><i class="fa-solid fa-heart" style="color: #ff0055;"></i> Módulo Último "Quiéreme"</h3>
+        
+        <div class="follower-card card-quiereme">
+            <img id="q-avatar" src="https://via.placeholder.com/150/222/fff?text=?">
+            <div class="follower-info">
+                <span class="follower-title">Último que envió Quiéreme</span>
+                <span class="follower-name" id="q-name">Esperando...</span>
+            </div>
+            <div style="display:flex; flex-direction: column; gap: 5px;">
+                <button class="btn-action btn-test" onclick="socket.emit('test_ultimo_quiereme')"><i class="fa-solid fa-vial"></i> Probar</button>
+                <button class="btn-overlay btn-overlay-pink" onclick="window.open('/ultimo_quiereme', '_blank')"><i class="fa-solid fa-eye"></i> Overlay</button>
+                <button class="btn-overlay" style="border-color:#555; color:#aaa;" onclick="copiarURL('/ultimo_quiereme')"><i class="fa-solid fa-link"></i> Copiar</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        
+        // Elementos de la interfaz
+        const inpRequireChat = document.getElementById('inp-require-chat');
+        const inpChatWord = document.getElementById('inp-chat-word');
+        const wordGroup = document.getElementById('word-group');
+
+        socket.on('config_actual', (config) => {
+            if (config && config.sociales) {
+                // Actualiza el checkbox
+                inpRequireChat.checked = config.sociales.followRequiresChat;
+                
+                // 🌟 PROTECCIÓN ANTI-BORRADO: 
+                // Solo actualiza la palabra si el usuario NO está escribiendo en ese momento
+                if (document.activeElement !== inpChatWord) {
+                    inpChatWord.value = config.sociales.followChatWord || "yo";
+                }
+                
+                // Muestra u oculta la caja de la palabra dependiendo del estado
+                if (config.sociales.followRequiresChat) {
+                    wordGroup.classList.add('active');
+                } else {
+                    wordGroup.classList.remove('active');
+                }
+            }
+        });
+
+        socket.on('update_ultimo_seguidor', (data) => {
+            if(!data) return;
+            document.getElementById('s-avatar').src = data.avatar;
+            document.getElementById('s-name').innerText = data.name;
+        });
+
+        socket.on('update_ultimo_quiereme', (data) => {
+            if(!data) return;
+            document.getElementById('q-avatar').src = data.avatar;
+            document.getElementById('q-name').innerText = data.name;
+        });
+
+        function toggleInput() {
+            if (inpRequireChat.checked) {
+                wordGroup.classList.add('active');
+            } else {
+                wordGroup.classList.remove('active');
+            }
+            // 🌟 EL FIX DEFINITIVO: Ahora guarda SIEMPRE que haces clic en el check (sea para activar o desactivar)
+            guardarAjustes();
+        }
+
+        function guardarAjustes(event) {
+            socket.emit('guardar_config_sociales', {
+                followRequiresChat: inpRequireChat.checked,
+                followChatWord: inpChatWord.value.trim() || "yo"
+            });
+            
+            // Efecto visual de guardado solo si se presionó el botón "Guardar"
+            if(event && event.target && event.target.tagName === 'BUTTON') {
+                let btn = event.target;
+                let old = btn.innerText; 
+                btn.innerText = "¡Guardado!";
+                setTimeout(() => btn.innerText = old, 1500);
+            }
+        }
+
+        function copiarURL(ruta) { 
+            navigator.clipboard.writeText(window.location.origin + ruta); 
+            alert("✅ Enlace copiado para OBS!"); 
+        }
+    </script>
+</body>
+</html>
