@@ -32,8 +32,6 @@ app.get('/meta_likes', (req, res) => res.sendFile(path.join(__dirname, 'overlays
 app.get('/top_likes', (req, res) => res.sendFile(path.join(__dirname, 'overlays', 'top_likes.html')));
 app.get('/top_donadores', (req, res) => res.sendFile(path.join(__dirname, 'overlays', 'top_donadores.html')));
 app.get('/ultimo_seguidor', (req, res) => res.sendFile(path.join(__dirname, 'overlays', 'ultimo_seguidor.html')));
-
-// 🌟 NUEVA RUTA PARA EL OVERLAY DEL QUIÉREME
 app.get('/ultimo_quiereme', (req, res) => res.sendFile(path.join(__dirname, 'overlays', 'ultimo_quiereme.html')));
 
 let topDonators = {};
@@ -46,7 +44,7 @@ let userTeams = {};
 
 let ultimoSeguidorData = { name: "ESPERANDO...", avatar: "https://via.placeholder.com/150/222/fff?text=?" };
 let ultimoQuieremeData = { name: "ESPERANDO...", avatar: "https://via.placeholder.com/150/222/fff?text=?" };
-let recentFollowers = new Set(); // Memoria temporal para quienes deben escribir la palabra
+let recentFollowers = new Set(); 
 
 const regalosEq1Defecto = [{ id: 6064, name: "GG", diamonds: 1 }, { id: 9947, name: "BFF Necklace", diamonds: 10 }];
 const regalosEq2Defecto = [{ id: 5655, name: "Rose", diamonds: 1 }, { id: 8913, name: "Rosa", diamonds: 10 }];
@@ -64,7 +62,6 @@ let configGlobal = {
     metaLikes: { active: false, firstGoal: 0, step: 20000, prefixText: "A los", actionText: "REINICIO", currentGoal: 20000, style: { fontSize: 45, color: "#ffffff", shadowColor: "#ff003c", fontFamily: "'Luckiest Guy', cursive" } },
     topLikes: { currentRound: {}, recordHistorico: {}, mirrorMode: false },
     topVIP: { currentRound: {}, recordHistorico: {}, displayLimit: 2, mirrorMode: false },
-    // 🌟 NUEVO: CONFIGURACIÓN DE SOCIALES
     sociales: { followRequiresChat: false, followChatWord: "yo" } 
 };
 
@@ -221,7 +218,6 @@ function conectarTikTok(usuario) {
         let texto = data.comment.toLowerCase();
         let user = data.uniqueId;
         
-        // 🌟 LÓGICA: SEGUIDOR CON PALABRA CLAVE
         if (configGlobal.sociales && configGlobal.sociales.followRequiresChat) {
             let requiredWord = (configGlobal.sociales.followChatWord || "yo").toLowerCase().trim();
             if (texto.trim() === requiredWord && recentFollowers.has(user)) {
@@ -231,11 +227,10 @@ function conectarTikTok(usuario) {
                 
                 ultimoSeguidorData = { name: cleanName, avatar: avatarUrl };
                 io.emit('update_ultimo_seguidor', ultimoSeguidorData);
-                recentFollowers.delete(user); // Ya lo procesamos, lo sacamos de la lista
+                recentFollowers.delete(user); 
             }
         }
 
-        // Lógica de Equipos
         let wordsEq1 = (configGlobal.equipo1.joinWords || "chicos, heroes, salvar, 1").toLowerCase().split(',').map(w=>w.trim()).filter(w=>w.length > 0);
         let wordsEq2 = (configGlobal.equipo2.joinWords || "chicas, villanos, reiniciar, 2").toLowerCase().split(',').map(w=>w.trim()).filter(w=>w.length > 0);
 
@@ -310,10 +305,8 @@ function conectarTikTok(usuario) {
             avatarUrl = data.userDetails.profilePictureUrls[0];
         }
 
-        // 🌟 LÓGICA: ¿REQUIERE CHAT PARA APARECER?
         if (configGlobal.sociales && configGlobal.sociales.followRequiresChat) {
             recentFollowers.add(data.uniqueId);
-            // Limpiamos la memoria del seguidor después de 15 minutos si no escribió la palabra
             setTimeout(() => recentFollowers.delete(data.uniqueId), 900000); 
         } else {
             ultimoSeguidorData = { name: cleanName, avatar: avatarUrl };
@@ -329,20 +322,23 @@ function conectarTikTok(usuario) {
         let avatarUrl = "https://www.gravatar.com/avatar/0?d=mp&f=y";
         if (data.userDetails && data.userDetails.profilePictureUrls && data.userDetails.profilePictureUrls.length > 0) avatarUrl = data.userDetails.profilePictureUrls[0];
         
-        let giftId = data.giftId; 
+        // 🌟 FIX: Parseo estricto a Número para evitar errores de tipeo de TikTok
+        let giftId = parseInt(data.giftId); 
         let giftName = data.giftName || "Regalo";
-        let unitPrice = data.diamondCount; 
+        let unitPrice = parseInt(data.diamondCount) || 0; 
         
-        // 🌟 DETECTOR DEL REGALO "QUIÉREME" (ID: 7934) 🌟
-        if (giftId === 7934 || giftId === "7934") {
+        if (giftId === 7934) {
             let fullName = (data.nickname || data.uniqueId).replace(/[^a-zA-Z0-9\sÁÉÍÓÚáéíóúÑñ]/g, '').trim() || data.uniqueId;
             if (fullName.length > 18) fullName = fullName.substring(0, 18) + "...";
             ultimoQuieremeData = { name: fullName, avatar: avatarUrl };
             io.emit('update_ultimo_quiereme', ultimoQuieremeData);
         }
 
-        let knownGift = catalogoGlobal.find(g => g.id === giftId);
-        if (knownGift) { unitPrice = knownGift.diamonds; } else {
+        // 🌟 FIX: Asegurarnos de comparar siempre números
+        let knownGift = catalogoGlobal.find(g => Number(g.id) === giftId);
+        if (knownGift) { 
+            unitPrice = knownGift.diamonds; 
+        } else {
             let nuevoRegalo = { id: giftId, name: giftName, diamonds: unitPrice };
             catalogoGlobal.push(nuevoRegalo); catalogoGlobal.sort((a, b) => a.diamonds - b.diamonds);
             configGlobal.regalosDisponibles = catalogoGlobal; guardarEnArchivo(); io.emit('config_actual', configGlobal); 
@@ -355,7 +351,7 @@ function conectarTikTok(usuario) {
         if (data.giftType === 1) {
             let comboId = data.groupId || data.msgId; 
             let countAnterior = combosActivos.get(comboId) || 0;
-            let nuevoCount = data.repeatCount;
+            let nuevoCount = parseInt(data.repeatCount) || 1; // 🌟 FIX: Protección Anti-NaN
             let diferencia = nuevoCount - countAnterior;
 
             if (diferencia <= 0) return; 
@@ -364,7 +360,8 @@ function conectarTikTok(usuario) {
             combosActivos.set(comboId, nuevoCount);
 
             if (data.repeatEnd) {
-                combosActivos.delete(comboId);
+                // 🌟 FIX: Retención de memoria de 10 segs para evitar duplicados por lag
+                setTimeout(() => combosActivos.delete(comboId), 10000); 
             }
         } else {
             let huellaRegalo = data.msgId || (data.uniqueId + data.timestamp);
@@ -372,10 +369,10 @@ function conectarTikTok(usuario) {
             regalosProcesados.add(huellaRegalo);
             if (regalosProcesados.size > 1000) regalosProcesados.clear(); 
             
-            cantidadAProcesar = data.repeatCount || 1;
+            cantidadAProcesar = parseInt(data.repeatCount) || 1; // 🌟 FIX: Protección Anti-NaN
         }
 
-        if (cantidadAProcesar <= 0) return;
+        if (isNaN(cantidadAProcesar) || cantidadAProcesar <= 0) return;
 
         const totalCoins = unitPrice * cantidadAProcesar;
 
@@ -399,8 +396,9 @@ function conectarTikTok(usuario) {
         configGlobal.racha.topRound[user].monedas += totalCoins;
         io.emit('racha_data_update', configGlobal.racha); 
 
-        let isSalvar = configGlobal.equipo1.regalos.some(r => r.id === giftId);
-        let isReiniciar = configGlobal.equipo2.regalos.some(r => r.id === giftId);
+        // 🌟 FIX: Comparamos forzando a que ambos sean números
+        let isSalvar = configGlobal.equipo1.regalos.some(r => Number(r.id) === giftId);
+        let isReiniciar = configGlobal.equipo2.regalos.some(r => Number(r.id) === giftId);
         let triggeredTeam = false;
 
         if (userTeams[user] === 1) {
@@ -437,7 +435,6 @@ io.on('connection', (socket) => {
     socket.emit('top_likes_data_update', configGlobal.topLikes); 
     socket.emit('top_vip_data_update', configGlobal.topVIP); 
     
-    // 🌟 REFRESCAR LOS DATOS SOCIALES
     socket.emit('update_ultimo_seguidor', ultimoSeguidorData);
     socket.emit('update_ultimo_quiereme', ultimoQuieremeData);
 
@@ -465,7 +462,6 @@ io.on('connection', (socket) => {
         Object.assign(configGlobal, nuevaConfig); guardarEnArchivo(); io.emit('config_actual', configGlobal); emitSalvarUpdate(io); 
     });
 
-    // 🌟 GUARDAR CONFIGURACIÓN DEL PANEL DE SOCIALES
     socket.on('guardar_config_sociales', (data) => {
         configGlobal.sociales = data;
         guardarEnArchivo();
@@ -651,12 +647,18 @@ io.on('connection', (socket) => {
     socket.on('racha_guardar_opciones', (opts) => { configGlobal.racha.showPhoto = opts.showPhoto; configGlobal.racha.showCoins = opts.showCoins; guardarEnArchivo(); io.emit('config_actual', configGlobal); io.emit('racha_data_update', configGlobal.racha); });
 
     socket.on('guardar_config_bolita', (bolitaConfig) => { configGlobal.bolita = bolitaConfig; guardarEnArchivo(); io.emit('config_actual', configGlobal); });
+    
+    // 🌟 FIX MANUAL: Convertir estrictamente a Integer y enviar a todos
     socket.on('modificar_puntos_equipo', (data) => {
-        if (data.equipo === 1) { teamSalvar.total += data.cantidad; if (teamSalvar.total < 0) teamSalvar.total = 0; } 
-        else if (data.equipo === 2) { teamReiniciar.total += data.cantidad; if (teamReiniciar.total < 0) teamReiniciar.total = 0; }
+        let cantidad = parseInt(data.cantidad) || 0;
+        if (cantidad === 0) return;
+
+        if (data.equipo === 1) { teamSalvar.total += cantidad; if (teamSalvar.total < 0) teamSalvar.total = 0; } 
+        else if (data.equipo === 2) { teamReiniciar.total += cantidad; if (teamReiniciar.total < 0) teamReiniciar.total = 0; }
         emitSalvarUpdate(io);
-        if (data.cantidad > 0) io.emit('poder_salvar', { side: data.equipo === 1 ? 'salvar' : 'reiniciar', amount: data.cantidad });
+        if (cantidad > 0) io.emit('poder_salvar', { side: data.equipo === 1 ? 'salvar' : 'reiniciar', amount: cantidad });
     });
+
     socket.on('importar_catalogo', (nuevoData) => {
         if (Array.isArray(nuevoData)) {
             nuevoData.forEach(item => { let idx = catalogoGlobal.findIndex(g => g.id === item.id); if (idx === -1) catalogoGlobal.push(item); else catalogoGlobal[idx] = { ...catalogoGlobal[idx], ...item }; });
@@ -724,7 +726,6 @@ io.on('connection', (socket) => {
         io.emit('update_ultimo_seguidor', ultimoSeguidorData);
     });
 
-    // 🌟 TESTEO DE ÚLTIMO QUIÉREME 
     socket.on('test_ultimo_quiereme', () => {
         ultimoQuieremeData = { name: "FanNumero1", avatar: "https://via.placeholder.com/150/ff0055/fff?text=TEST" };
         io.emit('update_ultimo_quiereme', ultimoQuieremeData);
