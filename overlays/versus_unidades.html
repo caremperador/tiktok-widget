@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Anton&family=Bangers&family=Bebas+Neue&family=Lilita+One&family=Luckiest+Guy&family=Montserrat:ital,wght@0,700;0,900;1,900&family=Oswald:wght@700&family=Russo+One&family=Teko:wght@600&family=Lemon&display=swap');
+        
+        body {
+            margin: 0; padding: 0; background-color: transparent; 
+            color: white; overflow: hidden;
+        }
+        
+        .widget-wrapper { width: 100vw; height: 100vh; position: relative; }
+        .countdown-line1, .countdown-line2, .countdown-number, #winner-title, #winner-name { paint-order: stroke fill; }
+
+        .countdown-zone {
+            position: absolute;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 100%; display: none; 
+            flex-direction: column; align-items: center; justify-content: center; animation: emerge 0.5s ease-out;
+        }
+        
+        .countdown-line1 { font-weight: 900; letter-spacing: 2px; margin-bottom: -5px; z-index: 2; transition: color 0.3s; text-align: center;}
+        .countdown-line2 { font-weight: 900; letter-spacing: 3px; margin-bottom: -20px; z-index: 2; animation: flashRed 1s infinite;}
+        .countdown-number { font-weight: 900; animation: heartbeat 1s infinite; line-height: 1;}
+
+        #winner-zone {
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); width: 100%; 
+        }
+        #winner-avatar {
+            width: 110px; height: 110px;
+            border-radius: 50%; border: 5px solid #ff003c; object-fit: cover; margin-bottom: 5px; box-shadow: 0 0 20px #ff003c;
+        }
+        #winner-title {
+            font-size: 55px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; text-align: center;
+            -webkit-text-stroke: 2.5px black; line-height: 1.1; margin-bottom: 2px;
+        }
+        #winner-name {
+            font-size: 26px; font-weight: 900; letter-spacing: 1.5px; text-transform: uppercase; text-align: center;
+            color: #ffffff; -webkit-text-stroke: 1.5px black;
+            max-width: 350px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+        }
+
+        @keyframes flashRed { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.5); } }
+        @keyframes popIn { 0% { transform: scale(0.6); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes emerge { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes heartbeat { 0%, 30%, 100% { transform: scale(1); } 15% { transform: scale(1.15); } }
+
+        #canvas-effects { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 999; }
+    </style>
+</head>
+<body>
+    <canvas id="canvas-effects"></canvas>
+    
+    <div class="widget-wrapper">
+
+        <div class="countdown-zone" id="countdown-display">
+            <div class="countdown-line1" id="countdown-line1-text">XX PARA SALVARNOS</div>
+            <div class="countdown-line2" id="countdown-line2-text">REINICIANDO EN</div>
+            <div class="countdown-number" id="timer">30</div>
+            
+            <div id="winner-zone">
+                <img id="winner-avatar" src="https://via.placeholder.com/150/222/fff?text=?">
+                <div id="winner-title">¡TE REINICIÓ!</div>
+                <div id="winner-name">EL EQUIPO 2</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        let currentConfig = null;
+        let timer = 30;
+        let countdownInterval = null;
+        let audioCtx = null;
+        let isGameOver = false; 
+        let wasLosing = false;
+        let latestData = null; 
+
+        function playAlertSound() {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.type = "sine";
+                osc.frequency.setValueAtTime(800, audioCtx.currentTime); 
+                osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.2); 
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime); 
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+                osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.2);
+            } catch(e) {} 
+        }
+
+        function playCoinSound() {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.type = "sine";
+                osc.frequency.setValueAtTime(987.77, audioCtx.currentTime); 
+                osc.frequency.setValueAtTime(1318.51, audioCtx.currentTime + 0.1); 
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime); 
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+                osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.4);
+            } catch(e) {}
+        }
+
+        function applyDesign(style, eqColors) {
+            if (!style || !eqColors) return;
+            document.body.style.fontFamily = style.fontFamily;
+            const strokedElements = document.querySelectorAll('.countdown-line1, .countdown-line2');
+            strokedElements.forEach(el => el.style.webkitTextStroke = style.textStroke + "px black");
+            document.getElementById('timer').style.webkitTextStroke = (style.textStroke * 2.5) + "px black";
+
+            const l1 = document.getElementById('countdown-line1-text');
+            l1.style.color = style.colorL1; l1.style.fontSize = style.sizeL1 + "px";
+            const l2 = document.getElementById('countdown-line2-text');
+            l2.style.color = style.colorL2; l2.style.fontSize = style.sizeL2 + "px";
+            const lt = document.getElementById('timer');
+            lt.style.color = style.colorTimer; lt.style.fontSize = style.sizeTimer + "px";
+
+            const c1 = eqColors.c1 || '#00ff66'; const c2 = eqColors.c2 || '#ff003c';
+
+            const op = style.shadowOpacity !== undefined ? style.shadowOpacity : 1.0;
+            const dist = style.shadowDistance !== undefined ? style.shadowDistance : 4;
+            const shadowColor = `rgba(0,0,0,${op})`;
+            
+            const elementsWithShadow = [
+                {el: l1}, {el: l2}, {el: lt, extra: `0 0 40px #ff003c`}
+            ];
+            elementsWithShadow.forEach(item => {
+                if(!item.el) return;
+                let textShadowStr = `${dist}px ${dist}px 0px ${shadowColor}`;
+                if(item.extra) textShadowStr += `, ${item.extra}`;
+                item.el.style.textShadow = textShadowStr;
+            });
+        }
+
+        socket.on('config_actual', (config) => {
+            if(!config.unidades) return;
+            currentConfig = config.unidades;
+            applyDesign(currentConfig.battleStyle, {c1: currentConfig.equipo1.color, c2: currentConfig.equipo2.color});
+        });
+
+        function triggerGameOver(topReiniciar) {
+            isGameOver = true;
+            if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
+
+            if (!topReiniciar || topReiniciar.name === 'ESPERANDO' || topReiniciar.name === 'MANUAL') {
+                socket.emit('reset_unidades');
+                setTimeout(() => {
+                    isGameOver = false;
+                    if (latestData) {
+                        wasLosing = latestData.totalReiniciar > latestData.totalSalvar; 
+                        procesarActualizacionVisual(latestData);
+                    }
+                }, 200);
+                return;
+            }
+            
+            document.getElementById('countdown-line1-text').style.display = 'none';
+            document.getElementById('countdown-line2-text').style.display = 'none';
+            document.getElementById('timer').style.display = 'none';
+            
+            let c2 = currentConfig.equipo2.color || "#ff003c";
+            let cleanName = topReiniciar.name.replace(/[^a-zA-Z0-9\sÁÉÍÓÚáéíóúÑñ]/g, '').trim();
+
+            let winnerImg = document.getElementById('winner-avatar');
+            let winnerTitle = document.getElementById('winner-title');
+            let winnerName = document.getElementById('winner-name');
+
+            winnerImg.src = topReiniciar.avatar ? topReiniciar.avatar : 'https://via.placeholder.com/150/222/fff?text=?';
+            winnerImg.style.borderColor = c2;
+            winnerImg.style.boxShadow = `0 0 20px ${c2}`;
+            
+            winnerTitle.innerText = `¡TE REINICIÓ!`;
+            winnerTitle.style.color = c2;
+            winnerName.innerText = cleanName;
+            winnerName.style.color = "#ffffff";
+            
+            const op = currentConfig.battleStyle?.shadowOpacity !== undefined ? currentConfig.battleStyle.shadowOpacity : 1.0;
+            const dist = currentConfig.battleStyle?.shadowDistance !== undefined ? currentConfig.battleStyle.shadowDistance : 4;
+            
+            let shadowStr = `${dist}px ${dist}px 0px rgba(0,0,0,${op}), 0 0 20px ${c2}`;
+            winnerTitle.style.textShadow = shadowStr;
+            winnerName.style.textShadow = `${dist}px ${dist}px 0px rgba(0,0,0,${op})`; 
+
+            document.getElementById('winner-zone').style.display = 'flex';
+
+            socket.emit('reset_unidades');
+
+            setTimeout(() => {
+                isGameOver = false;
+                document.getElementById('winner-zone').style.display = 'none';
+                if (latestData) {
+                    wasLosing = latestData.totalReiniciar > latestData.totalSalvar; 
+                    procesarActualizacionVisual(latestData);
+                }
+            }, 3000); 
+        }
+
+        function triggerSaved(topSalvar) {
+            isGameOver = true; 
+            if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
+            
+            document.getElementById('countdown-line1-text').style.display = 'none';
+            document.getElementById('countdown-line2-text').style.display = 'none';
+            document.getElementById('timer').style.display = 'none';
+            
+            let c1 = currentConfig.equipo1.color || "#00ff66";
+            let cleanName = topSalvar.name.replace(/[^a-zA-Z0-9\sÁÉÍÓÚáéíóúÑñ]/g, '').trim();
+
+            let winnerImg = document.getElementById('winner-avatar');
+            let winnerTitle = document.getElementById('winner-title');
+            let winnerName = document.getElementById('winner-name');
+
+            winnerImg.src = topSalvar.avatar ? topSalvar.avatar : 'https://via.placeholder.com/150/222/fff?text=?';
+            winnerImg.style.borderColor = c1;
+            winnerImg.style.boxShadow = `0 0 20px ${c1}`;
+            
+            winnerTitle.innerText = `¡TE SALVÓ!`;
+            winnerTitle.style.color = c1;
+            winnerName.innerText = cleanName;
+            winnerName.style.color = "#ffffff";
+            
+            const op = currentConfig.battleStyle?.shadowOpacity !== undefined ? currentConfig.battleStyle.shadowOpacity : 1.0;
+            const dist = currentConfig.battleStyle?.shadowDistance !== undefined ? currentConfig.battleStyle.shadowDistance : 4;
+            let shadowStr = `${dist}px ${dist}px 0px rgba(0,0,0,${op}), 0 0 20px ${c1}`;
+            winnerTitle.style.textShadow = shadowStr;
+            winnerName.style.textShadow = `${dist}px ${dist}px 0px rgba(0,0,0,${op})`;
+
+            document.getElementById('winner-zone').style.display = 'flex';
+
+            setTimeout(() => {
+                isGameOver = false;
+                document.getElementById('winner-zone').style.display = 'none';
+                if (latestData) {
+                    wasLosing = latestData.totalReiniciar > latestData.totalSalvar; 
+                    procesarActualizacionVisual(latestData);
+                }
+            }, 3000);
+        }
+
+        socket.on('actualizacion_unidades', (data) => {
+            latestData = data;
+            procesarActualizacionVisual(data);
+        });
+
+        function procesarActualizacionVisual(data) {
+            if(!currentConfig) return;
+            let total = data.totalSalvar + data.totalReiniciar;
+            if (isGameOver) return; 
+
+            if (total === 0) {
+                wasLosing = false; 
+                document.getElementById('winner-zone').style.display = 'none';
+                document.getElementById('countdown-display').style.display = 'none';
+                if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
+            }
+
+            let isLosing = data.totalReiniciar > data.totalSalvar;
+            
+            if (wasLosing && !isLosing && data.totalSalvar > 0) {
+                wasLosing = false; 
+                if (data.topSalvar && data.topSalvar.name !== 'ESPERANDO' && data.topSalvar.name !== 'MANUAL') {
+                    triggerSaved(data.topSalvar);
+                    return; 
+                }
+            }
+            wasLosing = isLosing; 
+
+            let countdownDisplay = document.getElementById('countdown-display');
+            let line1 = document.getElementById('countdown-line1-text');
+            let line2 = document.getElementById('countdown-line2-text');
+            let timerEl = document.getElementById('timer');
+            
+            if (currentConfig.enableCountdown && data.totalReiniciar > data.totalSalvar) {
+                let diff = data.totalReiniciar - data.totalSalvar;
+                
+                // 🌟 LÓGICA SINGULAR/PLURAL
+                let nomSingular = currentConfig.equipo1.nombreSingular || "REGALO";
+                let nomPlural = currentConfig.equipo1.nombrePlural || "REGALOS";
+                let textoUnidad = (diff === 1) ? nomSingular : nomPlural;
+                
+                if (currentConfig.equipo1.imgUnidad) {
+                    let glow = currentConfig.equipo1.color || "#00ff66";
+                    line1.innerHTML = `<div style="display:flex; flex-direction:column; align-items:center; gap:10px;"><img src="${currentConfig.equipo1.imgUnidad}" style="height:90px; object-fit:contain; filter:drop-shadow(0 0 10px ${glow});"><span style="color:${currentConfig.battleStyle.colorL1};">x${diff} ${textoUnidad} PARA SALVARNOS</span></div>`;
+                } else {
+                    line1.innerText = `x${diff} ${textoUnidad} PARA SALVARNOS`;
+                    line1.style.color = currentConfig.battleStyle.colorL1; 
+                }
+                
+                line1.style.display = 'block';
+                line2.style.display = 'block';
+                timerEl.style.display = 'block';
+                
+                countdownDisplay.style.display = 'flex'; 
+                if (!countdownInterval) {
+                    timer = currentConfig.countdownSeconds || 30; 
+                    timerEl.innerText = timer;
+                    
+                    countdownInterval = setInterval(() => {
+                        timer--;
+                        playAlertSound(); 
+                        
+                        if (timer <= 0) { 
+                            timer = 0; 
+                            triggerGameOver(latestData.topReiniciar); 
+                        }
+                        if (!isGameOver) timerEl.innerText = timer;
+                    }, 1000);
+                }
+            } else if (data.totalSalvar > data.totalReiniciar) {
+                let diff2 = (data.totalSalvar - data.totalReiniciar) + 1;
+                
+                // 🌟 LÓGICA SINGULAR/PLURAL EQ2
+                let nomSingular2 = currentConfig.equipo2.nombreSingular || "REGALO";
+                let nomPlural2 = currentConfig.equipo2.nombrePlural || "REGALOS";
+                let textoUnidad2 = (diff2 === 1) ? nomSingular2 : nomPlural2;
+
+                if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
+                
+                if (currentConfig.equipo2.imgUnidad) {
+                    let glow2 = currentConfig.equipo2.color || "#ff003c";
+                    line1.innerHTML = `<div style="display:flex; flex-direction:column; align-items:center; gap:10px;"><img src="${currentConfig.equipo2.imgUnidad}" style="height:90px; object-fit:contain; filter:drop-shadow(0 0 10px ${glow2});"><span style="color:${currentConfig.equipo2.color};">x${diff2} ${textoUnidad2} PARA REINICIAR</span></div>`;
+                } else {
+                    line1.innerText = `x${diff2} ${textoUnidad2} PARA REINICIAR`;
+                    line1.style.color = currentConfig.equipo2.color || '#ff003c'; 
+                }
+                
+                line1.style.display = 'block';
+                line2.style.display = 'none'; 
+                timerEl.style.display = 'none';
+                
+                countdownDisplay.style.display = 'flex';
+            } else {
+                countdownDisplay.style.display = 'none';
+                if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
+            }
+        }
+
+        const canvas = document.getElementById('canvas-effects');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particles = [];
+
+        function createExplosion(x, y, color, amount) {
+            let particleCount = Math.min(amount * 5 + 10, 80); 
+            for(let i=0; i < particleCount; i++) { particles.push({ x: x, y: y, vx: (Math.random() - 0.5) * 25, vy: (Math.random() - 0.5) * 25, life: 1.0, color: color, size: Math.random() * 8 + 3 }); }
+        }
+
+        socket.on('poder_salvar_unidades', (data) => {
+            playCoinSound(); 
+            let x = canvas.width / 2; let color = 'white'; let y = canvas.height / 2; 
+            if(data.side === 'salvar') {
+                x = (50 / 100) * canvas.width - 20; color = currentConfig.equipo1.color || '#00ff66'; 
+            } else if (data.side === 'reiniciar') {
+                x = (50 / 100) * canvas.width + 20; color = currentConfig.equipo2.color || '#ff003c'; 
+            }
+            createExplosion(x, y, color, data.amount);
+        });
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for(let i = particles.length - 1; i >= 0; i--) {
+                let p = particles[i];
+                p.x += p.vx; p.y += p.vy; p.vy += 0.4; p.life -= 0.025; 
+                if(p.life <= 0) particles.splice(i, 1);
+                else { ctx.globalAlpha = p.life; ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill(); }
+            }
+            ctx.globalAlpha = 1.0; requestAnimationFrame(animate);
+        }
+        animate();
+        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+    </script>
+</body>
+</html>
